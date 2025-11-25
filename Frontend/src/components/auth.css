@@ -1,0 +1,395 @@
+/* Wrapper background */
+.auth-wrapper {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+/* Card */
+.auth-card {
+  width: 100%;
+  max-width: 480px;
+  padding: 48px 48px 40px;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 8px 30px rgba(41, 56, 78, 0.12);
+  animation: slideIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  text-align: center;
+  border: 1px solid rgba(41, 56, 78, 0.08);
+}
+
+/* Logo */
+.auth-logo {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 28px;
+}
+
+.auth-logo img {
+  width: 140px;
+  height: auto;
+}
+
+/* Title */
+.auth-title {
+  font-size: 30px;
+  font-weight: 700;
+  margin-bottom: 36px;
+  margin-top: 0;
+  color: #29384e;
+  letter-spacing: -0.5px;
+  line-height: 1.2;
+  text-align: left;
+}
+
+/* Form container */
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+
+/* Input fields */
+.auth-form input {
+  width: 100%;
+  padding: 16px 20px;
+  border-radius: 10px;
+  background: #ffffff;
+  border: 1.5px solid #29384e;
+  font-size: 15px;
+  outline: none;
+  transition: all 0.2s ease;
+  text-align: left;
+  color: #29384e;
+  font-family: inherit;
+  box-sizing: border-box;
+  line-height: 1.4;
+}
+
+/* Input placeholder */
+.auth-form input::placeholder {
+  color: #a0a8b4;
+}
+
+/* Input focus effect */
+.auth-form input:focus {
+  background: #ffffff;
+  border-color: #f5a623;
+  box-shadow: 0 0 0 3px rgba(245, 166, 35, 0.1);
+}
+
+/* Password field group (contains input wrapper and forgot password link) */
+.password-field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+/* Forgot password link */
+.forgot-password-link {
+  align-self: flex-end;
+  font-size: 13px;
+  color: #5a6c7d;
+  text-decoration: none;
+  transition: color 0.2s ease;
+  font-weight: 500;
+}
+
+.forgot-password-link:hover {
+  color: #f5a623;
+  text-decoration: underline;
+}
+
+/* Divider for "or" */
+.auth-divider {
+  position: relative;
+  text-align: center;
+  margin: 8px 0;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 45%;
+  height: 1px;
+  background: #e1e4e8;
+}
+
+.auth-divider::before {
+  left: 0;
+}
+
+.auth-divider::after {
+  right: 0;
+}
+
+.auth-divider span {
+  background: #ffffff;
+  padding: 0 12px;
+  color: #8896a8;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* Google Sign In Button */
+.google-btn {
+  width: 100%;
+  padding: 16px 20px;
+  background: #ffffff;
+  color: #29384e;
+  border: 1.5px solid #e1e4e8;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.google-btn:hover {
+  background: #f8f9fa;
+  border-color: #29384e;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(41, 56, 78, 0.1);
+}
+
+.google-btn:active {
+  transform: translateY(0);
+}
+
+.google-btn svg {
+  flex-shrink: 0;
+}
+
+/* Password input wrapper */
+.password-input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.password-input-wrapper input {
+  padding-right: 50px;
+}
+
+/* Password toggle button */
+.password-toggle {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #5a6c7d;
+  transition: color 0.2s ease;
+  border-radius: 4px;
+}
+
+.password-toggle:hover {
+  color: #29384e;
+  background: rgba(41, 56, 78, 0.05);
+}
+
+.password-toggle:focus {
+  outline: 2px solid #f5a623;
+  outline-offset: 2px;
+}
+
+.password-toggle svg {
+  display: block;
+  width: 20px;
+  height: 20px;
+}
+
+/* Button */
+.auth-btn {
+  margin-top: 8px;
+  padding: 16px 20px;
+  background: #29384e;
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.auth-btn:hover {
+  background: #1f2a3a;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(41, 56, 78, 0.25);
+}
+
+.auth-btn:active {
+  transform: translateY(0);
+}
+
+/* Footer */
+.auth-footer {
+  margin-top: 24px;
+  font-size: 15px;
+  color: #5a6c7d;
+  line-height: 1.5;
+}
+
+.auth-footer a {
+  color: #f5a623;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.auth-footer a:hover {
+  color: #d98e1a;
+  text-decoration: underline;
+}
+
+/* Select Dropdown Wrapper */
+.select-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.select-wrapper select {
+  width: 100%;
+  padding: 16px 20px;
+  padding-right: 45px;
+  border-radius: 10px;
+  background: #ffffff;
+  border: 1.5px solid #29384e;
+  font-size: 15px;
+  outline: none;
+  transition: all 0.2s ease;
+  color: #29384e;
+  font-family: inherit;
+  box-sizing: border-box;
+  line-height: 1.4;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+.select-wrapper select:focus {
+  border-color: #f5a623;
+  box-shadow: 0 0 0 3px rgba(245, 166, 35, 0.1);
+}
+
+.select-wrapper select option {
+  padding: 12px;
+  background: #ffffff;
+  color: #29384e;
+}
+
+/* Custom dropdown arrow */
+.select-arrow {
+  position: absolute;
+  right: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  transition: transform 0.2s ease;
+}
+
+.select-wrapper:hover .select-arrow {
+  transform: translateY(-50%) translateY(2px);
+}
+
+/* For responsive design - add to existing media queries */
+@media (max-width: 540px) {
+  .select-wrapper select {
+    padding: 14px 18px;
+    padding-right: 40px;
+    font-size: 14px;
+  }
+  
+  .select-arrow {
+    right: 15px;
+  }
+}
+
+/* Smooth fade animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Slide animation for page transitions */
+@keyframes slideIn {
+  0% {
+    opacity: 0;
+    transform: translateX(-100px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Responsive design */
+@media (max-width: 540px) {
+  .auth-card {
+    max-width: 100%;
+    padding: 36px 28px 32px;
+  }
+  
+  .auth-title {
+    font-size: 26px;
+    margin-bottom: 28px;
+  }
+
+  .auth-logo img {
+    width: 120px;
+  }
+
+  .auth-form input,
+  .auth-btn {
+    padding: 14px 18px;
+    font-size: 14px;
+  }
+
+  .google-btn {
+    padding: 14px 18px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 380px) {
+  .auth-card {
+    padding: 32px 24px 28px;
+  }
+  
+  .auth-title {
+    font-size: 24px;
+  }
+
+  .auth-logo img {
+    width: 110px;
+  }
+}
