@@ -88,11 +88,7 @@ const Login = () => {
                 )}
               </button>
             </div>
-            <a href="/forgot-password" className="forgot-password-link">
-              Forgot Password?
-            </a>
           </div>
-
           <button type="submit" className="auth-btn">
             Log In
           </button>

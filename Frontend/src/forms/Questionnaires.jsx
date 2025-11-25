@@ -39,18 +39,28 @@ export default function Questionnaires() {
     setAnswers({ ...answers, [key]: Number(val) });
   };
 
-  // ⭐ NEXT — Save to Redux + navigate
-  const handleNext = () => {
-    dispatch(setQuestionnaires(answers)); // ← Save in global Redux state
-
-    navigate("/preview", {
-      state: {
-        patientInfo,
-        labInputs,
-        questionnaires: answers,
-      },
-    });
+  // In Questionnaires.jsx - Update the handleNext function
+const handleNext = () => {
+  // Transform to match backend Q1-Q6 structure
+  const transformedAnswers = {
+    Q1: answers.q1,
+    Q2: answers.q2,
+    Q3: answers.q3,
+    Q4: answers.q4,
+    Q5: answers.q5,
+    Q6: answers.q6
   };
+
+  dispatch(setQuestionnaires(transformedAnswers));
+  
+  navigate("/preview", {
+    state: {
+      patientInfo,
+      labInputs,
+      questionnaires: transformedAnswers,
+    },
+  });
+};
 
   // ⭐ PREVIOUS — unchanged
   const handlePrevious = () => {

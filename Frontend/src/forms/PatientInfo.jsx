@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { setPatientInfo } from "../features/report/reportSlice";   // <-- NEW
+import { setPatientInfo } from "../features/report/reportSlice";   
 import Layout from "../components/Layout";
 
 export default function PatientInfo() {
@@ -20,11 +20,11 @@ export default function PatientInfo() {
   };
 
   const navigate = useNavigate();
-  const dispatch = useDispatch();   // <-- NEW
+  const dispatch = useDispatch();   
 
   const handleNext = () => {
-    dispatch(setPatientInfo(formData));   // <-- save data into Redux
-    navigate("/lab-inputs");               // <-- no more state passing
+    dispatch(setPatientInfo(formData));   
+    navigate("/lab-inputs");               
   };
 
   return (

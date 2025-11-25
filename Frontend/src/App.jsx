@@ -11,7 +11,7 @@ export default function App() {
   const user = localStorage.getItem("token");
 
   const protect = (page) =>
-    user ? page : <Navigate to="/login" replace />;
+    user ? page : <Navigate to="/login" />;
 
   return (
     <BrowserRouter>
@@ -22,7 +22,7 @@ export default function App() {
 
         <Route
           path="/login"
-          element={!user ? <Login /> : <Navigate to="/patient-info" replace />}
+          element={user ? <Login /> : <Navigate to="/patient-info" />}
         />
 
         {/* PROTECTED ROUTES */}
