@@ -5,7 +5,6 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setPatientInfo } from "../features/report/reportSlice";   
 import Layout from "../components/Layout";
-
 export default function PatientInfo() {
   const [formData, setFormData] = useState({
     patientName: "",
@@ -42,7 +41,6 @@ export default function PatientInfo() {
 
         {/* FORM */}
         <div className="space-y-8">
-
           {/* Patient Name */}
           <div>
             <label className="block text-base font-medium text-gray-900 mb-1.5">
@@ -69,6 +67,8 @@ export default function PatientInfo() {
               name="age"
               value={formData.age}
               onChange={handleChange}
+              min="1"
+              max="120"
               className="w-full border border-gray-300 rounded-lg px-4 py-3 text-gray-700 focus:ring-2 focus:ring-[#4A9B94]"
             />
           </div>

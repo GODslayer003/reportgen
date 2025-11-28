@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(180deg, #d4eef3 0%, #e8f6f8 50%, #e5fcff 100%);
+  }
+
+  .page {
+    width: 595px;
+    height: 842px;
+    margin: 0 auto;
+    position: relative;
+    background: linear-gradient(180deg, #d4eef3 0%, #e8f6f8 50%, #e5fcff 100%);
+    padding-top: 80px;
+  }
+
+  /* LOGO */
+  .logo {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 22px;
+    font-weight: 600;
+    color: #1f8093;
+    line-height: 1.2;
+  }
+
+  /* PAGE TAG */
+  .page-tag {
+    position: absolute;
+    top: 22px;
+    right: 22px;
+    background: rgba(31,128,147,0.08);
+    padding: 6px 22px;
+    border-radius: 9999px;
+    font-size: 14px;
+    color: #7e8c9a;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  /* HEADER LINE */
+  .header-line {
+    width: 100%;
+    height: 1px;
+    background: rgba(31,128,147,0.2);
+    margin: 20px auto 25px;
+  }
+
+  /* TITLE */
+  .title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 36px;
+    font-weight: 600;
+    color: #1f8093;
+    padding-left: 16px;
+    margin-top: 0;
+  }
+
+  .underline {
+    width: 80px;
+    height: 4px;
+    background: linear-gradient(90deg, #1f8093, rgba(31,128,147,0.5));
+    border-radius: 9999px;
+    margin-top: 8px;
+    margin-left: 16px;
+  }
+
+  /* FUNCTIONAL CARDS WRAPPER */
+  .functional-wrapper {
+    margin-top: 30px;
+    padding: 0 16px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  /* FUNCTIONAL CARD */
+  .func-card {
+    background: white;
+    border-radius: 10px;
+    padding: 12px 20px;
+    box-shadow: 0 3px 5px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  /* Border colors */
+  .func-card.green {
+    border-left: 3px solid #00C448;
+  }
+
+  .func-card.orange {
+    border-left: 3px solid #FE7B02;
+  }
+
+  .func-card.red {
+    border-left: 3px solid #F34E1B;
+  }
+
+  .func-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .func-icon {
+    width: 44px;
+    height: 44px;
+    background: rgba(31,128,147,0.1);
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  .func-icon svg {
+    width: 22px;
+    height: 22px;
+    stroke: #1f8093;
+    stroke-width: 2;
+    fill: none;
+  }
+
+  .func-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: #000;
+  }
+
+  .func-status {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .status-pill {
+    padding: 3px 10px;
+    border-radius: 9999px;
+    background: #FEF0EC;
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+  }
+
+  .status-pill.green {
+    color: #00C448;
+  }
+
+  .status-pill.orange {
+    color: #FE7B02;
+  }
+
+  .status-pill.red {
+    color: #F34E1B;
+  }
+
+  /* FOOTER LINE */
+  .footer-line {
+    width: 100%;
+    height: 1px;
+    background: rgba(31,128,147,0.2);
+    position: absolute;
+    bottom: 50px;
+  }
+
+  /* FOOTER */
+  .footer {
+    text-align: center;
+    font-size: 11px;
+    color: #808080;
+    font-family: 'Poppins', sans-serif;
+    position: absolute;
+    bottom: 22px;
+    width: 100%;
+  }
+</style>
+</head>
+
+<body>
+<div class="page">
+  
+  <!-- Logo -->
+  <div class="logo"><img src="../assets/provencodee.png" alt="The Proven Code"></div>
+
+  <!-- Page number -->
+  <div class="page-tag">Page 6</div>
+
+  <!-- Header line -->
+  <div class="header-line"></div>
+
+  <!-- Title -->
+  <div class="title">Functional Assessment</div>
+  <div class="underline"></div>
+
+  <!-- FUNCTIONAL CARDS -->
+  <div class="functional-wrapper">
+
+    <!-- Card 1: Digestive Rhythm -->
+    <div class="func-card green">
+      <div class="func-header">
+        <div class="func-icon">
+          <svg viewBox="0 0 24 24">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+          </svg>
+        </div>
+        <div class="func-title">Digestive Rhythm</div>
+      </div>
+      <div class="func-status">
+        <div class="status-pill green">Within Range</div>
+      </div>
+    </div>
+
+    <!-- Card 2: Fermentation Load -->
+    <div class="func-card orange">
+      <div class="func-header">
+        <div class="func-icon">
+          <svg viewBox="0 0 24 24">
+            <path d="M12 2L12 22M8 6L16 6M8 10L16 10M10 14L14 14"/>
+          </svg>
+        </div>
+        <div class="func-title">Fermentation Load</div>
+      </div>
+      <div class="func-status">
+        <div class="status-pill orange">Borderline</div>
+      </div>
+    </div>
+
+    <!-- Card 3: Bacterial Balance -->
+    <div class="func-card orange">
+      <div class="func-header">
+        <div class="func-icon">
+          <svg viewBox="0 0 24 24">
+            <circle cx="12" cy="8" r="3"/>
+            <circle cx="6" cy="16" r="2"/>
+            <circle cx="18" cy="16" r="2"/>
+            <circle cx="12" cy="18" r="1.5"/>
+          </svg>
+        </div>
+        <div class="func-title">Bacterial Balance</div>
+      </div>
+      <div class="func-status">
+        <div class="status-pill orange">Borderline</div>
+      </div>
+    </div>
+
+    <!-- Card 4: Yeast Balance -->
+    <div class="func-card red">
+      <div class="func-header">
+        <div class="func-icon">
+          <svg viewBox="0 0 24 24">
+            <circle cx="12" cy="8" r="4"/>
+            <path d="M8 12L12 16M16 12L12 16"/>
+          </svg>
+        </div>
+        <div class="func-title">Yeast Balance</div>
+      </div>
+      <div class="func-status">
+        <div class="status-pill red">Elevated</div>
+      </div>
+    </div>
+
+    <!-- Card 5: Immune Tone -->
+    <div class="func-card green">
+      <div class="func-header">
+        <div class="func-icon">
+          <svg viewBox="0 0 24 24">
+            <path d="M12 2L4 6v6c0 5 3 9 8 11 5-2 8-6 8-11V6l-8-4z"/>
+          </svg>
+        </div>
+        <div class="func-title">Immune Tone</div>
+      </div>
+      <div class="func-status">
+        <div class="status-pill green">Within Range</div>
+      </div>
+    </div>
+
+    <!-- Card 6: Gut-Brain Stress -->
+    <div class="func-card orange">
+      <div class="func-header">
+        <div class="func-icon">
+          <svg viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M8 9h.01M16 9h.01M9 14h6"/>
+          </svg>
+        </div>
+        <div class="func-title">Gut- Brain Stress</div>
+      </div>
+      <div class="func-status">
+        <div class="status-pill orange">Borderline</div>
+      </div>
+    </div>
+
+    <!-- Card 7: Circadian Sleep -->
+    <div class="func-card red">
+      <div class="func-header">
+        <div class="func-icon">
+          <svg viewBox="0 0 24 24">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </div>
+        <div class="func-title">Circadian Sleep</div>
+      </div>
+      <div class="func-status">
+        <div class="status-pill red">Elevated</div>
+      </div>
+    </div>
+
+    <!-- Card 8: Diet Quality -->
+    <div class="func-card red">
+      <div class="func-header">
+        <div class="func-icon">
+          <svg viewBox="0 0 24 24">
+            <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2M7 2v20M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3z"/>
+          </svg>
+        </div>
+        <div class="func-title">Diet Quality</div>
+      </div>
+      <div class="func-status">
+        <div class="status-pill red">Elevated</div>
+      </div>
+    </div>
+
+    <!-- Card 9: Medication Impact -->
+    <div class="func-card red">
+      <div class="func-header">
+        <div class="func-icon">
+          <svg viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="10"/>
+            <circle cx="12" cy="12" r="4"/>
+          </svg>
+        </div>
+        <div class="func-title">Medication Impact</div>
+      </div>
+      <div class="func-status">
+        <div class="status-pill red">Elevated</div>
+      </div>
+    </div>
+
+    <!-- Card 10: Hydration Recovery -->
+    <div class="func-card green">
+      <div class="func-header">
+        <div class="func-icon">
+          <svg viewBox="0 0 24 24">
+            <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/>
+          </svg>
+        </div>
+        <div class="func-title">Hydration Recovery</div>
+      </div>
+      <div class="func-status">
+        <div class="status-pill green">Within Range</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Footer line -->
+  <div class="footer-line"></div>
+
+  <!-- Footer -->
+  <div class="footer">Microbiome Health Check Report — Version 7.0</div>
+
+</div>
+</body>
+</html>

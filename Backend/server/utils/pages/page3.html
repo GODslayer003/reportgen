@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(180deg, #d4eef3 0%, #e8f6f8 50%, #e5fcff 100%);
+  }
+
+  /* A4 page width container */
+  .page {
+    width: 100%;
+    padding: 28px 0 40px;
+    position: relative;
+    overflow: visible;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  /* LOGO */
+  .logo {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 22px;
+    font-weight: 600;
+    color: #1f8093;
+    line-height: 1.2;
+  }
+
+  /* PAGE TAG */
+  .page-tag {
+    position: absolute;
+    top: 22px;
+    right: 22px;
+    background: rgba(31,128,147,0.08);
+    padding: 6px 22px;
+    border-radius: 9999px;
+    font-size: 14px;
+    color: #7e8c9a;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  /* HEADER LINE */
+  .header-line {
+    width: 100%;
+    height: 1px;
+    background: rgba(31,128,147,0.2);
+    margin: 75px auto 25px;
+  }
+
+  /* SECTION TITLE */
+  .title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 32px;
+    font-weight: 600;
+    color: #1f8093;
+  }
+
+  .underline {
+    width: 150px;
+    height: 4px;
+    background: linear-gradient(90deg, #1f8093, rgba(31,128,147,0.5));
+    border-radius: 9999px;
+    margin-top: 8px;
+  }
+
+  /* TOC WRAPPER */
+  .toc-wrapper {
+    margin-top: 50px;
+    width: 100%;
+    padding: 0 20px;
+  }
+
+  .toc-box {
+    padding: 20px;
+    border-radius: 14px;
+    border: 1px solid rgba(31, 128, 147, 0.3);
+    margin-bottom: 16px;
+    background: linear-gradient(180deg, #d4eef3 0%, #e8f6f8 50%, #f0f9fa 100%);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    overflow: hidden;
+    box-shadow: 0 3px 10px rgba(31, 128, 147, 0.1);
+}
+
+  .toc-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .icon-square {
+    width: 48px;
+    height: 48px;
+    background: rgba(31,128,147,0.10);
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  /* Replace with your icons later */
+  .dummy-icon {
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+  }
+
+  .toc-title {
+    font-size: 16px;
+    font-family: 'Poppins', sans-serif;
+    color: #000;
+    font-weight: 500;
+  }
+
+  .toc-page {
+    font-size: 24px;
+    color: #1f8093;
+    font-family: 'Poppins', sans-serif;
+    margin-right: 4px;
+    font-weight: 500;
+  }
+
+  /* FOOTER LINE */
+  .footer-line {
+    width: 100%;
+    height: 1px;
+    background: rgba(31,128,147,0.2);
+    margin: 45px auto 16px;
+  }
+
+  /* FOOTER */
+  .footer {
+    text-align: center;
+    font-size: 11px;
+    color: #808080;
+    font-family: 'Poppins', sans-serif;
+  }
+</style>
+</head>
+
+<body>
+
+<div class="page">
+
+  <!-- Logo -->
+  <div class="logo"><img src="../assets/provencodee.png" alt="The Proven Code"></div>
+
+  <!-- Page number -->
+  <div class="page-tag">Page 3</div>
+
+  <!-- Header line -->
+  <div class="header-line"></div>
+
+  <!-- Title -->
+  <div class="title">Table Of Content</div>
+  <div class="underline"></div>
+
+  <!-- TOC SECTION -->
+  <div class="toc-wrapper">
+
+    <!-- Row 1 -->
+    <div class="toc-box">
+      <div class="toc-left">
+        <div class="icon-square">
+          <div class="dummy-icon">
+            <img src="../assets/about1.png" alt="">
+          </div>
+        </div>
+        <div class="toc-title">About Your Test</div>
+      </div>
+      <div class="toc-page">3</div>
+    </div>
+
+    <div class="toc-box">
+      <div class="toc-left">
+        <div class="icon-square"><div class="dummy-icon">
+          <img src="../assets/about2.png" alt="">
+        </div>
+      </div>
+        <div class="toc-title">Your Snapshot</div>
+      </div>
+      <div class="toc-page">4</div>
+    </div>
+
+    <div class="toc-box">
+      <div class="toc-left">
+        <div class="icon-square"><div class="dummy-icon">
+          <img src="../assets/about3.png" alt="">
+        </div>
+      </div>
+        <div class="toc-title">What We Observed</div>
+      </div>
+      <div class="toc-page">5</div>
+    </div>
+
+    <div class="toc-box">
+      <div class="toc-left">
+        <div class="icon-square"><div class="dummy-icon">
+          <img src="../assets/about4.png" alt="">
+        </div>
+      </div>
+        <div class="toc-title">Your Functional Areas</div>
+      </div>
+      <div class="toc-page">6</div>
+    </div>
+
+    <div class="toc-box">
+      <div class="toc-left">
+        <div class="icon-square"><div class="dummy-icon">
+          <img src="../assets/about5.png" alt="">
+        </div>
+      </div>
+        <div class="toc-title">Clinical Summary</div>
+      </div>
+      <div class="toc-page">7</div>
+    </div>
+
+    <div class="toc-box">
+      <div class="toc-left">
+        <div class="icon-square"><div class="dummy-icon">
+          <img src="../assets/about6.png" alt="">
+        </div>
+      </div>
+        <div class="toc-title">Next Step</div>
+      </div>
+      <div class="toc-page">8</div>
+    </div>
+
+    <div class="toc-box">
+      <div class="toc-left">
+        <div class="icon-square"><div class="dummy-icon">
+          <img src="../assets/about7.png" alt="">
+        </div>
+      </div>
+        <div class="toc-title">Personalized Guidance</div>
+      </div>
+      <div class="toc-page">9</div>
+    </div>
+
+    <div class="toc-box">
+      <div class="toc-left">
+        <div class="icon-square"><div class="dummy-icon">
+          <img src="../assets/about8.png" alt="">
+        </div>
+      </div>
+        <div class="toc-title">Expert Review</div>
+      </div>
+      <div class="toc-page">10</div>
+    </div>
+  </div>
+
+  <!-- Footer line -->
+  <div class="footer-line"></div>
+
+  <!-- Footer -->
+  <div class="footer">Microbiome Health Check Report — Version 7.0</div>
+
+</div>
+
+</body>
+</html>

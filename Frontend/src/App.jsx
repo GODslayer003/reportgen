@@ -6,12 +6,11 @@ import LabInputs from "./forms/LabInputs";
 import Questionnaires from "./forms/Questionnaires";
 import Preview from "./forms/Preview";
 import Layout from "./components/Layout";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 export default function App() {
-  const user = localStorage.getItem("token");
 
-  const protect = (page) =>
-    user ? page : <Navigate to="/login" />;
+  const user = localStorage.getItem("token");
 
   return (
     <BrowserRouter>
@@ -20,45 +19,54 @@ export default function App() {
         {/* PUBLIC ROUTES */}
         <Route path="/" element={<Signup />} />
 
+        {/* LOGIN ROUTE — If logged in, go to patient-info */}
         <Route
           path="/login"
-          element={user ? <Login /> : <Navigate to="/patient-info" />}
+          element={user ? <Navigate to="/patient-info" replace /> : <Login />}
         />
 
         {/* PROTECTED ROUTES */}
         <Route
           path="/patient-info"
           element={
-            <Layout activeStep={1}>
-              {protect(<PatientInfo />)}
-            </Layout>
+            <ProtectedRoute>
+              <Layout activeStep={1}>
+                <PatientInfo />
+              </Layout>
+            </ProtectedRoute>
           }
         />
 
         <Route
           path="/lab-inputs"
           element={
-            <Layout activeStep={2}>
-              {protect(<LabInputs />)}
-            </Layout>
+            <ProtectedRoute>
+              <Layout activeStep={2}>
+                <LabInputs />
+              </Layout>
+            </ProtectedRoute>
           }
         />
 
         <Route
           path="/questionnaires"
           element={
-            <Layout activeStep={3}>
-              {protect(<Questionnaires />)}
-            </Layout>
+            <ProtectedRoute>
+              <Layout activeStep={3}>
+                <Questionnaires />
+              </Layout>
+            </ProtectedRoute>
           }
         />
 
         <Route
           path="/preview"
           element={
-            <Layout activeStep={4}>
-              {protect(<Preview />)}
-            </Layout>
+            <ProtectedRoute>
+              <Layout activeStep={4}>
+                <Preview />
+              </Layout>
+            </ProtectedRoute>
           }
         />
 

@@ -62,7 +62,6 @@ const handleNext = () => {
   });
 };
 
-  // ⭐ PREVIOUS — unchanged
   const handlePrevious = () => {
     navigate("/lab-inputs", {
       state: { patientInfo, labInputs },

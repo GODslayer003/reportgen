@@ -113,10 +113,8 @@ export const generateLifestyleGuidance = (scores) => {
   if (safeScores.FS6 >= 4 || safeScores.FS5 >= 4) {
     guidance.push('Practice stress management techniques and moderate digital device exposure, especially before sleep.');
   }
-  
   return guidance.length > 0 ? guidance.join(' ') : 'Maintain current healthy lifestyle habits.';
 };
-
 export const generateTestId = () => {
   const date = new Date();
   const yy = String(date.getFullYear()).slice(-2);

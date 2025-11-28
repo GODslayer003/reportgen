@@ -84,29 +84,54 @@ router.get('/:id', authenticate, async (req, res) => {
 });
 
 // Download report as PDF
+
 router.get('/:id/pdf', authenticate, async (req, res) => {
   try {
+    console.log("PDF generation requested for report:", req.params.id);
+
     const report = await Report.findOne({
       _id: req.params.id,
       createdBy: req.user.id
     });
 
     if (!report) {
+      console.log("Report not found for PDF generation");
       return res.status(404).json({ message: 'Report not found' });
     }
 
-    const pdf = await generatePDF(report);
+    console.log("Report found, generating PDF...");
 
-    res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', `attachment; filename=${report.testId}.pdf`);
-    res.send(pdf);
+    // Generate PDF — MUST return a buffer
+    const pdfBuffer = await generatePDF(report);
+
+    if (!pdfBuffer || !Buffer.isBuffer(pdfBuffer)) {
+      console.error("❌ PDF generation failed — buffer is empty or invalid.");
+      return res.status(500).json({ 
+        message: "PDF generation failed. Buffer empty.",
+      });
+    }
+
+    console.log("PDF BUFFER SIZE:", pdfBuffer.length);
+    console.log("FIRST 20 BYTES:", new Uint8Array(pdfBuffer.slice(0, 20)));
+
+    // Send file safely
+    res.set({
+      "Content-Type": "application/pdf",
+      "Content-Disposition": `attachment; filename=${report.testId}.pdf`,
+      "Content-Length": pdfBuffer.length,
+    });
+
+    return res.send(pdfBuffer);
+
   } catch (error) {
-    res.status(500).json({ 
-      message: 'Error generating PDF', 
-      error: error.message 
+    console.error("🔥 Error generating PDF:", error);
+    return res.status(500).json({
+      message: "Error generating PDF",
+      error: error.message,
     });
   }
 });
+
 
 // Delete report
 router.delete('/:id', authenticate, async (req, res) => {

@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(180deg, #d4eef3 0%, #e8f6f8 50%, #e5fcff 100%);
+  }
+
+  .page {
+    width: 595px;
+    height: 842px;
+    margin: 0 auto;
+    position: relative;
+    background: linear-gradient(180deg, #d4eef3 0%, #e8f6f8 50%, #e5fcff 100%);
+    padding-top: 80px; /* Added padding to push content down */
+  }
+
+  /* LOGO */
+  .logo {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 22px;
+    font-weight: 600;
+    color: #1f8093;
+    line-height: 1.2;
+  }
+
+  /* PAGE TAG */
+  .page-tag {
+    position: absolute;
+    top: 22px;
+    right: 22px;
+    background: rgba(31,128,147,0.08);
+    padding: 6px 22px;
+    border-radius: 9999px;
+    font-size: 14px;
+    color: #7e8c9a;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  /* HEADER LINE - MOVED HIGHER */
+  .header-line {
+    width: 100%;
+    height: 1px;
+    background: rgba(31,128,147,0.2);
+    margin: 20px auto 25px; /* Reduced top margin from 75px to 20px */
+  }
+
+  /* TITLE */
+  .title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 36px;
+    font-weight: 600;
+    color: #1f8093;
+    padding-left: 16px;
+    margin-top: 0; /* Ensure no extra margin */
+  }
+
+  .underline {
+    width: 80px;
+    height: 4px;
+    background: linear-gradient(90deg, #1f8093, rgba(31,128,147,0.5));
+    border-radius: 9999px;
+    margin-top: 8px;
+    margin-left: 16px;
+  }
+
+  /* OBSERVATION WRAPPER - ADJUSTED MARGIN */
+  .observation-wrapper {
+    margin-top: 30px; /* Reduced from 40px */
+    padding: 0 16px;
+  }
+
+  /* OBSERVATION CARD */
+  .obs-card {
+    background: white;
+    border-radius: 14px;
+    border: 1px solid rgba(224,230,235,0.5);
+    padding: 20px;
+    margin-bottom: 16px;
+    box-shadow: 0 3px 10px rgba(31,128,147,0.08);
+    border-left: 4px solid #1f8093;
+  }
+
+  .obs-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+
+  .obs-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .icon-circle {
+    width: 44px;
+    height: 44px;
+    background: rgba(31,128,147,0.1);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  .icon-circle svg {
+    width: 24px;
+    height: 24px;
+    stroke: #1f8093;
+    stroke-width: 2;
+    fill: none;
+  }
+
+  .obs-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: #000;
+  }
+
+  .status-badge {
+    padding: 6px 16px;
+    border-radius: 9999px;
+    background: #fedfdf;
+    color: #e92b2b;
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  .obs-description {
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    color: #999;
+    line-height: 1.6;
+    margin-bottom: 12px;
+  }
+
+  .progress-bar {
+    width: 100%;
+    height: 6px;
+    background: #e8f6f8;
+    border-radius: 9999px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: #1f8093;
+    border-radius: 9999px;
+    width: 100%;
+  }
+
+  /* CLINICAL REFERENCE */
+  .clinical-ref {
+    background: rgba(31,128,147,0.05);
+    border-radius: 14px;
+    border: 1px solid rgba(31,128,147,0.2);
+    padding: 20px;
+    margin-top: 16px;
+    border-left: 4px solid #1f8093;
+  }
+
+  .clinical-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+
+  .clinical-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: #000;
+  }
+
+  .clinical-text {
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    color: #555;
+    line-height: 1.7;
+  }
+
+  /* FOOTER LINE */
+  .footer-line {
+    width: 100%;
+    height: 1px;
+    background: rgba(31,128,147,0.2);
+    position: absolute;
+    bottom: 50px;
+  }
+
+  /* FOOTER */
+  .footer {
+    text-align: center;
+    font-size: 11px;
+    color: #808080;
+    font-family: 'Poppins', sans-serif;
+    position: absolute;
+    bottom: 22px;
+    width: 100%;
+  }
+</style>
+</head>
+
+<body>
+<div class="page">
+  
+  <!-- Logo -->
+  <div class="logo">
+    <img src="../assets/provencodee.png" alt="The Proven Code">
+</div>
+
+  <!-- Page number -->
+  <div class="page-tag">Page 5</div>
+
+  <!-- Header line -->
+  <div class="header-line"></div>
+
+  <!-- Title -->
+  <div class="title">What We Observed</div>
+  <div class="underline"></div>
+
+  <!-- OBSERVATIONS -->
+  <div class="observation-wrapper">
+
+    <!-- Observation 1 -->
+    <div class="obs-card">
+      <div class="obs-header">
+        <div class="obs-left">
+          <div class="icon-circle">
+            <svg viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M8 12l3 3 5-5"/>
+            </svg>
+          </div>
+          <div class="obs-title">Specimen Validity</div>
+        </div>
+        <div class="status-badge">Detected</div>
+      </div>
+      <div class="obs-description">Sample meets quality standards for analysis</div>
+      <div class="progress-bar">
+        <div class="progress-fill"></div>
+      </div>
+    </div>
+
+    <!-- Observation 2 -->
+    <div class="obs-card">
+      <div class="obs-header">
+        <div class="obs-left">
+          <div class="icon-circle">
+            <svg viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="3"/>
+              <circle cx="6" cy="8" r="2"/>
+              <circle cx="18" cy="8" r="2"/>
+              <circle cx="6" cy="16" r="2"/>
+              <circle cx="18" cy="16" r="2"/>
+            </svg>
+          </div>
+          <div class="obs-title">Bacterial Signal</div>
+        </div>
+        <div class="status-badge">Detected</div>
+      </div>
+      <div class="obs-description">Bacterial markers detected in sample analysis</div>
+      <div class="progress-bar">
+        <div class="progress-fill"></div>
+      </div>
+    </div>
+
+    <!-- Observation 3 -->
+    <div class="obs-card">
+      <div class="obs-header">
+        <div class="obs-left">
+          <div class="icon-circle">
+            <svg viewBox="0 0 24 24">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/>
+              <circle cx="8" cy="10" r="1.5"/>
+              <circle cx="16" cy="10" r="1.5"/>
+            </svg>
+          </div>
+          <div class="obs-title">Yeast Signal</div>
+        </div>
+        <div class="status-badge">Detected</div>
+      </div>
+      <div class="obs-description">Yeast markers detected in sample analysis</div>
+      <div class="progress-bar">
+        <div class="progress-fill"></div>
+      </div>
+    </div>
+
+    <!-- Clinical Reference -->
+    <div class="clinical-ref">
+      <div class="clinical-header">
+        <div class="icon-circle" style="width: 36px; height: 36px;">
+          <svg viewBox="0 0 24 24" style="width: 20px; height: 20px;">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M12 8v4M12 16h.01"/>
+          </svg>
+        </div>
+        <div class="clinical-title">Clinical Reference</div>
+      </div>
+      <div class="clinical-text">
+        These observations represent laboratory screening results and do not constitute a medical diagnosis. Consult your healthcare provider for clinical interpretation.
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Footer line -->
+  <div class="footer-line"></div>
+
+  <!-- Footer -->
+  <div class="footer">Microbiome Health Check Report — Version 7.0</div>
+
+</div>
+</body>
+</html>

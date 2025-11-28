@@ -43,20 +43,51 @@ export const createReport = createAsyncThunk(
   }
 );
 
-// DOWNLOAD PDF
 export const downloadPDF = createAsyncThunk(
   "report/downloadPDF",
   async (reportId, thunkAPI) => {
     try {
+      console.log("Downloading PDF for report:", reportId);
+
       const res = await API.get(`/reports/${reportId}/pdf`, {
         responseType: "blob",
       });
-      return res.data;
+
+      console.log("Browser received blob:", res.data);
+
+      // Convert blob → arrayBuffer
+      const arrayBuffer = await res.data.arrayBuffer();
+
+      // Debug first 20 bytes
+      const view = new Uint8Array(arrayBuffer.slice(0, 20));
+      console.log("CLIENT FIRST 20 BYTES:", view);
+
+      // Debug size
+      console.log("CLIENT PDF SIZE:", arrayBuffer.byteLength);
+
+      // Save
+      const blob = new Blob([arrayBuffer], { type: "application/pdf" });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `report-${reportId}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+
+      setTimeout(() => {
+        window.URL.revokeObjectURL(url);
+        a.remove();
+      }, 2000);
+
+      return { success: true };
     } catch (err) {
+      console.error("PDF download error:", err);
       return thunkAPI.rejectWithValue(err.response?.data || err.message);
     }
   }
 );
+
+
 
 const reportSlice = createSlice({
   name: "report",
@@ -110,13 +141,14 @@ const reportSlice = createSlice({
     });
 
     builder.addCase(downloadPDF.fulfilled, (state, action) => {
-      const blob = new Blob([action.payload], { type: "application/pdf" });
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `${state.createdReport?._id || "Report"}.pdf`;
-      a.click();
-      window.URL.revokeObjectURL(url);
+  const blob = new Blob([action.payload], { type: "application/pdf" });
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `${state.createdReport?._id || "Report"}.pdf`;
+  a.click();
+  window.URL.revokeObjectURL(url);
+
     });
   },
 });

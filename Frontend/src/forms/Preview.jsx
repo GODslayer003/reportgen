@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import Layout from "../components/Layout";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
-import { setQuestionnaires, createReport } from "../features/report/reportSlice";
+import { setQuestionnaires, createReport, downloadPDF } from "../features/report/reportSlice"; // ADD downloadPDF here
 
 export default function Preview() {
   const location = useLocation();
@@ -12,10 +12,11 @@ export default function Preview() {
   const dispatch = useDispatch();
 
   const [advancedTest, setAdvancedTest] = useState(true);
+  const [isGenerating, setIsGenerating] = useState(false); // Add loading state
 
   const patientInfo = useSelector((state) => state.report.patientInfo);
-const labInputs = useSelector((state) => state.report.labInputs);
-const questionnaires = useSelector((state) => state.report.questionnaires);
+  const labInputs = useSelector((state) => state.report.labInputs);
+  const questionnaires = useSelector((state) => state.report.questionnaires);
 
   if (!patientInfo || !labInputs || !questionnaires) {
     return (
@@ -28,12 +29,29 @@ const questionnaires = useSelector((state) => state.report.questionnaires);
   }
 
   /* -------------------------------------------------- */
+  /* DOWNLOAD PDF FUNCTION                              */
+  /* -------------------------------------------------- */
+  const handleDownloadPDF = async (reportId) => {
+    try {
+      console.log("Downloading PDF for report:", reportId);
+      
+      // Call the downloadPDF thunk
+      await dispatch(downloadPDF(reportId)).unwrap();
+      
+      alert("PDF downloaded successfully!");
+      
+    } catch (err) {
+      console.error("PDF download error:", err);
+      alert("Failed to download PDF. Check console.");
+    }
+  };
+
+  /* -------------------------------------------------- */
   /* API CALL → CREATE REPORT                           */
   /* -------------------------------------------------- */
   const handleGeneratePDF = async () => {
     try {
-      // Save questionnaires to Redux (same as previous pages)
-      dispatch(setQuestionnaires(questionnaires));
+      setIsGenerating(true);
 
       // Prepare data EXACTLY LIKE BACKEND REQUIRES
       const payload = {
@@ -45,34 +63,41 @@ const questionnaires = useSelector((state) => state.report.questionnaires);
           clinician: patientInfo.clinicianName || "",
         },
 
-       labInputs: {
-  B: Number(labInputs.bacterialSignal),
-  Y: Number(labInputs.yeastSignal),
-  V: Number(labInputs.specimenValidity)
-}
-,
+        labInputs: {
+          B: Number(labInputs.bacterialSignal),
+          Y: Number(labInputs.yeastSignal),
+          V: Number(labInputs.specimenValidity)
+        },
 
         questionnaire: {
-          Q1: questionnaires.q1,
-          Q2: questionnaires.q2,
-          Q3: questionnaires.q3,
-          Q4: questionnaires.q4,
-          Q5: questionnaires.q5,
-          Q6: questionnaires.q6,
+          Q1: questionnaires.Q1 || 0,
+          Q2: questionnaires.Q2 || 0,
+          Q3: questionnaires.Q3 || 0,
+          Q4: questionnaires.Q4 || 0,
+          Q5: questionnaires.Q5 || 0,
+          Q6: questionnaires.Q6 || 0,
         },
       };
 
-      // CALL BACKEND
+      console.log("Sending payload:", payload);
+
+      // CALL BACKEND to create report
       const result = await dispatch(createReport(payload)).unwrap();
 
-      alert("Report Created Successfully!\nPDF available on next screen.");
-
-      // Optional: Navigate to reports list or stay here
-      // navigate("/reports");
+      console.log("Report created successfully:", result);
+      
+      // After report is created, download the PDF
+      if (result._id) {
+        await handleDownloadPDF(result._id);
+      } else {
+        alert("Report created but could not generate PDF. Report ID missing.");
+      }
 
     } catch (err) {
       console.log("PDF GENERATION ERROR:", err);
       alert("Failed to generate report. Check console.");
+    } finally {
+      setIsGenerating(false);
     }
   };
 
@@ -140,17 +165,24 @@ const questionnaires = useSelector((state) => state.report.questionnaires);
           <div className="flex items-center gap-4">
             <button
               onClick={handleGeneratePDF}
-              className="flex-1 py-3 bg-[#2D8275] text-white rounded-lg font-medium flex items-center justify-center gap-2"
+              disabled={isGenerating}
+              className="flex-1 py-3 bg-[#2D8275] text-white rounded-lg font-medium flex items-center justify-center gap-2 disabled:opacity-50"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none"
-                viewBox="0 0 24 24" strokeWidth={2} stroke="white"
-                className="w-5 h-5"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round"
-                  d="M12 3v12m0 0 3-3m-3 3-3-3m9 3v4.5a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 6 19.5V15"
-                />
-              </svg>
-              Generate PDF Report
+              {isGenerating ? (
+                "Generating PDF..."
+              ) : (
+                <>
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                    viewBox="0 0 24 24" strokeWidth={2} stroke="white"
+                    className="w-5 h-5"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round"
+                      d="M12 3v12m0 0 3-3m-3 3-3-3m9 3v4.5a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 6 19.5V15"
+                    />
+                  </svg>
+                  Generate PDF Report
+                </>
+              )}
             </button>
             <button className="px-6 py-3 border border-[#2D8275] text-[#2D8275] rounded-lg font-medium flex items-center gap-2">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none"
@@ -202,87 +234,87 @@ const questionnaires = useSelector((state) => state.report.questionnaires);
               label="Yeast Signal" 
               value={labInputs.yeastSignal === 1 ? "Detected" : "Not Detected"} 
             />
+            </div>
+          </SectionCard>
 
-                        </div>
-                      </SectionCard>
+          {/* QUESTIONNAIRE */}
+          <SectionCard title="Questionnaire Scores">
+            <div className="space-y-4 mt-2">
+              {Object.entries(questionnaires).map(([qKey, val], i) => (
+                <div className="flex justify-between items-center" key={i}>
+                  <p className="text-gray-800 font-medium">
+                    Q{i + 1} — {questionLabels[i]}
+                  </p>
 
-                      {/* QUESTIONNAIRE */}
-                      <SectionCard title="Questionnaire Scores">
-                        <div className="space-y-4 mt-2">
-                          {Object.entries(questionnaires).map(([qKey, val], i) => (
-                            <div className="flex justify-between items-center" key={i}>
-                              <p className="text-gray-800 font-medium">
-                                Q{i + 1} — {questionLabels[i]}
-                              </p>
-
-                              <span className="px-3 py-1 border border-gray-300 rounded-lg bg-gray-50 text-sm font-medium">
-                                {val} — {scoreLabels[val]}
-                              </span>
-                            </div>
-                          ))}
-                        </div>
-                      </SectionCard>
-
-                      {/* PREVIOUS BUTTON */}
-                      <div className="flex justify-between mt-12">
-                        <button
-                          onClick={() =>
-                            navigate("/questionnaires", {
-                              state: { patientInfo, labInputs },
-                            })
-                          }
-                          className="px-8 py-2.5 border border-gray-300 rounded-lg text-gray-700 bg-white hover:bg-gray-50 transition"
-                        >
-                          Previous
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </Layout>
-              );
-            }
-            /* --------------------------------------------- */
-            /* REUSABLE COMPONENTS                           */
-            /* --------------------------------------------- */
-            function SectionCard({ title, children }) {
-              return (
-                <div className="border border-gray-200 rounded-xl p-6 mb-10">
-                  <div className="flex justify-between items-center mb-6">
-                    <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
-
-                    <span className="text-xs font-semibold px-3 py-1 rounded-full bg-[#e0f7f3] text-[#297E74] border border-[#c4ebe5]">
-                      Complete
-                    </span>
-                  </div>
-
-                  {children}
+                  <span className="px-3 py-1 border border-gray-300 rounded-lg bg-gray-50 text-sm font-medium">
+                    {val} — {scoreLabels[val]}
+                  </span>
                 </div>
-              );
-            }
+              ))}
+            </div>
+          </SectionCard>
 
-            function Field({ label, value, full }) {
-              return (
-                <div className={`${full ? "col-span-2" : ""}`}>
-                  <p className="text-xs font-semibold text-gray-700 mb-1">{label}</p>
-                  <p className="text-gray-600">{value}</p>
-                </div>
-              );
-            }
+          {/* PREVIOUS BUTTON */}
+          <div className="flex justify-between mt-12">
+            <button
+              onClick={() =>
+                navigate("/questionnaires", {
+                  state: { patientInfo, labInputs },
+                })
+              }
+              className="px-8 py-2.5 border border-gray-300 rounded-lg text-gray-700 bg-white hover:bg-gray-50 transition"
+            >
+              Previous
+            </button>
+          </div>
+        </div>
+      </div>
+    </Layout>
+  );
+}
 
-            const questionLabels = [
-              "Digestion & Bowel Rhythm",
-              "Energy / Focus Dips",
-              "Infections / Allergies",
-              "Long Medication Use",
-              "Sleep Regularity / Restfulness",
-              "Diet Pattern",
-            ];
+/* --------------------------------------------- */
+/* REUSABLE COMPONENTS                           */
+/* --------------------------------------------- */
+function SectionCard({ title, children }) {
+  return (
+    <div className="border border-gray-200 rounded-xl p-6 mb-10">
+      <div className="flex justify-between items-center mb-6">
+        <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
 
-            const scoreLabels = {
-              0: "Never",
-              1: "Rarely",
-              2: "Sometimes",
-              3: "Moderate",
-              4: "Often",
-              5: "Very Often",
-            };
+        <span className="text-xs font-semibold px-3 py-1 rounded-full bg-[#e0f7f3] text-[#297E74] border border-[#c4ebe5]">
+          Complete
+        </span>
+      </div>
+
+      {children}
+    </div>
+  );
+}
+
+function Field({ label, value, full }) {
+  return (
+    <div className={`${full ? "col-span-2" : ""}`}>
+      <p className="text-xs font-semibold text-gray-700 mb-1">{label}</p>
+      <p className="text-gray-600">{value}</p>
+    </div>
+  );
+}
+
+const questionLabels = [
+  "Digestion & Bowel Rhythm",
+  "Energy / Focus Dips",
+  "Infections / Allergies",
+  "Long Medication Use",
+  "Sleep Regularity / Restfulness",
+  "Diet Pattern",
+];
+
+const scoreLabels = {
+  0: "Never",
+  1: "Rarely",
+  2: "Sometimes",
+  3: "Moderate",
+  4: "Often",
+  5: "Very Often",
+};

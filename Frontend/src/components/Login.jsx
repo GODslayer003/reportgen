@@ -24,7 +24,6 @@ const Login = () => {
     localStorage.setItem("user", JSON.stringify(res.data.user));
 
     console.log("Login Success:", res.data);
-
     window.location.href = "/patient-info";
 
 
