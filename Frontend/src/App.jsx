@@ -18,12 +18,10 @@ export default function App() {
 
         {/* PUBLIC ROUTES */}
         <Route path="/" element={<Signup />} />
+        <Route path="/Signup" element={<Signup />} />
 
         {/* LOGIN ROUTE — If logged in, go to patient-info */}
-        <Route
-          path="/login"
-          element={user ? <Navigate to="/patient-info" replace /> : <Login />}
-        />
+        <Route path="/login" element={<Login />} />
 
         {/* PROTECTED ROUTES */}
         <Route

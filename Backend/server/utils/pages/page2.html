@@ -12,17 +12,19 @@
     background: linear-gradient(180deg, #d4eef3 0%, #e8f6f8 50%, #f0f9fa 100%);
   }
 
-  /* A4 PAGE WIDTH (same as Page1) */
  .page {
-    width: 100%;
+ width: 100%;
     padding: 28px 0 40px;
     position: relative;
     overflow: visible;
-    max-width: 600px;
+    min-width: 595px;
     margin: 0 auto;
-  }
+    min-height: 843px;
+}
 
-  /* LOGO */
+
+  
+
   .logo {
     position: absolute;
     top: 20px;
@@ -34,7 +36,6 @@
     line-height: 1.2;
   }
 
-  /* PAGE NUMBER */
   .page-tag {
     position: absolute;
     top: 22px;
@@ -46,7 +47,6 @@
     color: #7e8c9a;
   }
 
-  /* TITLE */
   .section-title {
     margin-top: 10px;
     font-family: Poppins, sans-serif;
@@ -63,7 +63,6 @@
     margin-top: 8px;
   }
 
-  /* INFO CARD */
   .info-card {
     margin-top: 30px;
     background: white;
@@ -83,7 +82,6 @@
     font-weight: 600;
   }
 
-  /* TIMELINE */
 .timeline-container {
   position: relative;
   margin-top: 48px;
@@ -103,12 +101,11 @@
   justify-content: space-between;
   width: 100%;
   position: relative;
-  /* Remove the negative margin */
 }
 
 .timeline-line {
   position: absolute;
-  top: 30px; /* Half of icon-box height (60px/2) */
+  top: 30px;
   left: 10%;
   right: 10%;
   height: 2px;
@@ -120,7 +117,7 @@
   width: 22%;
   text-align: center;
   position: relative;
-  z-index: 2; /* Make steps appear above the line */
+  z-index: 2;
 }
 
 .icon-box {
@@ -133,7 +130,7 @@
   justify-content: center;
   margin: 0 auto;
   position: relative;
-  z-index: 3; /* Ensure icons are above everything */
+  z-index: 3;
 }
 
 .icon-box img {
@@ -169,7 +166,6 @@
   line-height: 15px;
 }
 
-  /* CLINICAL BOX */
   .clinical-box {
     margin-top: 48px;
     background: white;
@@ -194,7 +190,6 @@
     line-height: 20px;
   }
 
-  /* FOOTER */
   .footer {
     margin-top: 42px;
     text-align: center;
@@ -207,101 +202,94 @@
 <body>
 
 <div class="page">
-  <!-- Logo -->
-  <div class="logo"><img src="../assets/provencodee.png" alt="The Proven Code"></div>
-  <!-- Page number -->
-  <div class="page-tag">Page 2</div>
- <div style="width: 100%; height: 1px; background: rgba(31,128,147,0.2); margin: 75px auto 20px;"></div>
 
-  <!-- TITLE -->
+  <!-- Logo -->
+  <div class="logo">
+    <img src="../assets/provencodee.png" alt="The Proven Code">
+  </div>
+
+  <!-- ★ DYNAMIC PAGE NUMBER ★ -->
+  <div class="page-tag">Page ${report._pageNumber}</div>
+
+  <div style="width: 100%; height: 1px; background: rgba(31,128,147,0.2); margin: 75px auto 20px;"></div>
+
   <h1 class="section-title">About Your Test</h1>
   <div class="underline"></div>
 
-  <!-- INFO CARD -->
-<div style="
+  <div style="
     margin-top: 30px;
-max-width: 560px;
-margin-left: auto;
-margin-right: auto;
-padding: 30px 28px;
-background: #ffffff;
-border-radius: 16px;
-border: 1px solid rgba(224,230,235,0.5); /* Use consistent border */
-box-shadow: 0 6px 8px -4px rgba(0,0,0,0.1);
-font-size: 15px;
-line-height: 26px;
-text-align: center;
-color: #1F2933;
-/* Remove the individual border declarations below */
-">
-
+    max-width: 560px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 30px 28px;
+    background: #ffffff;
+    border-radius: 16px;
+    border: 1px solid rgba(224,230,235,0.5);
+    box-shadow: 0 6px 8px -4px rgba(0,0,0,0.1);
+    font-size: 15px;
+    line-height: 26px;
+    text-align: center;
+    color: #1F2933;
+  ">
     The <span style="color:#1f8093; font-weight:600;">
         Microbiome Health Check (MHC)
     </span>
     is a functional screening test designed to provide insights into your gut microbiome status.
     This is not a diagnostic test — it screens for patterns that may warrant attention or further investigation.
+  </div>
 
-</div>
+  <div class="timeline-container">
+    <div class="timeline-title">Test Process Timeline</div>
 
- <!-- TIMELINE -->
-<div class="timeline-container">
-  <div class="timeline-title">Test Process Timeline</div>
-  
-  <div class="timeline">
-    <!-- Timeline Line - NOW INSIDE the timeline container -->
-    <div class="timeline-line"></div>
-    
-    <!-- Step 1 -->
-    <div class="step">
-      <div class="icon-box">
-        <img src="../assets/SVG.png">
-      </div>
-      <div class="step-label">Step 1</div>
-      <div class="step-card">
-        <div class="step-title">Sample Collection</div>
-        <div class="step-desc">You collect your saliva sample at home.</div>
-      </div>
-    </div>
+    <div class="timeline">
+      <div class="timeline-line"></div>
 
-    <!-- Step 2 -->
-    <div class="step">
-      <div class="icon-box">
-        <img src="../assets/SVG1.png">
+      <div class="step">
+        <div class="icon-box">
+          <img src="../assets/SVG.png">
+        </div>
+        <div class="step-label">Step 1</div>
+        <div class="step-card">
+          <div class="step-title">Sample Collection</div>
+          <div class="step-desc">You collect your saliva sample at home.</div>
+        </div>
       </div>
-      <div class="step-label">Step 2</div>
-      <div class="step-card">
-        <div class="step-title">Cold-Chain Transport</div>
-        <div class="step-desc">Sample shipped in controlled conditions.</div>
-      </div>
-    </div>
 
-    <!-- Step 3 -->
-    <div class="step">
-      <div class="icon-box">
-        <img src="../assets/SVG2.png">
+      <div class="step">
+        <div class="icon-box">
+          <img src="../assets/SVG1.png">
+        </div>
+        <div class="step-label">Step 2</div>
+        <div class="step-card">
+          <div class="step-title">Cold-Chain Transport</div>
+          <div class="step-desc">Sample shipped in controlled conditions.</div>
+        </div>
       </div>
-      <div class="step-label">Step 3</div>
-      <div class="step-card">
-        <div class="step-title">Laboratory Analysis</div>
-        <div class="step-desc">Expert lab review & testing.</div>
-      </div>
-    </div>
 
-    <!-- Step 4 -->
-    <div class="step">
-      <div class="icon-box">
-        <img src="../assets/SVG3.png">
+      <div class="step">
+        <div class="icon-box">
+          <img src="../assets/SVG2.png">
+        </div>
+        <div class="step-label">Step 3</div>
+        <div class="step-card">
+          <div class="step-title">Laboratory Analysis</div>
+          <div class="step-desc">Expert lab review & testing.</div>
+        </div>
       </div>
-      <div class="step-label">Step 4</div>
-      <div class="step-card">
-        <div class="step-title">Report Generation</div>
-        <div class="step-desc">Your personalized report is ready.</div>
+
+      <div class="step">
+        <div class="icon-box">
+          <img src="../assets/SVG3.png">
+        </div>
+        <div class="step-label">Step 4</div>
+        <div class="step-card">
+          <div class="step-title">Report Generation</div>
+          <div class="step-desc">Your personalized report is ready.</div>
+        </div>
       </div>
     </div>
   </div>
-</div>
 
-  <!-- CLINICAL REFERENCE -->
   <div class="clinical-box">
     <div class="clinical-title">Clinical Reference Use</div>
     <div class="clinical-text">
@@ -309,9 +297,9 @@ color: #1F2933;
       All findings are presented in functional terms for clinical interpretation.
     </div>
   </div>
-  
- <div style="width: 100%; height: 1px; background: rgba(31,128,147,0.2); margin: 40px auto 20px;"></div>
-  <!-- FOOTER -->
+
+  <div style="width: 100%; height: 1px; background: rgba(31,128,147,0.2); margin: 40px auto 20px;"></div>
+
   <div class="footer">
     Microbiome Health Check Report — Version 7.0
   </div>

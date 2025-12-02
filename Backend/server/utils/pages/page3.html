@@ -13,7 +13,6 @@
     background: linear-gradient(180deg, #d4eef3 0%, #e8f6f8 50%, #e5fcff 100%);
   }
 
-  /* A4 page width container */
   .page {
     width: 100%;
     padding: 28px 0 40px;
@@ -23,19 +22,12 @@
     margin: 0 auto;
   }
 
-  /* LOGO */
   .logo {
     position: absolute;
     top: 20px;
     left: 20px;
-    font-family: 'Poppins', sans-serif;
-    font-size: 22px;
-    font-weight: 600;
-    color: #1f8093;
-    line-height: 1.2;
   }
 
-  /* PAGE TAG */
   .page-tag {
     position: absolute;
     top: 22px;
@@ -48,7 +40,6 @@
     font-family: 'Poppins', sans-serif;
   }
 
-  /* HEADER LINE */
   .header-line {
     width: 100%;
     height: 1px;
@@ -56,7 +47,6 @@
     margin: 75px auto 25px;
   }
 
-  /* SECTION TITLE */
   .title {
     font-family: 'Poppins', sans-serif;
     font-size: 32px;
@@ -72,7 +62,6 @@
     margin-top: 8px;
   }
 
-  /* TOC WRAPPER */
   .toc-wrapper {
     margin-top: 50px;
     width: 100%;
@@ -90,7 +79,7 @@
     align-items: center;
     overflow: hidden;
     box-shadow: 0 3px 10px rgba(31, 128, 147, 0.1);
-}
+  }
 
   .toc-left {
     display: flex;
@@ -108,7 +97,6 @@
     align-items: center;
   }
 
-  /* Replace with your icons later */
   .dummy-icon {
     width: 24px;
     height: 24px;
@@ -130,7 +118,6 @@
     font-weight: 500;
   }
 
-  /* FOOTER LINE */
   .footer-line {
     width: 100%;
     height: 1px;
@@ -138,7 +125,6 @@
     margin: 45px auto 16px;
   }
 
-  /* FOOTER */
   .footer {
     text-align: center;
     font-size: 11px;
@@ -155,114 +141,101 @@
   <!-- Logo -->
   <div class="logo"><img src="../assets/provencodee.png" alt="The Proven Code"></div>
 
-  <!-- Page number -->
-  <div class="page-tag">Page 3</div>
+  <!-- ⭐ DYNAMIC PAGE NUMBER -->
+  <div class="page-tag">Page ${report._pageNumber}</div>
 
-  <!-- Header line -->
   <div class="header-line"></div>
 
-  <!-- Title -->
   <div class="title">Table Of Content</div>
   <div class="underline"></div>
 
-  <!-- TOC SECTION -->
   <div class="toc-wrapper">
 
     <!-- Row 1 -->
     <div class="toc-box">
       <div class="toc-left">
         <div class="icon-square">
-          <div class="dummy-icon">
-            <img src="../assets/about1.png" alt="">
-          </div>
+          <div class="dummy-icon"><img src="../assets/about1.png" alt=""></div>
         </div>
         <div class="toc-title">About Your Test</div>
       </div>
-      <div class="toc-page">3</div>
+      <div class="toc-page">${report._toc.aboutTest}</div>
     </div>
 
     <div class="toc-box">
       <div class="toc-left">
-        <div class="icon-square"><div class="dummy-icon">
-          <img src="../assets/about2.png" alt="">
+        <div class="icon-square">
+          <div class="dummy-icon"><img src="../assets/about2.png" alt=""></div>
         </div>
-      </div>
         <div class="toc-title">Your Snapshot</div>
       </div>
-      <div class="toc-page">4</div>
+      <div class="toc-page">${report._toc.snapshot}</div>
     </div>
 
     <div class="toc-box">
       <div class="toc-left">
-        <div class="icon-square"><div class="dummy-icon">
-          <img src="../assets/about3.png" alt="">
+        <div class="icon-square">
+          <div class="dummy-icon"><img src="../assets/about3.png" alt=""></div>
         </div>
-      </div>
         <div class="toc-title">What We Observed</div>
       </div>
-      <div class="toc-page">5</div>
+      <div class="toc-page">${report._toc.observed}</div>
     </div>
 
     <div class="toc-box">
       <div class="toc-left">
-        <div class="icon-square"><div class="dummy-icon">
-          <img src="../assets/about4.png" alt="">
+        <div class="icon-square">
+          <div class="dummy-icon"><img src="../assets/about4.png" alt=""></div>
         </div>
-      </div>
         <div class="toc-title">Your Functional Areas</div>
       </div>
-      <div class="toc-page">6</div>
+      <div class="toc-page">${report._toc.functionalAreas}</div>
     </div>
 
     <div class="toc-box">
       <div class="toc-left">
-        <div class="icon-square"><div class="dummy-icon">
-          <img src="../assets/about5.png" alt="">
+        <div class="icon-square">
+          <div class="dummy-icon"><img src="../assets/about5.png" alt=""></div>
         </div>
-      </div>
         <div class="toc-title">Clinical Summary</div>
       </div>
-      <div class="toc-page">7</div>
+      <div class="toc-page">${report._toc.clinicalSummary}</div>
     </div>
 
     <div class="toc-box">
       <div class="toc-left">
-        <div class="icon-square"><div class="dummy-icon">
-          <img src="../assets/about6.png" alt="">
+        <div class="icon-square">
+          <div class="dummy-icon"><img src="../assets/about6.png" alt=""></div>
         </div>
-      </div>
         <div class="toc-title">Next Step</div>
       </div>
-      <div class="toc-page">8</div>
+      <div class="toc-page">${report._toc.nextStep}</div>
     </div>
 
     <div class="toc-box">
       <div class="toc-left">
-        <div class="icon-square"><div class="dummy-icon">
-          <img src="../assets/about7.png" alt="">
+        <div class="icon-square">
+          <div class="dummy-icon"><img src="../assets/about7.png" alt=""></div>
         </div>
-      </div>
         <div class="toc-title">Personalized Guidance</div>
       </div>
-      <div class="toc-page">9</div>
+      <div class="toc-page">${report._toc.guidance}</div>
     </div>
 
     <div class="toc-box">
       <div class="toc-left">
-        <div class="icon-square"><div class="dummy-icon">
-          <img src="../assets/about8.png" alt="">
+        <div class="icon-square">
+          <div class="dummy-icon"><img src="../assets/about8.png" alt=""></div>
         </div>
-      </div>
         <div class="toc-title">Expert Review</div>
       </div>
-      <div class="toc-page">10</div>
+      <div class="toc-page">${report._toc.expertReview}</div>
     </div>
+
   </div>
 
-  <!-- Footer line -->
   <div class="footer-line"></div>
 
-  <!-- Footer -->
   <div class="footer">Microbiome Health Check Report — Version 7.0</div>
 
 </div>

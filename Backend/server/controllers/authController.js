@@ -1,5 +1,4 @@
 // server/controllers/authController.js
-
 import jwt from 'jsonwebtoken';
 import { validationResult } from 'express-validator';
 import User from '../models/User.js';

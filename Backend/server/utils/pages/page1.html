@@ -1,246 +1,233 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Lato', sans-serif;
+            background: linear-gradient(180deg, #d4eef3 0%, #e8f6f8 50%, #f0f9fa 100%);
+        }
 
-<style>
-  body {
-    margin: 0;
-    padding: 0;
-    font-family: 'Lato', sans-serif;
-    background: linear-gradient(180deg, #d4eef3 0%, #e8f6f8 50%, #f0f9fa 100%);
-  }
+        .page {
+            width: 100%;
+            padding: 28px 0 40px;
+            position: relative;
+            overflow: hidden;
+            max-width: 600px;
+            margin: 0 auto;
+        }
 
-  .page {
-    width: 100%;
-    padding: 28px 0 40px;
-    position: relative;
-    overflow: hidden;
-    max-width: 600px;
-    margin: 0 auto;
-  }
+        .logo {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-family: Poppins, sans-serif;
+            font-size: 22px;
+            font-weight: 600;
+            color: #1f8093;
+            line-height: 1.2;
+        }
 
-  /* LOGO */
-  .logo {
+        .dropper {
+        width: 180px;
     position: absolute;
-    top: 20px;
-    left: 20px;
-    font-family: Poppins, sans-serif;
-    font-size: 22px;
-    font-weight: 600;
-    color: #1f8093;
-    line-height: 1.2;
-  }
+    top: 15px;
+    left: 42%;
+    opacity: 0.8;
+    z-index: 1;
+    transform: translateX(-14%) rotate(8deg) scaleX(-1);
+    transform-origin: center;}
 
-  /* TOP ILLUSTRATION */
-.dropper {
-  width: 180px;
-  position: absolute;
-  top: 18px;
-  left: 42%;
-  transform: translateX(-50%) rotate(-21deg);
-  opacity: 0.8;
-  z-index: 1;
+
+        .drop-shadow {
+            width: 68px;
+            height: 8px;
+            position: absolute;
+            top: 185px;
+            left: 44%;
+            background: linear-gradient(180deg, rgba(31, 128, 147, 0.3) 0%, rgba(31, 128, 147, 0) 100%);
+            border-radius: 2px;
+            z-index: 1;
+            filter: blur(1px);
+        }
+
+        .dna  {   width: 185px;
+    position: absolute;
+    top: -14px;
+    right: -42px;
+    opacity: 0.2;
+    z-index: 1;
 }
 
-.dna {
-  width: 180px;
-  position: absolute;
-  top: 0px;
-  right: -40px;
-  opacity: 0.3;
-  z-index: 1;
-}
+        .microscope {
+            width: 238px;
+    position: absolute;
+    bottom: -37px;
+    left: -74px;
+    opacity: 0.3;
+    z-index: 1;
+    transform: scaleX(-1);
+    transform-origin: center;
+        }
 
-.microscope {
-  width: 200px;  /* Reduced from 240px */
-  position: absolute;
-  bottom:-40px;  /* Adjusted from -60px */
-  left: -30px;  /* Adjusted from -55px */
-  opacity: 0.3;  /* Increased from 0.22 */
-  z-index: 1;
-}
+        .title-wrap {
+            margin-top: 165px;
+            text-align: center;
+        }
 
-  /* TITLE */
-  .title-wrap {
-    margin-top: 165px;
-    text-align: center;
-  }
-  .title {
-    color: #1f8093;
-    font-family: Poppins, sans-serif;
-    font-size: 26px;
-    font-weight: 600;
-    line-height: 1.25;
-  }
-  .subtitle {
-    margin-top: 5px;
-    color: #808080;
-    font-size: 15px;
-  }
+        .title {
+            color: #1f8093;
+            font-family: Poppins, sans-serif;
+            font-size: 26px;
+            font-weight: 600;
+            line-height: 1.25;
+        }
 
-  /* CARD */
-  .card {
-    background: linear-gradient(150deg, #fff 0%, rgba(255,255,255,0.85) 100%);
-    width: 80%;
-    margin: 32px auto 0;
-    padding: 28px;
-    border-radius: 12px;
-    border: 1px solid #e0e6eb;
-    box-shadow: 0 6px 8px -4px rgba(0,0,0,0.12);
-  }
-  .row {
-    padding: 14px 0;
-    border-bottom: 1px solid rgba(224,230,235,0.5);
-  }
-  .row:last-child {
-    border-bottom: none;
-  }
-  .label {
-    font-size: 11px;
-    text-transform: uppercase;
-    color: #000;
-    letter-spacing: 0.4px;
-    margin-bottom: 4px;
-  }
-  .value {
-    font-size: 14px;
-    color: #808080;
-  }
+        .subtitle {
+            margin-top: 5px;
+            color: #808080;
+            font-size: 15px;
+        }
 
-  .row-flex {
-    display: flex;
-    justify-content: space-between;
-  }
-  .col {
-    width: 48%;
-  }
+        .card {
+            background: linear-gradient(150deg, #fff 0%, rgba(255, 255, 255, 0.85) 100%);
+            width: 80%;
+            margin: 32px auto 0;
+            padding: 28px;
+            border-radius: 12px;
+            border: 1px solid #e0e6eb;
+            box-shadow: 0 6px 8px -4px rgba(0, 0, 0, 0.12);
+        }
 
-  /* STATUS BAR */
-  .status-section {
-    margin-top: 35px;
-    text-align: center;
-  }
-  .status-title {
-    font-size: 11px;
-    color: #000;
-  }
-  .bar {
-    display: flex;
-    gap: 6px;
-    width: 220px;
-    margin: 10px auto;
-  }
-  .bar div {
-    height: 6px;
-    flex: 1;
-    background: #1f8093;
-    border-radius: 100px;
-  }
-  .done {
-    font-family: Poppins, sans-serif;
-    font-size: 11px;
-    color: #1f8093;
-    font-weight: 500;
-  }
+        .row {
+            padding: 14px 0;
+            border-bottom: 1px solid rgba(224, 230, 235, 0.5);
+        }
 
-  /* VERSION */
-  .version {
-    margin-top: 22px;
-    text-align: center;
-    font-size: 10px;
-    color: #808080;
-  }
-  /* Add this new class after .dropper */
-.drop-shadow {
-  width: 68px;
-  height: 8px;
-  position: absolute;
-  top: 185px;  /* Position below the dropper */
-  left: 44%;  /* Align with dropper center */
-  background: linear-gradient(180deg, rgba(31, 128, 147, 0.3) 0%, rgba(31, 128, 147, 0) 100%);
-  border-radius: 2px;
-  z-index: 1;
-  filter: blur(1px);
-}
-</style>
+        .row:last-child {
+            border-bottom: none;
+        }
+
+        .label {
+            font-size: 11px;
+            text-transform: uppercase;
+            color: #000;
+            letter-spacing: 0.4px;
+            margin-bottom: 4px;
+        }
+
+        .value {
+            font-size: 14px;
+            color: #808080;
+        }
+
+        .row-flex {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .col {
+            width: 48%;
+        }
+
+        .status-section {
+            margin-top: 35px;
+            text-align: center;
+        }
+
+        .status-title {
+            font-size: 11px;
+            color: #000;
+        }
+
+        .bar {
+            display: flex;
+            gap: 6px;
+            width: 220px;
+            margin: 10px auto;
+        }
+
+        .bar div {
+            height: 6px;
+            flex: 1;
+            background: #1f8093;
+            border-radius: 100px;
+        }
+
+        .done {
+            font-family: Poppins, sans-serif;
+            font-size: 11px;
+            color: #1f8093;
+            font-weight: 500;
+        }
+
+        .version {
+            margin-top: 22px;
+            text-align: center;
+            font-size: 10px;
+            color: #808080;
+        }
+    </style>
 </head>
 
 <body>
-<div class="page">
-
-  <!-- Logo -->
-  <div class="logo">
-  <img src="../assets/provencodee.png" alt="The Proven Code">
-  </div>
-
-    <img src="../assets/dropper.png" class="dropper" />
-    <div class="drop-shadow"></div>
-    <img src="../assets/dna.png" class="dna" />
-    <img src="../assets/microscope.png" class="microscope" />
-
-  <!-- TITLE SECTION -->
-  <div class="title-wrap">
-    <div class="title">Microbiome Health Check<br>Report</div>
-    <div class="subtitle">Functional Screening Report</div>
-  </div>
-
-  <!-- PATIENT CARD -->
-  <div class="card">
-
-    <div class="row">
-      <div class="label">Test ID</div>
-      <div class="value">${report.testId}</div>
+    <div class="page"> <!-- Logo -->
+        <div class="logo"> <img src="/Backend/server/assets/provencodee.png" alt="The Proven Code"> </div> <img
+            src="/Backend/server/assets/dropper.png" class="dropper" />
+        <div class="drop-shadow"></div> <img src="/Backend/server/assets/DNA.png" class="dna" /> <img src="/Backend/server/assets/microscope.png"
+            class="microscope" /> <!-- TITLE -->
+        <div class="title-wrap">
+            <div class="title">Microbiome Health Check<br>Report</div>
+            <div class="subtitle">Functional Screening Report</div>
+        </div> <!-- PATIENT CARD -->
+        <div class="card">
+            <div class="row">
+                <div class="label">Test ID</div>
+                <div class="value">${report.testId}</div>
+            </div>
+            <div class="row">
+                <div class="label">Patient Name</div>
+                <div class="value">${report.patient.name}</div>
+            </div>
+            <div class="row row-flex">
+                <div class="col">
+                    <div class="label">Age</div>
+                    <div class="value">${report.patient.age}</div>
+                </div>
+                <div class="col">
+                    <div class="label">Sex</div>
+                    <div class="value">${report.patient.sex}</div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="label">Sample Collection Date</div>
+                <div class="value"> ${report.patient.collectionDate ? new
+                    Date(report.patient.collectionDate).toLocaleDateString() : "—"} </div>
+            </div>
+            <div class="row">
+                <div class="label">Report Generated</div>
+                <div class="value"> ${report.reportDate ? new Date(report.reportDate).toLocaleDateString() : "—"} </div>
+            </div> ${report.patient.clinician ? <div class="row">
+                <div class="label">Clinician</div>
+                <div class="value">${report.patient.clinician}</div>
+            </div> : ""}
+        </div> <!-- STATUS -->
+        <div class="status-section">
+            <div class="status-title">Report Status</div>
+            <div class="bar">
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+            <div class="done">✓ Report Generated</div>
+        </div>
+        <div class="version">Version 7.0 | Medical Report</div>
     </div>
-
-    <div class="row">
-      <div class="label">Patient Name</div>
-      <div class="value">${report.patient.name}</div>
-    </div>
-
-    <div class="row row-flex">
-      <div class="col">
-        <div class="label">Age</div>
-        <div class="value">${report.patient.age}</div>
-      </div>
-      <div class="col">
-        <div class="label">Sex</div>
-        <div class="value">${report.patient.sex}</div>
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="label">Sample Collection Date</div>
-      <div class="value">${new Date(report.patient.collectionDate).toLocaleDateString()}</div>
-    </div>
-
-    <div class="row">
-      <div class="label">Report Generated</div>
-      <div class="value">${new Date(report.reportDate).toLocaleDateString()}</div>
-    </div>
-
-    <div class="row">
-      <div class="label">Clinician</div>
-      <div class="value">${report.patient.clinician || "—"}</div>
-    </div>
-
-  </div>
-
-  <!-- STATUS -->
-  <div class="status-section">
-    <div class="status-title">Report Status</div>
-
-    <div class="bar">
-      <div></div><div></div><div></div><div></div>
-    </div>
-
-    <div class="done">✓ Report Generated</div>
-  </div>
-
-  <!-- VERSION -->
-  <div class="version">Version 7.0 | Medical Report</div>
-
-</div>
 </body>
+
 </html>

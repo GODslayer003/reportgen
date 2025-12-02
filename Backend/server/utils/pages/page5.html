@@ -19,22 +19,15 @@
     margin: 0 auto;
     position: relative;
     background: linear-gradient(180deg, #d4eef3 0%, #e8f6f8 50%, #e5fcff 100%);
-    padding-top: 80px; /* Added padding to push content down */
+    padding-top: 80px;
   }
 
-  /* LOGO */
   .logo {
     position: absolute;
     top: 20px;
     left: 20px;
-    font-family: 'Poppins', sans-serif;
-    font-size: 22px;
-    font-weight: 600;
-    color: #1f8093;
-    line-height: 1.2;
   }
 
-  /* PAGE TAG */
   .page-tag {
     position: absolute;
     top: 22px;
@@ -44,25 +37,20 @@
     border-radius: 9999px;
     font-size: 14px;
     color: #7e8c9a;
-    font-family: 'Poppins', sans-serif;
   }
 
-  /* HEADER LINE - MOVED HIGHER */
   .header-line {
     width: 100%;
     height: 1px;
     background: rgba(31,128,147,0.2);
-    margin: 20px auto 25px; /* Reduced top margin from 75px to 20px */
+    margin: 20px auto 25px;
   }
 
-  /* TITLE */
   .title {
-    font-family: 'Poppins', sans-serif;
     font-size: 36px;
     font-weight: 600;
     color: #1f8093;
     padding-left: 16px;
-    margin-top: 0; /* Ensure no extra margin */
   }
 
   .underline {
@@ -74,13 +62,11 @@
     margin-left: 16px;
   }
 
-  /* OBSERVATION WRAPPER - ADJUSTED MARGIN */
   .observation-wrapper {
-    margin-top: 30px; /* Reduced from 40px */
+    margin-top: 30px;
     padding: 0 16px;
   }
 
-  /* OBSERVATION CARD */
   .obs-card {
     background: white;
     border-radius: 14px;
@@ -112,7 +98,6 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    flex-shrink: 0;
   }
 
   .icon-circle svg {
@@ -124,7 +109,6 @@
   }
 
   .obs-title {
-    font-family: 'Poppins', sans-serif;
     font-size: 16px;
     font-weight: 600;
     color: #000;
@@ -135,17 +119,8 @@
     border-radius: 9999px;
     background: #fedfdf;
     color: #e92b2b;
-    font-family: 'Poppins', sans-serif;
     font-size: 12px;
     font-weight: 500;
-  }
-
-  .obs-description {
-    font-family: 'Poppins', sans-serif;
-    font-size: 13px;
-    color: #999;
-    line-height: 1.6;
-    margin-bottom: 12px;
   }
 
   .progress-bar {
@@ -160,10 +135,8 @@
     height: 100%;
     background: #1f8093;
     border-radius: 9999px;
-    width: 100%;
   }
 
-  /* CLINICAL REFERENCE */
   .clinical-ref {
     background: rgba(31,128,147,0.05);
     border-radius: 14px;
@@ -181,20 +154,16 @@
   }
 
   .clinical-title {
-    font-family: 'Poppins', sans-serif;
     font-size: 15px;
     font-weight: 600;
-    color: #000;
   }
 
   .clinical-text {
-    font-family: 'Poppins', sans-serif;
     font-size: 12px;
     color: #555;
     line-height: 1.7;
   }
 
-  /* FOOTER LINE */
   .footer-line {
     width: 100%;
     height: 1px;
@@ -203,12 +172,10 @@
     bottom: 50px;
   }
 
-  /* FOOTER */
   .footer {
     text-align: center;
     font-size: 11px;
     color: #808080;
-    font-family: 'Poppins', sans-serif;
     position: absolute;
     bottom: 22px;
     width: 100%;
@@ -218,26 +185,23 @@
 
 <body>
 <div class="page">
-  
+
   <!-- Logo -->
   <div class="logo">
     <img src="../assets/provencodee.png" alt="The Proven Code">
-</div>
+  </div>
 
   <!-- Page number -->
   <div class="page-tag">Page 5</div>
 
-  <!-- Header line -->
   <div class="header-line"></div>
 
-  <!-- Title -->
   <div class="title">What We Observed</div>
   <div class="underline"></div>
 
-  <!-- OBSERVATIONS -->
   <div class="observation-wrapper">
 
-    <!-- Observation 1 -->
+    <!-- Observation 1: Specimen Validity -->
     <div class="obs-card">
       <div class="obs-header">
         <div class="obs-left">
@@ -249,15 +213,21 @@
           </div>
           <div class="obs-title">Specimen Validity</div>
         </div>
-        <div class="status-badge">Detected</div>
+        <div class="status-badge">
+          {{calculatedData.specimenStatus}}
+        </div>
       </div>
-      <div class="obs-description">Sample meets quality standards for analysis</div>
+
+      <div class="obs-description">
+        {{calculatedData.specimenDescription}}
+      </div>
+
       <div class="progress-bar">
-        <div class="progress-fill"></div>
+        <div class="progress-fill" style="width: {{calculatedData.specimenPercent}}%;"></div>
       </div>
     </div>
 
-    <!-- Observation 2 -->
+    <!-- Observation 2: Bacterial Signal -->
     <div class="obs-card">
       <div class="obs-header">
         <div class="obs-left">
@@ -272,15 +242,21 @@
           </div>
           <div class="obs-title">Bacterial Signal</div>
         </div>
-        <div class="status-badge">Detected</div>
+        <div class="status-badge">
+          {{calculatedData.bacterialStatus}}
+        </div>
       </div>
-      <div class="obs-description">Bacterial markers detected in sample analysis</div>
+
+      <div class="obs-description">
+        {{calculatedData.bacterialDescription}}
+      </div>
+
       <div class="progress-bar">
-        <div class="progress-fill"></div>
+        <div class="progress-fill" style="width: {{calculatedData.bPercent}}%;"></div>
       </div>
     </div>
 
-    <!-- Observation 3 -->
+    <!-- Observation 3: Yeast Signal -->
     <div class="obs-card">
       <div class="obs-header">
         <div class="obs-left">
@@ -293,11 +269,17 @@
           </div>
           <div class="obs-title">Yeast Signal</div>
         </div>
-        <div class="status-badge">Detected</div>
+        <div class="status-badge">
+          {{calculatedData.yeastStatus}}
+        </div>
       </div>
-      <div class="obs-description">Yeast markers detected in sample analysis</div>
+
+      <div class="obs-description">
+        {{calculatedData.yeastDescription}}
+      </div>
+
       <div class="progress-bar">
-        <div class="progress-fill"></div>
+        <div class="progress-fill" style="width: {{calculatedData.yPercent}}%;"></div>
       </div>
     </div>
 
@@ -313,16 +295,15 @@
         <div class="clinical-title">Clinical Reference</div>
       </div>
       <div class="clinical-text">
-        These observations represent laboratory screening results and do not constitute a medical diagnosis. Consult your healthcare provider for clinical interpretation.
+        These observations represent laboratory screening results and do not constitute a medical diagnosis.
+        Consult your healthcare provider for clinical interpretation.
       </div>
     </div>
 
   </div>
 
-  <!-- Footer line -->
   <div class="footer-line"></div>
 
-  <!-- Footer -->
   <div class="footer">Microbiome Health Check Report — Version 7.0</div>
 
 </div>

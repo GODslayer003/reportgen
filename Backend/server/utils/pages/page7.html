@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(180deg, #d4eef3 0%, #e8f6f8 50%, #e5fcff 100%);
+  }
+
+  .page {
+    width: 595px;
+    height: 842px;
+    margin: 0 auto;
+    position: relative;
+    background: linear-gradient(180deg, #d4eef3 0%, #e8f6f8 50%, #e5fcff 100%);
+    padding-top: 80px;
+  }
+
+  /* LOGO */
+  .logo {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 22px;
+    font-weight: 600;
+    color: #1f8093;
+    line-height: 1.2;
+  }
+
+  /* PAGE TAG */
+  .page-tag {
+    position: absolute;
+    top: 22px;
+    right: 22px;
+    background: rgba(31,128,147,0.08);
+    padding: 6px 22px;
+    border-radius: 9999px;
+    font-size: 14px;
+    color: #7e8c9a;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  /* HEADER LINE */
+  .header-line {
+    width: 100%;
+    height: 1px;
+    background: rgba(31,128,147,0.2);
+    margin: 20px auto 25px;
+  }
+
+  /* TITLE */
+  .title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 36px;
+    font-weight: 600;
+    color: #1f8093;
+    padding-left: 16px;
+    margin-top: 0;
+  }
+
+  .underline {
+    width: 80px;
+    height: 4px;
+    background: linear-gradient(90deg, #1f8093, rgba(31,128,147,0.5));
+    border-radius: 9999px;
+    margin-top: 8px;
+    margin-left: 16px;
+  }
+
+  /* CONTENT WRAPPER */
+  .content-wrapper {
+    margin-top: 30px;
+    padding: 0 16px;
+  }
+
+  /* INTERPRETIVE NARRATIVE BOX */
+  .narrative-box {
+    background: white;
+    border-radius: 12px;
+    border: 2px solid #e0e6eb;
+    padding: 20px 28px;
+    margin-bottom: 20px;
+  }
+
+  .narrative-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: #1f8093;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 12px;
+  }
+
+  .narrative-text {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    color: #000;
+    line-height: 1.6;
+  }
+
+  /* IMPORTANT NOTE BOX */
+  .note-box {
+    background: rgba(243, 245, 247, 0.6);
+    border-radius: 10px;
+    border-left: 4px solid #1f8093;
+    padding: 18px 24px;
+    display: flex;
+    gap: 14px;
+  }
+
+  .note-icon {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .note-icon svg {
+    width: 20px;
+    height: 20px;
+    fill: #1f8093;
+  }
+
+  .note-content {
+    flex: 1;
+  }
+
+  .note-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: #000;
+    margin-bottom: 8px;
+  }
+
+  .note-text {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    color: #121212;
+    line-height: 1.5;
+  }
+
+  /* FOOTER LINE */
+  .footer-line {
+    width: 100%;
+    height: 1px;
+    background: rgba(31,128,147,0.2);
+    position: absolute;
+    bottom: 50px;
+  }
+
+  /* FOOTER */
+  .footer {
+    text-align: center;
+    font-size: 11px;
+    color: #808080;
+    font-family: 'Poppins', sans-serif;
+    position: absolute;
+    bottom: 22px;
+    width: 100%;
+  }
+</style>
+</head>
+
+<body>
+<div class="page">
+  
+  <!-- Logo -->
+  <div class="logo">the<br>proven<br>code</div>
+
+  <!-- Page number -->
+  <div class="page-tag">Page 7</div>
+
+  <!-- Header line -->
+  <div class="header-line"></div>
+
+  <!-- Title -->
+  <div class="title">Clinical Summary</div>
+  <div class="underline"></div>
+
+  <!-- CONTENT -->
+  <div class="content-wrapper">
+
+    <!-- Interpretive Narrative -->
+    <div class="narrative-box">
+      <div class="narrative-title">Interpretive Narrative</div>
+      <div class="narrative-text">
+        Your screening reveals mild functional imbalance with detected bacterial and yeast signals, primarily affecting fermentation load, sleep quality, and dietary patterns. This pattern typically responds well to targeted lifestyle modifications within 4-6 weeks.
+      </div>
+    </div>
+
+    <!-- Important Note -->
+    <div class="note-box">
+      <div class="note-icon">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2L12 16M12 20L12 22"/>
+          <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/>
+        </svg>
+      </div>
+      <div class="note-content">
+        <div class="note-title">Important Note</div>
+        <div class="note-text">
+          Interpretation Note: This summary is generated based on your laboratory signals and questionnaire responses. It reflects functional patterns and is not a medical diagnosis. Always consult with a healthcare provider for medical advice.
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Footer line -->
+  <div class="footer-line"></div>
+
+  <!-- Footer -->
+  <div class="footer">Microbiome Health Check Report — Version 7.0</div>
+
+</div>
+</body>
+</html>

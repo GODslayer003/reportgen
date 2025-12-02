@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+  body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Lato', sans-serif;
+  background: linear-gradient(180deg, #d4eef3 0%, #e8f6f8 50%, #e5fcff 100%);
+}
+
+.page {
+  width: 595px;
+  height: 842px;
+  margin: 0 auto;
+  position: relative;
+  background: linear-gradient(180deg, #d4eef3 0%, #e8f6f8 50%, #e5fcff 100%);
+  padding-top: 80px; /* ← Added padding-top */
+}
+
+/* LOGO */
+.logo {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 22px;
+  font-weight: 600;
+  color: #1f8093;
+  line-height: 1.1;
+}
+
+/* PAGE TAG */
+.page-tag {
+  position: absolute;
+  top: 22px;
+  right: 22px;
+  background: rgba(31,128,147,0.08);
+  padding: 6px 22px;
+  border-radius: 9999px;
+  font-size: 14px;
+  color: #7e8c9a;
+  font-family: 'Lato', sans-serif;
+}
+
+/* HEADER LINE - FIXED */
+.header-line {
+  width: 100%;
+  height: 1px;
+  background: rgba(31,128,147,0.2);
+  margin: 20px auto 25px; /* ← Changed from 75px to 20px */
+}
+
+  /* TITLE */
+  .title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 36px;
+    font-weight: 600;
+    color: #1f8093;
+    padding-left: 16px;
+    margin-top: 0;
+  }
+
+  .underline {
+    width: 80px;
+    height: 4px;
+    background: linear-gradient(90deg, #1f8093, rgba(31,128,147,0.5));
+    border-radius: 9999px;
+    margin-top: 8px;
+    margin-left: 16px;
+  }
+
+  /* CONTENT WRAPPER */
+  .content-wrapper {
+    margin-top: 30px;
+    padding: 0 16px;
+  }
+
+  /* MAIN RECOMMENDATION BOX */
+  .rec-box {
+    background: linear-gradient(159deg, #FEF5E7 0%, rgba(254, 245, 231, 0.5) 100%);
+    border-radius: 12px;
+    padding: 22px;
+    margin-bottom: 20px;
+    box-shadow: 0 6px 8px -4px rgba(0,0,0,0.05);
+    border: 1px solid rgba(254, 245, 231, 0.8);
+  }
+
+  .rec-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .rec-icon {
+    width: 48px;
+    height: 48px;
+    background: rgba(255,255,255,0.5);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .icon-outline {
+    width: 27px;
+    height: 27px;
+    border: 2px solid #FE7B02;
+    border-radius: 2px;
+    position: relative;
+  }
+
+  .rec-title {
+    font-family: 'Lato', sans-serif;
+    font-size: 22px;
+    font-weight: 600;
+    color: #000;
+    line-height: 1.2;
+  }
+
+  .rec-description {
+    background: rgba(255,255,255,0.3);
+    border-radius: 9px;
+    padding: 14px 18px;
+    margin-bottom: 14px;
+    backdrop-filter: blur(3px);
+  }
+
+  .rec-text {
+    font-family: 'Lato', sans-serif;
+    font-size: 13px;
+    color: #000;
+    line-height: 1.6;
+  }
+
+  .check-item {
+    background: rgba(255,255,255,0.5);
+    border-radius: 9px;
+    padding: 8px 15px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .check-icon {
+    width: 18px;
+    height: 18px;
+    border: 1.5px solid #1f8093;
+    border-radius: 2px;
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  .check-icon::after {
+    content: '';
+    position: absolute;
+    width: 4px;
+    height: 6px;
+    border: solid #1f8093;
+    border-width: 0 1.5px 1.5px 0;
+    transform: rotate(45deg);
+    left: 6px;
+    top: 3px;
+  }
+
+  .check-text {
+    font-family: 'Lato', sans-serif;
+    font-size: 13px;
+    color: #1f8093;
+    font-weight: 500;
+  }
+
+  /* ADVANCED ANALYSIS BOX */
+  .advanced-box {
+    background: linear-gradient(175deg, rgba(31,128,147,0.1) 0%, rgba(31,128,147,0.05) 100%);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+
+  .adv-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .adv-icon {
+    width: 38px;
+    height: 38px;
+    background: rgba(31,128,147,0.1);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .square-icon {
+    width: 19px;
+    height: 19px;
+    background: #1f8093;
+  }
+
+  .adv-content {
+    flex: 1;
+  }
+
+  .adv-title {
+    font-family: 'Lato', sans-serif;
+    font-size: 19px;
+    font-weight: 600;
+    color: #000;
+    margin-bottom: 8px;
+  }
+
+  .adv-text {
+    font-family: 'Lato', sans-serif;
+    font-size: 12px;
+    color: #000;
+    line-height: 1.7;
+  }
+
+  .adv-bold {
+    font-weight: 700;
+  }
+
+  /* IMPORTANT NOTE BOX */
+  .important-box {
+    background: rgba(243, 245, 247, 0.5);
+    border-radius: 11px;
+    border-left: 4px solid #1f8093;
+    padding: 22px 26px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  }
+
+  .imp-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 11px;
+  }
+
+  .imp-icon {
+    width: 19px;
+    height: 21px;
+    padding-top: 2px;
+  }
+
+  .imp-icon-inner {
+    width: 19px;
+    height: 19px;
+    position: relative;
+  }
+
+  .imp-icon-box {
+    width: 16px;
+    height: 16px;
+    border: 1.6px solid #1f8093;
+    border-radius: 2px;
+    position: absolute;
+    left: 2px;
+    top: 2px;
+  }
+
+  .imp-icon-check {
+    width: 5px;
+    height: 3px;
+    border: solid #1f8093;
+    border-width: 0 1.6px 1.6px 0;
+    transform: rotate(45deg);
+    position: absolute;
+    left: 7px;
+    top: 8px;
+  }
+
+  .imp-text {
+    font-family: 'Lato', sans-serif;
+    font-size: 13px;
+    line-height: 1.4;
+    color: #1F2933;
+    padding-right: 8px;
+  }
+
+  .imp-bold {
+    font-weight: 700;
+    color: #000;
+  }
+
+  /* FOOTER LINE */
+  .footer-line {
+    width: 100%;
+    height: 2px;
+    background: rgba(31,128,147,0.3);
+    position: absolute;
+    bottom: 68px;
+    left: 0;
+  }
+
+  /* FOOTER */
+  .footer {
+    text-align: center;
+    font-size: 12px;
+    color: #808080;
+    font-family: 'Lato', sans-serif;
+    position: absolute;
+    bottom: 22px;
+    width: 100%;
+  }
+</style>
+</head>
+
+<body>
+<div class="page">
+  
+  <!-- Logo -->
+  <div class="logo">the<br>proven<br>code</div>
+
+  <!-- Page number -->
+  <div class="page-tag">Page 8</div>
+
+  <!-- Header line -->
+  <div class="header-line"></div>
+
+  <!-- Title -->
+  <div class="title">Recommendations</div>
+  <div class="underline"></div>
+
+  <!-- CONTENT -->
+  <div class="content-wrapper">
+
+    <!-- Main Recommendation Box -->
+    <div class="rec-box">
+      <div class="rec-header">
+        <div class="rec-icon">
+          <div class="icon-outline"></div>
+        </div>
+        <div class="rec-title">Begin a Microbiome Reset Routine</div>
+      </div>
+      
+      <div class="rec-description">
+        <div class="rec-text">
+          Your assessment indicates mild imbalance. We recommend beginning a 4 week microbiome reset routine focusing on dietary modifications, stress management, and sleep hygiene. Follow the lifestyle guidance provided in this report.
+        </div>
+      </div>
+      
+      <div class="check-item">
+        <div class="check-icon"></div>
+        <div class="check-text">4-week reset routine recommended</div>
+      </div>
+    </div>
+
+    <!-- Advanced Analysis Box -->
+    <div class="advanced-box">
+      <div class="adv-header">
+        <div class="adv-icon">
+          <div class="square-icon"></div>
+        </div>
+        <div class="adv-content">
+          <div class="adv-title">Want Advanced Analysis?</div>
+          <div class="adv-text">
+            For those seeking deeper insights into their microbiome composition and<br>
+            function, our <span class="adv-bold">Advanced Functional Microbiome Analysis</span> is available on request. (typical turnaround 20–25 days).
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Important Note Box -->
+    <div class="important-box">
+      <div class="imp-header">
+        <div class="imp-icon">
+          <div class="imp-icon-inner">
+            <div class="imp-icon-box"></div>
+            <div class="imp-icon-check"></div>
+          </div>
+        </div>
+        <div class="imp-text">
+          <span class="imp-bold">Important:</span> These recommendations are based on functional screening and should not replace medical advice. Please consult with your healthcare provider before making significant changes to your health routine.
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Footer line -->
+  <div class="footer-line"></div>
+
+  <!-- Footer -->
+  <div class="footer">Microbiome Health Check Report - Version 7.0</div>
+
+</div>
+</body>
+</html>

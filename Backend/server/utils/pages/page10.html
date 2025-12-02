@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(180deg, #d4eef3 0%, #e8f6f8 50%, #e5fcff 100%);
+  }
+
+  .page {
+    width: 595px;
+    height: 842px;
+    margin: 0 auto;
+    position: relative;
+    background: linear-gradient(180deg, #d4eef3 0%, #e8f6f8 50%, #e5fcff 100%);
+    padding-top: 80px;
+    overflow: hidden;
+  }
+
+  /* LOGO */
+  .logo {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 22px;
+    font-weight: 600;
+    color: #1f8093;
+    line-height: 1.1;
+  }
+
+  /* PAGE TAG */
+  .page-tag {
+    position: absolute;
+    top: 22px;
+    right: 22px;
+    background: rgba(31,128,147,0.08);
+    padding: 6px 22px;
+    border-radius: 9999px;
+    font-size: 14px;
+    color: #7e8c9a;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  /* HEADER LINE */
+  .header-line {
+    width: calc(100% - 32px);
+    height: 1px;
+    background: rgba(31,128,147,0.2);
+    margin: 20px auto 25px;
+    margin-left: 16px;
+    margin-right: 16px;
+  }
+
+  /* TITLE */
+  .title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 36px;
+    font-weight: 600;
+    color: #1f8093;
+    padding-left: 16px;
+    margin-top: 0;
+    margin-bottom: 8px;
+  }
+
+  .underline {
+    width: 80px;
+    height: 4px;
+    background: linear-gradient(90deg, #1f8093, rgba(31,128,147,0.5));
+    border-radius: 9999px;
+    margin-left: 16px;
+    margin-bottom: 20px;
+  }
+
+  /* CONTENT WRAPPER */
+  .content-wrapper {
+    margin-top: 10px;
+    padding: 0 16px;
+    height: 570px;
+  }
+
+  /* CLINICAL PERSPECTIVE BOX */
+  .clinical-box {
+    background: linear-gradient(175deg, #FCFBF8 0%, white 100%);
+    border-radius: 14px;
+    padding: 20px 28px;
+    margin-bottom: 20px;
+    border: 0.87px solid rgba(224, 230, 235, 0.5);
+    border-left: none;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .clinical-box:before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: #1f8093;
+  }
+
+  .clinical-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 12px;
+  }
+
+  .clinical-icon {
+    width: 49px;
+    height: 49px;
+    background: rgba(31,128,147,0.1);
+    border-radius: 10.5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .clinical-icon-inner {
+    width: 24px;
+    height: 24px;
+    position: relative;
+  }
+
+  .clinical-icon-part {
+    position: absolute;
+    outline: 2px solid #1f8093;
+    outline-offset: -1px;
+  }
+
+  .clinical-title {
+    font-family: 'Lato', sans-serif;
+    font-size: 17.5px;
+    font-weight: 400;
+    color: #000;
+    margin-bottom: 5px;
+  }
+
+  .clinical-text {
+    font-family: 'Lato', sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    color: #1f8093;
+    font-style: italic;
+    margin: 0;
+  }
+
+  /* FIXED CERTIFIED BY BOX */
+.certified-box {
+  background: linear-gradient(172deg, rgba(31,128,147,0.10) 0%, rgba(31,128,147,0.05) 100%);
+  border-radius: 19px;
+  padding: 1px 26px 26px;
+  margin: 20px auto;
+  width: 260px;
+  border: 1.2px solid rgba(31,128,147,0.20);
+  box-shadow: 0px 2.38px 4.76px -2.38px rgba(0, 0, 0, 0.1);
+  position: relative;
+  text-align: center;
+}
+
+/* TITLE */
+.certified-title {
+  font-family: 'Lato', sans-serif;
+  font-size: 17px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #000;
+  margin-bottom: 12px;
+}
+
+.ribbon {
+  width: 38px;
+  height: 55px;
+  position: relative;
+}
+
+.ribbon-body {
+  width: 34.38px;
+  height: 55px;
+  background: #FF552F;
+  position: absolute;
+  left: 6.88px;
+  top: 0;
+  border-radius: 4px;
+}
+
+.ribbon-tail {
+  position: absolute;
+  left: 6.88px;
+  bottom: -12px;
+  width: 0;
+  height: 0;
+  border-left: 17px solid transparent;
+  border-right: 17px solid transparent;
+  border-top: 12px solid #FF552F;
+}
+
+
+/* PROVEN CODE LOGO */
+.proven-logo {
+  font-family: 'Poppins', sans-serif;
+  color: #1f8093;
+  line-height: 1;
+}
+
+.proven-logo .logo-line1 {
+  display: block;
+  font-size: 18px;
+  font-weight: 400;
+}
+
+.proven-logo .logo-line2 {
+  display: block;
+  font-size: 29px;
+  font-weight: 600;
+  margin-top: 2px;
+}
+
+.proven-logo .logo-line3 {
+  display: block;
+  font-size: 23px;
+  font-weight: 500;
+  margin-top: -2px;
+}
+
+  /* CONTACT BOXES */
+  .contact-container {
+    display: flex;
+    justify-content: center;
+    gap: 13px;
+    margin: 30px 0;
+  }
+
+  .contact-box {
+    width: 178px;
+    height: 85px;
+    background: white;
+    border-radius: 9.6px;
+    border: 0.8px solid #E0E6EB;
+    position: relative;
+    padding-top: 40px;
+  }
+
+  .contact-icon {
+    width: 19px;
+    height: 19px;
+    position: absolute;
+    left: 50%;
+    top: 14px;
+    transform: translateX(-50%);
+  }
+
+  .contact-icon-part {
+    position: absolute;
+    outline: 1.6px solid #1f8093;
+    outline-offset: -0.8px;
+  }
+
+  .contact-label {
+    font-family: 'Lato', sans-serif;
+    font-size: 9.6px;
+    color: #000;
+    text-align: center;
+    margin-bottom: 2px;
+  }
+
+  .contact-value {
+    font-family: 'Poppins', sans-serif;
+    font-size: 11.2px;
+    color: #808080;
+    text-align: center;
+  }
+
+  /* FOOTER */
+  .footer-section {
+    border-top: 1.8px solid rgba(31,128,147,0.3);
+    padding-top: 10px;
+    margin-top: 108px;
+  }
+
+  .footer-text {
+    font-family: 'Lato', sans-serif;
+    font-size: 12px;
+    color: #000;
+    text-align: center;
+    margin-bottom: 5px;
+  }
+
+  .footer-company {
+    font-family: 'Lato', sans-serif;
+    font-size: 16px;
+    color: #1f8093;
+    text-align: center;
+    margin-bottom: 8px;
+  }
+
+  .footer-note {
+    font-family: 'Lato', sans-serif;
+    font-size: 10.7px;
+    color: #808080;
+    text-align: center;
+    margin-bottom: 3px;
+  }
+
+  .footer-version {
+    font-family: 'Lato', sans-serif;
+    font-size: 10.7px;
+    color: #7e8c9a;
+    text-align: center;
+  }
+
+  /* FOOTER LINE */
+  .footer-line {
+    width: calc(100% - 32px);
+    height: 2px;
+    background: rgba(31,128,147,0.3);
+    position: absolute;
+    bottom: 68px;
+    left: 16px;
+    right: 16px;
+  }
+
+  /* FOOTER */
+  .footer {
+    border-top: 1.8px solid rgba(31,128,147,0.3);
+    text-align: center;
+    font-size: 12px;
+    color: #808080;
+    font-family: 'Poppins', sans-serif;
+    position: absolute;
+    bottom: 22px;
+    width: 100%;
+  }
+</style>
+</head>
+
+<body>
+<div class="page">
+  
+  <!-- Logo -->
+  <div class="logo">the<br>proven<br>code</div>
+
+  <!-- Page number -->
+  <div class="page-tag">Page 10</div>
+
+  <!-- Header line -->
+  <div class="header-line"></div>
+
+  <!-- Title -->
+  <div class="title">Expert Review</div>
+  <div class="underline"></div>
+
+  <!-- CONTENT -->
+  <div class="content-wrapper">
+
+    <!-- Clinical Perspective Box -->
+    <div class="clinical-box">
+      <div class="clinical-header">
+        <div class="clinical-icon">
+          <div class="clinical-icon-inner">
+            <div class="clinical-icon-part" style="width: 16px; height: 20px; left: 4px; top: 2px;"></div>
+          </div>
+        </div>
+        <div style="flex: 1;">
+          <div class="clinical-title">Clinical Perspective</div>
+          <div class="clinical-text">
+            "Gut health reflects diet, routine, medication, and stress. If concerns persist or recur after following the guidance, please seek a review with your clinician or a gut-health specialist."
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Certified By Box -->
+<div class="certified-box">
+  
+  <div class="ribbon">
+  <div class="ribbon-body"></div>
+  <div class="ribbon-tail"></div>
+</div>
+
+  <div class="certified-title">CERTIFIED BY</div>
+
+  <!-- Proven Code Logo -->
+  <div class="proven-logo">
+    <span class="logo-line1">the</span>
+    <span class="logo-line2">proven</span>
+    <span class="logo-line3">code</span>
+  </div>
+
+</div>
+
+
+    <!-- Contact Boxes -->
+    <div class="contact-container">
+      <!-- Phone Support -->
+      <div class="contact-box">
+        <div class="contact-icon">
+          <div class="contact-icon-part" style="width: 16px; height: 16px; left: 2px; top: 2px;"></div>
+        </div>
+        <div class="contact-label">Phone Support</div>
+        <div class="contact-value">+1 (555) 123-4567</div>
+      </div>
+
+      <!-- Email -->
+      <div class="contact-box">
+        <div class="contact-icon">
+          <div class="contact-icon-part" style="width: 16px; height: 13px; left: 2px; top: 3px;"></div>
+          <div class="contact-icon-part" style="width: 16px; height: 5px; left: 2px; top: 6px;"></div>
+        </div>
+        <div class="contact-label">Email</div>
+        <div class="contact-value">support@provencode.com</div>
+      </div>
+    </div>
+
+    <!-- Footer Section -->
+    <div class="footer">
+      <div class="footer-text">Prepared by <span class="footer-company">The Proven Code</span></div>
+      <div class="footer-note">Microbiome Health Check | For clinical reference use</div>
+      <div class="footer-version">Version 7.0</div>
+    </div>
+
+</div>
+
+</div>
+</body>
+</html>

@@ -8,7 +8,6 @@ dotenv.config();
 // Add debugging
 console.log('MONGO_URI from env:', process.env.MONGO_URI);
 console.log('All env variables:', Object.keys(process.env));
-
 const connectDB = async () => {
   try {
     if (!process.env.MONGO_URI) {
@@ -25,5 +24,4 @@ const connectDB = async () => {
     process.exit(1);
   }
 };
-
 export default connectDB;
