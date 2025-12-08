@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:5000/api/auth"; // UPDATE YOUR BACKEND PORT
+const API_URL = "https://mhc-report-generator.onrender.com/api/auth"; // UPDATE YOUR BACKEND PORT
 
 // REGISTER
 const register = async (data) => {

@@ -58,8 +58,8 @@ export const getReportPDF = async (req, res) => {
     const pdfBuffer = await generatePDF(freshReport);
 
     res.setHeader("Content-Type", "application/pdf");
-res.setHeader("Content-Disposition", `inline; filename="${freshReport.testId}.pdf"`);
-res.setHeader("Content-Length", pdfBuffer.length);
+    res.setHeader("Content-Disposition", `inline; filename="${freshReport.testId}.pdf"`);
+    res.setHeader("Content-Length", pdfBuffer.length);
 
 return res.end(pdfBuffer);
 
