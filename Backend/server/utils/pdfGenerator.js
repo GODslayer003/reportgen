@@ -20,14 +20,14 @@ const readFileSafe = (p) => {
 const inlineLocalImages = (html) => {
   return html.replace(/src=(["'])([^"']+)\1/g, (match, q, src) => {
     if (/^(https?:|data:)/i.test(src)) return match;
-    
+
     // Try to find the image
     const imagePaths = [
       path.resolve(__dirname, "..", "assets", path.basename(src)),
       path.resolve(__dirname, "..", "..", "assets", path.basename(src)),
       path.resolve(process.cwd(), "assets", path.basename(src)),
     ];
-    
+
     for (const imagePath of imagePaths) {
       const buffer = readFileSafe(imagePath);
       if (buffer) {
@@ -36,7 +36,7 @@ const inlineLocalImages = (html) => {
         return `src="data:${mimeType};base64,${base64}"`;
       }
     }
-    
+
     console.warn("[pdfGenerator] Could not find image:", src);
     return match;
   });
@@ -54,225 +54,267 @@ const getPage1HTML = (report) => {
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
+
 <style>
+/* ---------- GLOBAL ---------- */
 body {
   margin: 0;
   padding: 0;
-  font-family: 'Lato', sans-serif;
-  background: linear-gradient(180deg, #d4eef3 0%, #e8f6f8 50%, #f0f9fa 100%);
-}
-.page {
-    width: 100%;
-    height: 100%;
-    padding: 60px 40px;
-    box-sizing: border-box;
-
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
+  font-family: "Poppins", sans-serif;
+  background: #FEFFFF;
 }
 
-.logo {
+.p1-page {
+  width: 100%;
+  min-height: 100vh;
+  padding: 50px 40px 60px 40px;
+  box-sizing: border-box;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  background: #F3FAFB;
+}
+
+/* ---------- LOGO ---------- */
+.p1-logo {
   position: absolute;
-  top: 20px;
-  left: 20px;
-  font-family: Poppins, sans-serif;
-  font-size: 22px;
-  font-weight: 600;
-  color: #1f8093;
-  line-height: 1.2;
+  top: 25px;
+  left: 25px;
 }
-.dropper {
-  width: 180px;
-    position: absolute;
-    top: 15px;
-    left: 42%;
-    opacity: 0.8;
-    z-index: 1;
-    transform: translateX(-14%) rotate(8deg) scaleX(-1);
-    transform-origin: center;}
 
-.drop-shadow {
-    width: 68px;
-    height: 20px;
-    position: absolute;
-    top: 183px;
-    left: 44%;
-    background: linear-gradient(180deg, rgba(31, 128, 147, 0.3) 0%, rgba(31, 128, 147, 0) 100%);
-    border-radius: 2px;
-    z-index: 1;
-    filter: blur(4px);
+.p1-logo img {
+  width: 175px;
 }
-.dna {
-  width: 185px;
+
+/* ---------- TOP ILLUSTRATIONS ---------- */
+.p1-dropper {
+    width: 200px;
+    position: absolute;
+    top: 40px;
+    left: 54%;
+    transform: translateX(-60%) rotate(9deg) scaleX(-1);
+    opacity: 0.85;
+}
+
+.p1-drop-shadow {
+    width: 102px;
+    height: 15px;
+    background: rgba(31, 128, 147, 0.25);
+    filter: blur(6px);
+    border-radius: 50px;
+    position: absolute;
+    top: 225px;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0.5;
+}
+
+.p1-dna {
+    width: 200px;
     position: absolute;
     top: -14px;
-    right: -42px;
-    opacity: 0.2;
-    z-index: 1;
+    right: -40px;
+    opacity: 0.25;
 }
-.microscope {
-  width: 238px;
+
+.p1-microscope {
+    width: 350px;
     position: absolute;
-    bottom: -37px;
-    left: -74px;
-    opacity: 0.3;
-    z-index: 1;
+    bottom: -55px;
+    left: -68px;
+    opacity: 0.30;
     transform: scaleX(-1);
-    transform-origin: center;
 }
-.title-wrap {
-  margin-top: 165px;
+
+/* ---------- TITLE BLOCK ---------- */
+.p1-title-wrap {
+  margin-top: 200px;
   text-align: center;
+  width: 100%;
 }
-.title {
-  color: #1f8093;
-  font-family: Poppins, sans-serif;
-  font-size: 26px;
+
+.p1-title {
+  color: #1F8093;
+  font-size: 30px;
   font-weight: 600;
-  line-height: 1.25;
+  line-height: 1.35;
 }
-.subtitle {
-  margin-top: 5px;
+
+.p1-subtitle {
+  margin-top: 8px;
   color: #808080;
-  font-size: 15px;
+  font-size: 13px;
+  font-family: "Inter", sans-serif;
+  line-height: 21px;
 }
-.card {
-  background: linear-gradient(150deg, #fff 0%, rgba(255,255,255,0.85) 100%);
-  min-width: 100%;
-  margin: 32px auto 0;
-  padding: 28px;
-  border-radius: 12px;
-  border: 1px solid #e0e6eb;
-  box-shadow: 0 6px 8px -4px rgba(0,0,0,0.12);
+
+.p1-uk-line {
+  margin-top: 14px;
+  font-size: 13px;
+  font-weight: 400;
+  color: #1F8093;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+
+  width: 100%;
 }
-.row {
+
+/* ---------- PATIENT CARD ---------- */
+.p1-card {
+  background: #FFFFFF;
+  width: 300px;            
+  margin-top: 45px;        
+  padding: 26px 26px;
+  border-radius: 10px;
+  border: 1px solid #DCDCDC;
+  box-shadow: 0 3px 12px rgba(31,128,147,0.06);
+}
+
+.p1-card-header {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1F8093;
+  text-align: center;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #EAEAEA;
+  letter-spacing: 0.6px;
+}
+
+.p1-row {
   padding: 14px 0;
-  border-bottom: 1px solid rgba(224,230,235,0.5);
-}
-.row:last-child {
-  border-bottom: none;
-}
-.label {
-  font-size: 11px;
-  text-transform: uppercase;
-  color: #000;
-  letter-spacing: 0.4px;
-  margin-bottom: 4px;
-}
-.value {
-  font-size: 14px;
-  color: #808080;
-}
-.row-flex {
+  border-bottom: 1px solid #EFEFEF;
   display: flex;
   justify-content: space-between;
+  align-items: center;
 }
-.col {
-  width: 48%;
+
+.p1-row:last-child {
+  border-bottom: none;
 }
-.status-section {
-  margin-top: 35px;
+
+.p1-label {
+  font-size: 13px;
+  color: #737373;
+  font-family: "Inter", sans-serif;
+}
+
+.p1-value {
+  font-size: 13px;
+  font-weight: 500;
+  color: #29303D;
+  font-family: "Inter", sans-serif;
+}
+
+/* ---------- FOOTER / STATUS ---------- */
+.p1-bottom {
+  margin-top: 50px;
   text-align: center;
 }
-.status-title {
-  font-size: 11px;
-  color: #000;
+
+.p1-version {
+  font-size: 13px;
+  font-family: "Inter", sans-serif;
+  color: #888;
+  margin-bottom: 8px;
 }
-.bar {
+
+.p1-status-bar {
   display: flex;
+  justify-content: center;
   gap: 6px;
-  width: 220px;
+  width: 230px;
   margin: 10px auto;
 }
-.bar div {
-  height: 6px;
+
+.p1-status-bar div {
   flex: 1;
-  background: #1f8093;
-  border-radius: 100px;
+  height: 6px;
+  background: #1F8093;
+  border-radius: 8px;
 }
-.done {
-  font-family: Poppins, sans-serif;
-  font-size: 11px;
-  color: #1f8093;
+
+.p1-status-text {
+  font-size: 13px;
+  font-family: "Poppins";
   font-weight: 500;
-}
-.version {
-  margin-top: 22px;
-  text-align: center;
-  font-size: 10px;
-  color: #808080;
+  color: #1F8093;
+  margin-top: 6px;
 }
 </style>
 </head>
+
+
 <body>
-<div class="page">
+<div class="p1-page">
+
   <!-- Logo -->
-  <div class="logo">
-    <img src="../assets/provencodee.png" alt="The Proven Code">
+  <div class="p1-logo">
+    <img src="../assets/provencodee.png" />
   </div>
-  <img src="../assets/dropper.png" class="dropper" />
-  <div class="drop-shadow"></div>
-  <img src="../assets/dna.png" class="dna" />
-  <img src="../assets/microscope.png" class="microscope" />
-  
-  <!-- TITLE -->
-  <div class="title-wrap">
-    <div class="title">Microbiome Health Check<br>Report</div>
-    <div class="subtitle">Functional Screening Report</div>
+
+  <!-- Background Illustrations -->
+  <img src="../assets/dropper.png" class="p1-dropper" />
+  <img src="../assets/gradient.png" class="p1-drop-shadow">
+  <img src="../assets/dna.png" class="p1-dna" />
+  <img src="../assets/microscope.png" class="p1-microscope" />
+
+  <!-- TITLE SECTION -->
+  <div class="p1-title-wrap">
+    <div class="p1-title">Biome360 Health Check<br>Report</div>
+    <div class="p1-subtitle">Functional Screening for Gut Microbial Balance</div>
+
+    <div class="p1-uk-line">
+      Developed in United Kingdom
+      <img src="/Backend/server/assets/us.png" width="20" />
+    </div>
   </div>
-  
+
   <!-- PATIENT CARD -->
-  <div class="card">
-    <div class="row">
-      <div class="label">Test ID</div>
-      <div class="value">${report.testId || "N/A"}</div>
+  <div class="p1-card">
+    <div class="p1-card-header">Patient Information</div>
+
+    <div class="p1-row">
+      <div class="p1-label">Name</div>
+      <div class="p1-value">${report.patient?.name || "N/A"}</div>
     </div>
-    <div class="row">
-      <div class="label">Patient Name</div>
-      <div class="value">${report.patient?.name || "N/A"}</div>
-    </div>
-    <div class="row row-flex">
-      <div class="col">
-        <div class="label">Age</div>
-        <div class="value">${report.patient?.age || "N/A"}</div>
-      </div>
-      <div class="col">
-        <div class="label">Sex</div>
-        <div class="value">${report.patient?.sex || "N/A"}</div>
+
+    <div class="p1-row">
+      <div class="p1-label">Age – Sex</div>
+      <div class="p1-value">
+        ${report.patient?.age || "N/A"} – ${report.patient?.sex || "N/A"}
       </div>
     </div>
-    <div class="row">
-      <div class="label">Sample Collection Date</div>
-      <div class="value">
-        ${report.patient?.collectionDate ? new Date(report.patient.collectionDate).toLocaleDateString() : "—"}
+
+    <div class="p1-row">
+      <div class="p1-label">Sample Date</div>
+      <div class="p1-value">
+        ${report.patient?.collectionDate
+      ? new Date(report.patient.collectionDate).toLocaleDateString()
+      : "—"}
       </div>
     </div>
-    <div class="row">
-      <div class="label">Report Generated</div>
-      <div class="value">
-        ${report.reportDate ? new Date(report.reportDate).toLocaleDateString() : new Date().toLocaleDateString()}
-      </div>
-    </div>
-    ${report.patient?.clinician ? 
-      `<div class="row"><div class="label">Clinician</div><div class="value">${report.patient.clinician}</div></div>` 
-      : ""}
   </div>
-  
-  <!-- STATUS -->
-  <div class="status-section">
-    <div class="status-title">Report Status</div>
-    <div class="bar">
+
+  <!-- FOOTER / STATUS -->
+  <div class="p1-bottom">
+    <div class="p1-version">Version 7.0 | Medical Report</div>
+
+    <div class="p1-status-bar">
       <div></div><div></div><div></div><div></div>
     </div>
-    <div class="done">✓ Report Generated</div>
+
+    <div class="p1-status-text">✓ Report Generated</div>
   </div>
-  
-  <div class="version">Version 7.0 | Medical Report</div>
+
 </div>
 </body>
-</html>`;
+</html>
+`;
 
   // Inline images
   return inlineLocalImages(page1HTML);
@@ -286,278 +328,315 @@ const getPage2HTML = () => {
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
+
 <style>
+/* ---------------- GLOBAL ---------------- */
 body {
   margin: 0;
   padding: 0;
-  font-family: 'Lato', sans-serif;
+  font-family: "Poppins", sans-serif;
   background: linear-gradient(180deg, #d4eef3 0%, #e8f6f8 50%, #f0f9fa 100%);
 }
-.page {
+
+.p2-page {
   width: 100%;
-  padding: 28px 0 40px;
+  min-height: 100vh;
+  padding: 28px 0 28px;
   position: relative;
-  overflow: visible;
   min-width: 595px;
   margin: 0 auto;
-  min-height: 843px;
+  background: #F3FAFB;
 }
-.logo {
-    position: absolute;
-    top: 20px;
-    left: 20px;
-  }
-  .page-tag {
-    position: absolute;
-    top: 22px;
-    right: 22px;
-    background: rgba(31,128,147,0.08);
-    padding: 6px 22px;
-    border-radius: 9999px;
-    font-size: 14px;
-    color: #7e8c9a;
-    font-family: 'Poppins', sans-serif;
-  }
-  .header-line {
-    width: 100%;
-    height: 1px;
-    background: rgba(31,128,147,0.2);
-    margin: 75px auto 25px;
-  }
-.section-title {
-  margin-top: 10px;
-  font-family: Poppins, sans-serif;
-  font-size: 32px;
+
+/* ---------------- HEADER ---------------- */
+.p2-logo {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+}
+
+.p2-page-tag {
+  position: absolute;
+  top: 22px;
+  right: 22px;
+  background: rgba(31,128,147,0.1);
+  padding: 6px 22px;
+  border-radius: 9999px;
+  font-size: 13px;
+  color: #7e8c9a;
+}
+
+.p2-header-line {
+  width: 100%;
+  height: 1px;
+  background: rgba(31,128,147,0.25);
+  margin-top: 75px;
+}
+
+/* ---------------- TITLE ---------------- */
+.p2-section-title {
+  margin-top: 42px;           /* moved slightly down */
+  margin-left: 40px;          /* aligned with paragraphs */
+  font-size: 30px;
   font-weight: 600;
-  color: #1f8093;
+  color: #1F8093;
 }
-.underline {
+
+.p2-underline {
   width: 150px;
   height: 4px;
-  background: linear-gradient(90deg, #1f8093, rgba(31,128,147,0.5));
-  border-radius: 9999px;
-  margin-top: 8px;
+  background: linear-gradient(90deg, #1F8093 0%, rgba(31,128,147,0.5) 100%);
+  border-radius: 999px;
+  margin-left: 40px;          /* aligned with title */
+  margin-top: 6px;
 }
-.info-card {
-  margin-top: 30px;
-  background: white;
-  width: 100%;
-  padding: 28px 22px;
-  border-radius: 16px;
-  border: 1px solid rgba(224,230,235,0.5);
-  box-shadow: 0 6px 8px -4px rgba(0,0,0,0.1);
-  text-align: center;
-  line-height: 26px;
-  font-size: 15px;
-  color: #1F2933;
-}
-.highlight {
-  color: #1f8093;
-  font-weight: 600;
-}
-.timeline-container {
-  position: relative;
-  margin-top: 48px;
-}
-.timeline-title {
-  color: #1f8093;
-  font-size: 22px;
-  font-family: Poppins, sans-serif;
-  font-weight: 600;
+
+/* ---------------- TEXT CONTENT ---------------- */
+.p2-paragraph-block {
+  margin: 26px auto 0;
+  width: 620px;               /* wider paragraph */
+  font-size: 13px;
+  color: #29303D;
+  line-height: 24px;
   text-align: left;
-  margin-bottom: 30px;
 }
-.timeline {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
+
+.p2-turnaround {
+  margin: 12px auto 0;
+  width: 620px;
+  color: #1F8093;
+  font-size: 13px;
+  font-weight: 500;
+  font-style: italic;
+}
+
+/* ---------------- PROCESS ---------------- */
+.p2-process-title {
+  margin-top: 48px;
+  text-align: center;
+  font-size: 20px;
+  font-weight: 600;
+  color: #29303D;
+}
+
+.p2-process-container {
+  width: 620px;
+  margin: 28px auto 0;
   position: relative;
 }
-.timeline-line {
-  position: absolute;
-  top: 30px;
-  left: 10%;
-  right: 10%;
+
+.p2-process-line {
+  width: calc(100% - 140px);
   height: 2px;
-  background: linear-gradient(90deg, rgba(31,128,147,0.2), #1f8093, rgba(31,128,147,0.2));
+  background: rgba(31,128,147,0.25);
+  position: absolute;
+  top: 38px;
+  left: 70px;
   z-index: 1;
 }
-.step {
-  width: 22%;
+
+.p2-process-steps {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
   text-align: center;
   position: relative;
   z-index: 2;
 }
-.icon-box {
-  width: 60px;
-  height: 60px;
-  background: #1f8093;
-  border-radius: 12px;
+
+.p2-step {
+  width: 135px;
+  text-align: center;
+}
+
+.p2-step-icon {
+  width: 62px;
+  height: 62px;
+  border-radius: 50%;
+  background: #FFFFFF;
+  border: 2px solid #1F8093;
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 0 auto;
-  position: relative;
-  z-index: 3;
 }
-.icon-box img {
-  width: 30px;
-  height: 30px;
+
+.p2-step-icon img {
+  width: 28px;
+  filter: brightness(0) saturate(100%) invert(39%) sepia(71%)
+          saturate(409%) hue-rotate(143deg) brightness(92%) contrast(92%);
 }
-.step-label {
-  margin-top: 8px;
+
+.p2-step-title {
+  margin-top: 12px;
+  font-size: 13px;
   font-weight: 600;
-  font-size: 14px;
+  color: #29303D;
 }
-.step-card {
-  background: white;
-  margin-top: 10px;
-  padding: 14px;
-  border-radius: 10px;
-  border: 1px solid rgba(224,230,235,0.6);
-  box-shadow: 0 6px 8px -4px rgba(0,0,0,0.1);
-}
-.step-title {
-  color: #1f8093;
-  font-size: 12px;
-  font-weight: 600;
-}
-.step-desc {
-  font-size: 11px;
-  color: #808080;
+
+.p2-step-desc {
   margin-top: 6px;
+  font-size: 13px;
+  color: #808080;
   line-height: 15px;
+  padding: 0 6px;
 }
-.clinical-box {
-  margin-top: 48px;
-  background: white;
-  padding: 22px;
+
+/* ---------------- CONTACT BOX ---------------- */
+.p2-contact-box {
+  width: 620px;
+  margin: 55px auto 0;
+  background: #ffffff;
+  padding: 24px 28px;
+  border: 1px solid #D9D9D9;
   border-radius: 12px;
-  border-left: 4px solid #1f8093;
-  border-top: 1px solid rgba(224,230,235,0.5);
-  border-right: 1px solid rgba(224,230,235,0.5);
-  border-bottom: 1px solid rgba(224,230,235,0.5);
-  box-shadow: 0 6px 10px -4px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
-.clinical-title {
-  font-size: 15px;
-  font-weight: 700;
+
+.p2-contact-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #000;
+  margin-bottom: 16px;
+  text-align: left;
+  align-self: flex-start;   /* ← REQUIRED FIX */
 }
-.clinical-text {
-  margin-top: 6px;
-  color: #808080;
-  font-size: 14px;
-  line-height: 20px;
+
+.p2-contact-row {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
-.footer {
-  margin-top: 42px;
+
+.p2-contact-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* This keeps icons centered but title overrides it */
+}
+
+.p2-contact-icon {
+  width: 22px;
+  margin-bottom: 6px;
+  filter: brightness(0) saturate(100%) invert(39%) sepia(71%)
+    saturate(409%) hue-rotate(143deg) brightness(92%) contrast(92%);
+}
+
+.p2-contact-text {
+  font-size: 13px;
+  color: #29303D;
+}
+
+
+/* ---------------- FOOTER ---------------- */
+.p2-footer {
+  width: 100%;
+  margin-top: 165px;         /* pushes it down naturally */
+  padding: 14px 0;
+  border-top: 2px solid rgba(31,128,147,0.25);
   text-align: center;
-  font-size: 11px;
+  font-size: 13px;
   color: #808080;
 }
 </style>
 </head>
+
+
 <body>
-<div class="page">
-  <!-- Logo -->
-  <div class="logo"><img src="../assets/provencodee.png" alt="The Proven Code"></div>
-  <!-- PAGE NUMBER -->
-  <div class="page-tag">Page 3</div>
-  <div class="header-line"></div>
+<div class="p2-page">
 
-  <h1 class="section-title">About Your Test</h1>
-  <div class="underline"></div>
-
-  <div style="
-    margin-top: 30px;
-    max-width: 560px;
-    margin-left: auto;
-    margin-right: auto;
-    padding: 30px 28px;
-    background: #ffffff;
-    border-radius: 16px;
-    border: 1px solid rgba(224,230,235,0.5);
-    box-shadow: 0 6px 8px -4px rgba(0,0,0,0.1);
-    font-size: 15px;
-    line-height: 26px;
-    text-align: center;
-    color: #1F2933;
-  ">
-    The <span style="color:#1f8093; font-weight:600;">
-        Microbiome Health Check (MHC)
-    </span>
-    is a functional screening test designed to provide insights into your gut microbiome status.
-    This is not a diagnostic test — it screens for patterns that may warrant attention or further investigation.
+  <div class="p2-logo">
+    <img src="../assets/provencodee.png" width="100">
   </div>
 
-  <div class="timeline-container">
-    <div class="timeline-title">Test Process Timeline</div>
+  <div class="p2-page-tag">Page 2</div>
 
-    <div class="timeline">
-      <div class="timeline-line"></div>
+  <div class="p2-header-line"></div>
 
-      <div class="step">
-        <div class="icon-box">
-          <img src="../assets/SVG.png">
-        </div>
-        <div class="step-label">Step 1</div>
-        <div class="step-card">
-          <div class="step-title">Sample Collection</div>
-          <div class="step-desc">You collect your saliva sample at home.</div>
-        </div>
+  <div class="p2-section-title">ABOUT THE TEST & PROCESS</div>
+  <div class="p2-underline"></div>
+
+  <div class="p2-paragraph-block">
+    The Biome360 Health Check is a functional screening designed to analyze microbial balance and lifestyle influences. This report combines microbial signals detected from the sample with lifestyle data to provide a clinically meaningful overview.
+  </div>
+
+  <div class="p2-paragraph-block">
+    The Biome360 Health Check has been performed for over 10,000 individuals across the globe, and is adopted as a test for initial indication of microbiome health.
+  </div>
+
+  <div class="p2-turnaround">
+    (Turnaround Time: 7–10 business days from sample receipt.)
+  </div>
+
+  <div class="p2-process-title">Our Process</div>
+
+  <div class="p2-process-container">
+
+    <div class="p2-process-line"></div>
+
+    <div class="p2-process-steps">
+
+      <div class="p2-step">
+        <div class="p2-step-icon"><img src="../assets/SVG.png"></div>
+        <div class="p2-step-title">Sample Collection</div>
+        <div class="p2-step-desc">Performed using sterile collection kits designed to capture and retain microbes in the sample.</div>
       </div>
 
-      <div class="step">
-        <div class="icon-box">
-          <img src="../assets/SVG1.png">
-        </div>
-        <div class="step-label">Step 2</div>
-        <div class="step-card">
-          <div class="step-title">Cold-Chain Transport</div>
-          <div class="step-desc">Sample shipped in controlled conditions.</div>
-        </div>
+      <div class="p2-step">
+        <div class="p2-step-icon"><img src="../assets/SVG1.png"></div>
+        <div class="p2-step-title">Transport</div>
+        <div class="p2-step-desc">Transferred under cold chain to The Proven Code’s specialized lab in New Delhi.</div>
       </div>
 
-      <div class="step">
-        <div class="icon-box">
-          <img src="../assets/SVG2.png">
-        </div>
-        <div class="step-label">Step 3</div>
-        <div class="step-card">
-          <div class="step-title">Laboratory Analysis</div>
-          <div class="step-desc">Expert lab review & testing.</div>
-        </div>
+      <div class="p2-step">
+        <div class="p2-step-icon"><img src="../assets/SVG2.png"></div>
+        <div class="p2-step-title">Laboratory Review</div>
+        <div class="p2-step-desc">Analyzed using the proprietary BiomeAnalysis360™ framework.</div>
       </div>
 
-      <div class="step">
-        <div class="icon-box">
-          <img src="../assets/SVG3.png">
-        </div>
-        <div class="step-label">Step 4</div>
-        <div class="step-card">
-          <div class="step-title">Report Generation</div>
-          <div class="step-desc">Your personalized report is ready.</div>
-        </div>
+      <div class="p2-step">
+        <div class="p2-step-icon"><img src="../assets/SVG3.png"></div>
+        <div class="p2-step-title">Report Generation</div>
+        <div class="p2-step-desc">Reviewed through automated logic validated by clinical advisors.</div>
       </div>
+
     </div>
   </div>
 
-  <div class="clinical-box">
-    <div class="clinical-title">Clinical Reference Use</div>
-    <div class="clinical-text">
-      Raw laboratory data is not included in this patient-facing report.
-      All findings are presented in functional terms for clinical interpretation.
+  <div class="p2-contact-box">
+    <div class="p2-contact-title">Contact Us</div>
+
+    <div class="p2-contact-row">
+
+      <div class="p2-contact-item">
+        <img src="../assets/message.png" class="p2-contact-icon">
+        <div class="p2-contact-text">support@theprovencode.com</div>
+      </div>
+
+      <div class="p2-contact-item">
+        <img src="../assets/chat.png" class="p2-contact-icon">
+        <div class="p2-contact-text">WhatsApp / Aratta</div>
+      </div>
+
+      <div class="p2-contact-item">
+        <img src="../assets/phone.png" class="p2-contact-icon">
+        <div class="p2-contact-text">+91 8226984272</div>
+      </div>
+
     </div>
   </div>
 
-  <div style="width: 100%; height: 1px; background: rgba(31,128,147,0.2); margin: 40px auto 20px;"></div>
-
-  <div class="footer">
-    Microbiome Health Check Report — Version 7.0
+  <div class="p2-footer">
+    Made by The Proven Code | Biome360 Health Check | Wellness Tool
   </div>
+
 </div>
 </body>
-</html>`;
+</html>
+`;
 
   // Inline images
   return inlineLocalImages(page2HTML);
@@ -573,204 +652,234 @@ const getPage3HTML = (report) => {
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-  body {
-    margin: 0;
-    padding: 0;
-    font-family: 'Poppins', sans-serif;
-    background: linear-gradient(180deg, #d4eef3 0%, #e8f6f8 50%, #e5fcff 100%);
-  }
-  .page {
-    width: 100%;
-    padding: 28px 0 40px;
-    position: relative;
-    overflow: visible;
-    max-width: 600px;
-    margin: 0 auto;
-  }
-  .logo {
-    position: absolute;
-    top: 20px;
-    left: 20px;
-  }
-  .page-tag {
-    position: absolute;
-    top: 22px;
-    right: 22px;
-    background: rgba(31,128,147,0.08);
-    padding: 6px 22px;
-    border-radius: 9999px;
-    font-size: 14px;
-    color: #7e8c9a;
-    font-family: 'Poppins', sans-serif;
-  }
-  .header-line {
-    width: 100%;
-    height: 1px;
-    background: rgba(31,128,147,0.2);
-    margin: 75px auto 25px;
-  }
-  .title {
-    font-family: 'Poppins', sans-serif;
-    font-size: 32px;
-    font-weight: 600;
-    color: #1f8093;
-  }
-  .underline {
-    width: 150px;
-    height: 4px;
-    background: linear-gradient(90deg, #1f8093, rgba(31,128,147,0.5));
-    border-radius: 9999px;
-    margin-top: 8px;
-  }
-  .toc-wrapper {
-    margin-top: 50px;
-    width: 100%;
-    padding: 0 20px;
-  }
-  .toc-box {
-    padding: 20px;
-    border-radius: 14px;
-    border: 1px solid rgba(31, 128, 147, 0.3);
-    margin-bottom: 16px;
-    background: linear-gradient(180deg, #d4eef3 0%, #e8f6f8 50%, #f0f9fa 100%);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    overflow: hidden;
-    box-shadow: 0 3px 10px rgba(31, 128, 147, 0.1);
-  }
-  .toc-left {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-  }
-  .icon-square {
-    width: 48px;
-    height: 48px;
-    background: rgba(31,128,147,0.10);
-    border-radius: 10px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  .dummy-icon {
-    width: 24px;
-    height: 24px;
-    border-radius: 4px;
-  }
-  .toc-title {
-    font-size: 16px;
-    font-family: 'Poppins', sans-serif;
-    color: #000;
-    font-weight: 500;
-  }
-  .toc-page {
-    font-size: 24px;
-    color: #1f8093;
-    font-family: 'Poppins', sans-serif;
-    margin-right: 4px;
-    font-weight: 500;
-  }
-  .footer-line {
-    width: 100%;
-    height: 1px;
-    background: rgba(31,128,147,0.2);
-    margin: 45px auto 16px;
-  }
-  .footer {
-    text-align: center;
-    font-size: 11px;
-    color: #808080;
-    font-family: 'Poppins', sans-serif;
-  }
+/* ---------------- GLOBAL ---------------- */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Poppins", sans-serif;
+  background: #F3FAFB;
+}
+
+/* Maintain EXACT PDF width */
+.p3-page {
+  width: 100%;
+  min-height: 100vh;
+  padding: 28px 0 28px;
+  position: relative;
+  min-width: 595px;
+  margin: 0 auto;
+  background: #F3FAFB;
+}
+
+/* ---------------- HEADER ---------------- */
+.p3-logo {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+}
+
+.p3-page-tag {
+  position: absolute;
+  top: 22px;
+  right: 22px;
+  background: rgba(31,128,147,0.08);
+  padding: 6px 22px;
+  border-radius: 9999px;
+  font-size: 13px;
+  color: #7e8c9a;
+  font-family: "Poppins", sans-serif;
+}
+
+.p3-header-line {
+  width: 100%;
+  height: 2px;
+  background: rgba(31,128,147,0.30);
+  margin-top: 75px;
+}
+
+/* ---------------- TITLE ---------------- */
+.p3-title-wrap {
+  width: 100%;
+  margin-top: 45px; /* Proper gap like Figma */
+  padding-left: 20px;
+}
+
+.p3-title {
+  font-size: 30px;
+  font-weight: 600;
+  color: #1F8093;
+}
+
+.p3-underline {
+  width: 120px;
+  height: 4px;
+  background: linear-gradient(90deg, #1F8093, rgba(31,128,147,0.5));
+  border-radius: 999px;
+  margin-top: 8px;
+}
+
+/* ---------------- TABLE OF CONTENTS ---------------- */
+
+/* Full-width table rows like Figma */
+.p3-toc-wrapper {
+  margin-top: 30px;
+  width: calc(100% - 40px);
+  margin-left: 20px;
+}
+
+.p3-toc-box {
+  width: 100%;
+  padding: 28px 0; 
+  border-bottom: 1px solid #EDEDED;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.p3-toc-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+/* Number circle */
+.p3-icon-square {
+  width: 32px;
+  height: 32px;
+  background: #EDEDED;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.p3-icon-number {
+  font-size: 13px;
+  font-weight: 500;
+  color: #1F8093;
+  font-family: "Inter", sans-serif;
+}
+
+/* TOC title text */
+.p3-toc-title {
+  font-size: 20px;
+  color: #000;
+  font-weight: 500;
+  font-family: "Inter", sans-serif;
+  margin-top: 2px;
+}
+
+/* Right-side Page Number */
+.p3-toc-page {
+  font-size: 20px;
+  font-weight: 500;
+  color: #1F8093;
+  font-family: "Poppins", sans-serif;
+  margin-right: 8px;
+}
+
+/* ---------------- FOOTER ---------------- */
+.p3-footer-line {
+  width: 100%;
+  height: 2px;
+  background: rgba(31,128,147,0.30);
+  margin-top: 70px;
+}
+
+.p3-footer {
+  width: 100%;
+  margin-top: 110px;         /* pushes it down naturally */
+  padding: 14px 0;
+  border-top: 2px solid rgba(31,128,147,0.25);
+  text-align: center;
+  font-size: 13px;
+  color: #808080;
+}
+
 </style>
 </head>
 <body>
-<div class="page">
-  <!-- Logo -->
-  <div class="logo"><img src="../assets/provencodee.png" alt="The Proven Code"></div>
-  <!-- PAGE NUMBER -->
-  <div class="page-tag">Page 3</div>
-  <div class="header-line"></div>
-  <div class="title">Table Of Content</div>
-  <div class="underline"></div>
-  <div class="toc-wrapper">
-    <!-- Row 1 -->
-    <div class="toc-box">
-      <div class="toc-left">
-        <div class="icon-square">
-          <div class="dummy-icon"><img src="../assets/about1.png" alt=""></div>
-        </div>
-        <div class="toc-title">About Your Test</div>
-      </div>
-      <div class="toc-page">${report._toc?.aboutTest || "3"}</div>
-    </div>
-    <div class="toc-box">
-      <div class="toc-left">
-        <div class="icon-square">
-          <div class="dummy-icon"><img src="../assets/about2.png" alt=""></div>
-        </div>
-        <div class="toc-title">Your Snapshot</div>
-      </div>
-      <div class="toc-page">${report._toc?.snapshot || "4"}</div>
-    </div>
-    <div class="toc-box">
-      <div class="toc-left">
-        <div class="icon-square">
-          <div class="dummy-icon"><img src="../assets/about3.png" alt=""></div>
-        </div>
-        <div class="toc-title">What We Observed</div>
-      </div>
-      <div class="toc-page">${report._toc?.observed || "5"}</div>
-    </div>
-    <div class="toc-box">
-      <div class="toc-left">
-        <div class="icon-square">
-          <div class="dummy-icon"><img src="../assets/about4.png" alt=""></div>
-        </div>
-        <div class="toc-title">Your Functional Areas</div>
-      </div>
-      <div class="toc-page">${report._toc?.functionalAreas || "6"}</div>
-    </div>
-    <div class="toc-box">
-      <div class="toc-left">
-        <div class="icon-square">
-          <div class="dummy-icon"><img src="../assets/about5.png" alt=""></div>
-        </div>
-        <div class="toc-title">Clinical Summary</div>
-      </div>
-      <div class="toc-page">${report._toc?.clinicalSummary || "7"}</div>
-    </div>
-    <div class="toc-box">
-      <div class="toc-left">
-        <div class="icon-square">
-          <div class="dummy-icon"><img src="../assets/about6.png" alt=""></div>
-        </div>
-        <div class="toc-title">Next Step</div>
-      </div>
-      <div class="toc-page">${report._toc?.nextStep || "8"}</div>
-    </div>
-    <div class="toc-box">
-      <div class="toc-left">
-        <div class="icon-square">
-          <div class="dummy-icon"><img src="../assets/about7.png" alt=""></div>
-        </div>
-        <div class="toc-title">Personalized Guidance</div>
-      </div>
-      <div class="toc-page">${report._toc?.guidance || "9"}</div>
-    </div>
-    <div class="toc-box">
-      <div class="toc-left">
-        <div class="icon-square">
-          <div class="dummy-icon"><img src="../assets/about8.png" alt=""></div>
-        </div>
-        <div class="toc-title">Expert Review</div>
-      </div>
-      <div class="toc-page">${report._toc?.expertReview || "10"}</div>
-    </div>
+<div class="p3-page">
+
+  <!-- LOGO -->
+  <div class="p3-logo">
+    <img src="../assets/provencodee.png" width="100">
   </div>
-  <div class="footer-line"></div>
-  <div class="footer">Microbiome Health Check Report — Version 7.0</div>
+
+  <!-- PAGE NUMBER -->
+  <div class="p3-page-tag">Page 3</div>
+
+  <!-- HEADER LINE -->
+  <div class="p3-header-line"></div>
+
+  <!-- TITLE -->
+  <div class="p3-title-wrap">
+    <div class="p3-title">Table Of Content</div>
+    <div class="p3-underline"></div>
+  </div>
+
+  <!-- TABLE OF CONTENTS -->
+  <div class="p3-toc-wrapper">
+
+    <div class="p3-toc-box">
+      <div class="p3-toc-left">
+        <div class="p3-icon-square"><div class="p3-icon-number">2</div></div>
+        <div class="p3-toc-title">About the Test & Process</div>
+      </div>
+    </div>
+
+    <div class="p3-toc-box">
+      <div class="p3-toc-left">
+        <div class="p3-icon-square"><div class="p3-icon-number">4</div></div>
+        <div class="p3-toc-title">Summary Page</div>
+      </div>
+    </div>
+
+    <div class="p3-toc-box">
+      <div class="p3-toc-left">
+        <div class="p3-icon-square"><div class="p3-icon-number">5</div></div>
+        <div class="p3-toc-title">Analytical Observations</div>
+      </div>
+    </div>
+
+    <div class="p3-toc-box">
+      <div class="p3-toc-left">
+        <div class="p3-icon-square"><div class="p3-icon-number">6</div></div>
+        <div class="p3-toc-title">Functional Assessment</div>
+      </div>
+    </div>
+
+    <div class="p3-toc-box">
+      <div class="p3-toc-left">
+        <div class="p3-icon-square"><div class="p3-icon-number">7</div></div>
+        <div class="p3-toc-title">Interpretive Narrative</div>
+      </div>
+    </div>
+
+    <div class="p3-toc-box">
+      <div class="p3-toc-left">
+        <div class="p3-icon-square"><div class="p3-icon-number">8</div></div>
+        <div class="p3-toc-title">Recommendations</div>
+      </div>
+    </div>
+
+    <div class="p3-toc-box">
+      <div class="p3-toc-left">
+        <div class="p3-icon-square"><div class="p3-icon-number">9</div></div>
+        <div class="p3-toc-title">Lifestyle Guidance</div>
+      </div>
+    </div>
+
+    <div class="p3-toc-box">
+      <div class="p3-toc-left">
+        <div class="p3-icon-square"><div class="p3-icon-number">10</div></div>
+        <div class="p3-toc-title">Expert Review Note & Disclaimer</div>
+      </div>
+    </div>
+
+  </div>
+  <div class="p3-footer">Made by The Proven Code | Biome360 Health Check | Wellness Tool</div>
 </div>
 </body>
 </html>`;
@@ -786,233 +895,471 @@ const getPage4HTML = (report) => {
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" />
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+
 <style>
-    * { box-sizing: border-box; }
-    body {
-        margin: 0; padding: 0;
-        font-family: "Poppins", sans-serif;
-        background: linear-gradient(180deg, #d4eef3 0%, #e8f6f8 50%, #f0f9fa 100%);
-        min-height: 100vh;
-    }
-    .page {
-        width: 595px;
-        min-height: 842px;
-        margin: 0 auto;
-        position: relative;
-        overflow: visible;
-        background: linear-gradient(180deg, #d4eef3 0%, #e8f6f8 50%, #f0f9fa 100%);
-        padding-bottom: 70px;
-    }
-    .logo {
-    position: absolute;
-    top: 20px;
-    left: 20px;
-  }
-  .page-tag {
-    position: absolute;
-    top: 22px;
-    right: 22px;
-    background: rgba(31,128,147,0.08);
-    padding: 6px 22px;
-    border-radius: 9999px;
-    font-size: 14px;
-    color: #7e8c9a;
-    font-family: 'Poppins', sans-serif;
-  }
-  .header-line {
-    width: 100%;
-    height: 1px;
-    background: rgba(31,128,147,0.2);
-    margin: 75px auto 25px;
-  }
-    .page-badge {
-        background: rgba(31,128,147,0.08);
-        padding: 6px 20px; border-radius: 9999px;
-        color: #7a9ba5; font-size: 13px; font-weight: 500;
-    }
-    .title-block { margin-top: 36px; padding-left: 20px; }
-    .title { color: #1f8093; font-size: 36px; font-weight: 600; }
-    .underline {
-        width: 100px; height: 4px; margin-top: 8px;
-        background: linear-gradient(90deg, #1f8093, rgba(31,128,147,0.3));
-        border-radius: 999px;
-    }
-    /* SNAPSHOT CARDS */
-    .snapshot-row { display: flex; gap: 20px; justify-content: center; margin-top: 32px; padding: 0 20px; }
-    .cardy {
-        width: 270px; background: white; border-radius: 14px;
-        border: 1px solid rgba(224,230,235,0.5);
-        box-shadow: 0 4px 12px rgba(31,128,147,0.08);
-        padding: 24px;
-    }
-    .card-title {
-        display: flex; align-items: center; gap: 10px;
-        font-size: 14px; font-weight: 500; margin-bottom: 20px; color: #333;
-    }
-    .sq-icon { width: 20px; height: 20px; border-radius: 4px; flex-shrink: 0; }
-    .status-box {
-        background: rgba(248,250,252,0.8);
-        border-left: 3px solid #1f8093;
-        border-radius: 8px;
-        padding: 12px 14px; margin-bottom: 12px;
-    }
-    .status-label { font-size: 9px; text-transform: uppercase; margin-bottom: 6px; color: #555; }
-    .pill {
-        padding: 5px 12px; border-radius: 999px;
-        font-size: 11px; display: inline-block; font-weight: 500;
-    }
-    .green { background: #d8ffe6; color: #21c45d; }
-    .red { background: #fedfdf; color: #e92b2b; }
-    .orange { background: #fef5e7; color: #fe7b02; }
-    /* CIRCLE */
-    .circle-wrap { width: 140px; height: 140px; margin: 20px auto; position: relative; }
-    .circle-bg {
-        width: 100px; height: 100px; position: absolute; top: 20px; left: 20px;
-        border-radius: 50%; border: 10px solid #f3f5f7;
-    }
-    .circle-progress {
-        width: 100px; height: 100px; position: absolute; top: 20px; left: 20px;
-        border-radius: 50%;
-        border: 10px solid #1f8093;
-        border-bottom-color: #f3f5f7; border-left-color: #f3f5f7;
-    }
-    .circle-number {
-        position: absolute; top: 58px; width: 100%; text-align: center;
-        color: #fe7b02; font-size: 24px; font-weight: 700;
-    }
-    .circle-label { text-align: center; margin-top: 10px; }
-    /* SUMMARY */
-    .summary-card {
-        width: 555px; margin: 32px auto 0 auto;
-        background: white; border-radius: 12px;
-        border: 1px solid rgba(224,230,235,0.5);
-        padding: 22px 26px; box-shadow: 0 4px 10px rgba(31,128,147,0.06);
-    }
-    .summary-title {
-        display: flex; align-items: center; gap: 10px;
-        font-size: 14px; font-weight: 600; color: #333; margin-bottom: 14px;
-    }
-    .summary-text { font-size: 12px; line-height: 20px; color: #666; }
-    /* NEXT STEP */
-    .next-step {
-        width: 555px; margin: 20px auto 0 auto;
-        background: linear-gradient(90deg, rgba(31,128,147,0.08), rgba(31,128,147,0.03));
-        border-left: 4px solid #1f8093; border-radius: 10px;
-        padding: 18px 26px;
-    }
-    .next-title { font-size: 14px; font-weight: 700; color: #1f8093; margin-bottom: 8px; }
-    .next-text { font-size: 12px; line-height: 20px; color: #555; }
-    .footer-line {
-        width: calc(100% - 40px); height: 1px;
-        background: rgba(31,128,147,0.25);
-        position: absolute; bottom: 50px; left: 20px;
-    }
-    .footer {
-        width: 100%; text-align: center;
-        position: absolute; bottom: 22px;
-        font-size: 10px; color: #7a9ba5;
-    }
+/* ---------------- GLOBAL PAGE STYLE (Same as Page-1 & Page-2) ---------------- */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Poppins", sans-serif;
+  background: #F3FAFB;
+}
+
+.p4-page {
+  width: 100%;
+  min-height: 100vh;
+  padding: 50px 40px 60px 40px;
+  box-sizing: border-box;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+
+  font-family: "Poppins", sans-serif;
+  background: #F3FAFB;
+}
+
+/* ---------------- HEADER ---------------- */
+.p4-logo {
+  position: absolute;
+  top: 25px;
+  left: 25px;
+}
+
+.p4-page-tag {
+  position: absolute;
+  top: 28px;
+  right: 28px;
+  background: rgba(31,128,147,0.08);
+  padding: 6px 22px;
+  border-radius: 9999px;
+  font-size: 13px;
+  color: #7E8C9A;
+}
+
+.p4-header-line {
+  width: 150%;
+  height: 2px;
+  background: rgba(31,128,147,0.30);
+  margin-top: 60px;
+}
+
+/* ---------------- TITLE ---------------- */
+.p4-title-wrap {
+  width: 100%;
+  margin-top: 45px; /* Proper gap like Figma */
+  padding-left: 20px;
+}
+
+.p4-title {
+  font-size: 30px;
+  font-weight: 600;
+  color: #1F8093;
+}
+
+.p4-underline {
+  width: 120px;
+  height: 4px;
+  background: linear-gradient(90deg, #1F8093, rgba(31,128,147,0.5));
+  border-radius: 999px;
+  margin-top: 8px;
+}
+
+/* ---------------- GRID BOXES ---------------- */
+.grid-container {
+  width: 100%;
+  max-width: 620px;
+  padding: 0 16px;
+  margin-top: 40px;
+}
+
+.grid-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.info-box {
+  width: 300px;
+  padding: 22px;
+  background: white;
+  border: 1px solid #BDBDBD;
+  box-shadow: 0px 1px 2px rgba(0,0,0,0.05);
+}
+
+.info-box-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.info-text { flex: 1; }
+
+.info-label {
+  color: #737373;
+  font-size: 13px;
+  font-family: "Inter", sans-serif;
+  margin-bottom: 4px;
+}
+
+.info-value {
+  font-size: 13px;
+  font-weight: 600;
+  font-family: "Poppins", sans-serif;
+}
+
+/* ---------------- STATUS COLORS ---------------- */
+.status-valid { color: #21C45D; }
+.status-detected { color: #E92B2B; }
+.status-elevated { color: #E7B008; }
+.status-mild { color: #E7B008; }
+.status-moderate,
+.status-significant { color: #E92B2B; }
+
+/* ---------------- ICONS ---------------- */
+.info-icon {
+  width: 26px;
+  height: 26px;
+}
+
+/* CHECK (Green Circle) */
+.icon-check {
+  width: 26px;
+  height: 26px;
+  border: 2px solid #21C45D;
+  border-radius: 50%;     /* <-- fully rounded */
+  position: relative;
+}
+
+.icon-check::after {
+  content: '';
+  position: absolute;
+  width: 10px;
+  height: 5px;
+  left: 7px;
+  top: 9px;
+  border-left: 2.5px solid #21C45D;
+  border-bottom: 2.5px solid #21C45D;
+  transform: rotate(-45deg);
+}
+
+
+/* CROSS (Red Circle) */
+.icon-cross {
+  width: 26px;
+  height: 26px;
+  border: 2px solid #E92B2B;
+  border-radius: 50%;     /* <-- fully rounded */
+  position: relative;
+}
+
+.icon-cross::before,
+.icon-cross::after {
+  content: '';
+  position: absolute;
+  width: 14px;
+  height: 2px;
+  background: #E92B2B;
+  top: 12px;
+  left: 6px;
+}
+
+.icon-cross::before { transform: rotate(45deg); }
+.icon-cross::after { transform: rotate(-45deg); }
+
+
+/* WARNING (Yellow Circle) */
+.icon-warning {
+  width: 26px;
+  height: 26px;
+  border: 2px solid #E7B008;
+  border-radius: 50%;     /* <-- fully rounded */
+  position: relative;
+}
+
+.icon-warning::before {
+  content: '!';
+  position: absolute;
+  color: #E7B008;
+  font-size: 13px;
+  font-weight: 700;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -55%);
+}
+
+/* ---------------- FUNCTIONAL STATUS SCALE ---------------- */
+.scale-container {
+  width: 100%;
+  max-width: 620px;
+  padding: 0 16px;
+  margin-top: 20px;
+}
+
+.scale-card {
+  background: #fff;
+  border: 1px solid #BDBDBD;
+  padding: 22px;
+  box-shadow: 0px 1px 2px rgba(0,0,0,0.05);
+}
+
+.scale-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #000;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.scale-icon {
+  font-size: 20px;
+  color: #1F8093;
+}
+
+.scale-pills {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.scale-pill {
+  padding: 10px 14px;
+  background: #F5F5F5;
+  border: 1px solid #E0E0E0;
+
+  font-size: 13px;
+  font-family: "Inter", sans-serif;   /* <-- FIXED (INTER FONT) */
+  font-weight: 500;
+
+  color: #666;
+  white-space: nowrap;
+}
+
+.scale-pill.active {
+  background: #FEAE00;
+  border-color: #FEAE00;
+  color: #fff;
+  font-weight: 600;
+  font-family: "Inter", sans-serif;   /* <-- FIXED */
+}
+
+/* ---------------- SUMMARY + NEXT STEP ---------------- */
+.summary-section,
+.nextstep-section {
+  width: 100%;
+  max-width: 620px;
+  margin-top: 32px;
+  padding-left: 16px;
+  text-align: left;
+}
+
+.summary-title {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #000;
+}
+
+.summary-text {
+  font-size: 13px;
+  line-height: 22px;
+  font-family: "Inter";
+  color: #808080;
+}
+
+/* ---------------- FOOTER ---------------- */
+
+.p4-footer {
+  width: 150%;
+  margin-top: 140px;         /* pushes it down naturally */
+  padding: 14px 0;
+  border-top: 2px solid rgba(31,128,147,0.25);
+  text-align: center;
+  font-size: 13px;
+  color: #808080;
+
 </style>
 </head>
 <body>
-<div class="page">
-  <!-- Logo -->
-  <div class="logo"><img src="../assets/provencodee.png" alt="The Proven Code"></div>
-  <!-- PAGE NUMBER -->
-  <div class="page-tag">Page 4</div>
-  <div class="header-line"></div>
-    <!-- TITLE -->
-    <div class="title-block">
-        <div class="title">Your Snapshot</div>
-        <div class="underline"></div>
-    </div>
-    <!-- SNAPSHOT ROW -->
-    <div class="snapshot-row">
-        <!-- LEFT CARD -->
-        <div class="cardy">
-            <div class="card-title">
-                <div class="sq-icon">
-                    <img src="../assets/okay.png" alt="">
-                </div>
-                Specimen Status
-            </div>
-            <!-- SPECIMEN VALIDITY -->
-            <div class="status-box">
-                <div class="status-label">Specimen Validity</div>
-                <div class="pill ${report.labInputs?.V === 1 ? 'green' : 'red'}">
-                    ${report.labInputs?.V === 1 ? 'Valid' : 'Invalid'}
-                </div>
-            </div>
-            <!-- BACTERIAL -->
-            <div class="status-box">
-                <div class="status-label">Bacterial Signal</div>
-                <div class="pill ${report.labInputs?.B > 0 ? 'red' : 'green'}">
-                    ${report.labInputs?.B > 0 ? 'Detected' : 'Not Detected'}
-                </div>
-            </div>
-            <!-- YEAST -->
-            <div class="status-box">
-                <div class="status-label">Yeast Signal</div>
-                <div class="pill ${report.labInputs?.Y > 0 ? 'red' : 'green'}">
-                    ${report.labInputs?.Y > 0 ? 'Detected' : 'Not Detected'}
-                </div>
-            </div>
-        </div>
-        <!-- RIGHT CARD -->
-        <div class="cardy">
-            <div class="card-title">
-                <div class="sq-icon">
-                    <img src="../assets/okay1.png" alt="">
-                </div>
-                Functional Status
-            </div>
-            <!-- CIRCLE -->
-            <div class="circle-wrap">
-                <div class="circle-bg"></div>
-                <div class="circle-progress"
-                    style="transform: rotate(${(report.functionalPercent || 0) * 1.8}deg);">
-                </div>
-                <div class="circle-number">${report.functionalPercent || 0}%</div>
-            </div>
-            <!-- LABEL -->
-            <div class="circle-label">
-                <div class="pill 
-                  ${report.calculatedData?.overallStatus === 'Balanced' ? 'green' : ''}
-                  ${report.calculatedData?.overallStatus === 'Mild Imbalance' ? 'orange' : ''}
-                  ${report.calculatedData?.overallStatus === 'Moderate Dysbiosis' ? 'red' : ''}
-                  ${report.calculatedData?.overallStatus === 'Significant Dysbiosis' ? 'red' : ''}
-                ">
-                  ${report.calculatedData?.overallStatus}
-                </div>
 
-            </div>
+<div class="p4-page">
+
+  <!-- LOGO -->
+  <div class="p4-logo">
+    <img src="../assets/provencodee.png" width="100">
+  </div>
+
+  <!-- PAGE TAG -->
+  <div class="p4-page-tag">Page 4</div>
+
+  <div class="p4-header-line"></div>
+
+  <!-- TITLE -->
+  <div class="p4-title-wrap">
+    <div class="p4-title">Summary Page</div>
+    <div class="p4-underline"></div>
+  </div>
+
+  <!-- GRID BOXES -->
+<div class="grid-container">
+
+  <!-- First Row -->
+  <div class="grid-row">
+
+    <!-- Specimen Validity -->
+    <div class="info-box">
+      <div class="info-box-content">
+        <div class="info-text">
+          <p class="info-label">Specimen Validity</p>
+          <p class="info-value 
+            ${report.labInputs?.V === 1 ? 'status-valid' : 'status-detected'}"
+          >
+            ${report.labInputs?.V === 1 ? "Valid" : "Invalid"}
+          </p>
         </div>
+
+        <div class="info-icon">
+          <div class="${report.labInputs?.V === 1 ? 'icon-check' : 'icon-cross'}"></div>
+        </div>
+      </div>
     </div>
-    <!-- SUMMARY -->
-    <div class="summary-card">
-        <div class="summary-title">
-            <div class="sq-icon" style="background:rgba(31,128,147,0.08);">
-                <img src="../assets/okay.png" alt="">
-            </div>
-            Summary Observation
+
+    <!-- Bacterial Signal -->
+    <div class="info-box">
+      <div class="info-box-content">
+        <div class="info-text">
+          <p class="info-label">Bacterial Signal</p>
+          <p class="info-value 
+            ${report.labInputs?.B > 0 ? 'status-detected' : 'status-valid'}"
+          >
+            ${report.labInputs?.B > 0 ? "Detected" : "Not Detected"}
+          </p>
         </div>
-        <div class="summary-text">
-            ${report.summaryObservation || "Your microbiome analysis shows moderate functional balance with specific areas requiring attention for optimal gut health."}
+
+        <div class="info-icon">
+          <div class="${report.labInputs?.B > 0 ? 'icon-cross' : 'icon-check'}"></div>
         </div>
+      </div>
     </div>
-    <!-- NEXT STEP -->
-    <div class="next-step">
-        <div class="next-title">Suggested Next Step</div>
-        <div class="next-text">
-            ${report.calculatedData?.recommendation || "Consider implementing targeted dietary adjustments and lifestyle modifications based on your specific functional findings."}
+  </div>
+
+  <!-- Second Row -->
+  <div class="grid-row">
+
+    <!-- Yeast Signal -->
+    <div class="info-box">
+      <div class="info-box-content">
+        <div class="info-text">
+          <p class="info-label">Yeast Signal</p>
+          <p class="info-value 
+            ${report.labInputs?.Y > 0 ? 'status-elevated' : 'status-valid'}"
+          >
+            ${report.labInputs?.Y > 0 ? "Elevated" : "Normal"}
+          </p>
         </div>
+
+        <div class="info-icon">
+          <div class="${report.labInputs?.Y > 0 ? 'icon-warning' : 'icon-check'}"></div>
+        </div>
+      </div>
     </div>
-    <div class="footer-line"></div>
-    <div class="footer">Microbiome Health Check Report – Version 7.0</div>
+
+    <!-- Functional Status -->
+    <div class="info-box">
+      <div class="info-box-content">
+        <div class="info-text">
+          <p class="info-label">Functional Status</p>
+
+          <p class="info-value
+            ${report.calculatedData?.overallStatus === "Balanced" ? "status-valid" :
+      report.calculatedData?.overallStatus === "Mild Imbalance" ? "status-mild" :
+        "status-detected"
+    }"
+          >
+            ${report.calculatedData?.overallStatus}
+          </p>
+        </div>
+
+        <div class="info-icon">
+          <div class="${report.calculatedData?.overallStatus === "Balanced"
+      ? "icon-check"
+      : report.calculatedData?.overallStatus === "Mild Imbalance"
+        ? "icon-warning"
+        : "icon-cross"
+    }"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
 </div>
+
+
+<!-- FUNCTIONAL STATUS SCALE -->
+<div class="scale-container">
+  <div class="scale-card">
+
+    <h3 class="scale-title">
+      <span class="scale-icon">
+          <img src="../assets/uperneeche.png" >
+      </span> Functional Status Scale
+    </h3>
+
+    <div class="scale-pills">
+
+      <div class="scale-pill 
+        ${report.calculatedData?.overallStatus === "Balanced" ? "active" : ""}">
+        Balanced
+      </div>
+
+      <div class="scale-pill 
+        ${report.calculatedData?.overallStatus === "Mild Imbalance" ? "active" : ""}">
+        Mild Imbalance
+      </div>
+
+      <div class="scale-pill 
+        ${report.calculatedData?.overallStatus === "Moderate Dysbiosis" ? "active" : ""}">
+        Moderate Dysbiosis
+      </div>
+
+      <div class="scale-pill 
+        ${report.calculatedData?.overallStatus === "Significant Dysbiosis" ? "active" : ""}">
+        Significant Dysbiosis
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+<!-- SUMMARY OBSERVATION -->
+<div class="summary-section">
+  <h3 class="summary-title">Summary Observation</h3>
+  <p class="summary-text">
+    ${report.summaryObservation}
+  </p>
+</div>
+
+<!-- SUGGESTED NEXT STEP -->
+<div class="nextstep-section">
+  <h3 class="summary-title">Suggested Next Step</h3>
+  <p class="summary-text">
+    ${report.calculatedData?.recommendation}
+  </p>
+</div>
+
+<div class="p4-footer">Made by The Proven Code | Biome360 Health Check | Wellness Tool</div>
+
+</div>
+
 </body>
-</html>`;
+</html>
+`;
 
   return inlineLocalImages(page4HTML);
 };
@@ -1025,275 +1372,249 @@ const getPage5HTML = (report) => {
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
+
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+
 <style>
-  body {
-    margin: 0;
-    padding: 0;
-    font-family: 'Poppins', sans-serif;
-    background: linear-gradient(180deg, #d4eef3 0%, #e8f6f8 50%, #e5fcff 100%);
-  }
-  .page {
-    width: 595px;
-    height: 1122px;
-    margin: 0 auto;
-    position: relative;
-    background: linear-gradient(180deg, #d4eef3 0%, #e8f6f8 50%, #e5fcff 100%);
-    padding-top: 80px;
-  }
-  .logo {
-    position: absolute;
-    top: 20px;
-    left: 20px;
-  }
-  .page-tag {
-    position: absolute;
-    top: 22px;
-    right: 22px;
-    background: rgba(31,128,147,0.08);
-    padding: 6px 22px;
-    border-radius: 9999px;
-    font-size: 14px;
-    color: #7e8c9a;
-  }
-  .header-line {
-    width: 100%;
-    height: 1px;
-    background: rgba(31,128,147,0.2);
-    margin: 20px auto 25px;
-  }
-  .title {
-    font-size: 36px;
-    font-weight: 600;
-    color: #1f8093;
-    padding-left: 16px;
-  }
-  .underline {
-    width: 80px;
-    height: 4px;
-    background: linear-gradient(90deg, #1f8093, rgba(31,128,147,0.5));
-    border-radius: 9999px;
-    margin-top: 8px;
-    margin-left: 16px;
-  }
-  .observation-wrapper {
-    margin-top: 30px;
-    padding: 0 16px;
-  }
-  .obs-card {
-    background: white;
-    border-radius: 14px;
-    border: 1px solid rgba(224,230,235,0.5);
-    padding: 20px;
-    margin-bottom: 16px;
-    box-shadow: 0 3px 10px rgba(31,128,147,0.08);
-    border-left: 4px solid #1f8093;
-  }
-  .obs-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 12px;
-  }
-  .obs-left {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-  }
-  .icon-circle {
-    width: 44px;
-    height: 44px;
-    background: rgba(31,128,147,0.1);
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  .icon-circle svg {
-    width: 24px;
-    height: 24px;
-    stroke: #1f8093;
-    stroke-width: 2;
-    fill: none;
-  }
-  .obs-title {
-    font-size: 16px;
-    font-weight: 600;
-    color: #000;
-  }
-  .status-badge {
-    padding: 6px 16px;
-    border-radius: 9999px;
-    background: #fedfdf;
-    color: #e92b2b;
-    font-size: 12px;
-    font-weight: 500;
-  }
-  .obs-description {
-    font-size: 12px;
-    color: #555;
-    line-height: 1.6;
-    margin-bottom: 10px;
-  }
-  .progress-bar {
-    width: 100%;
-    height: 6px;
-    background: #e8f6f8;
-    border-radius: 9999px;
-    overflow: hidden;
-  }
-  .progress-fill {
-    height: 100%;
-    background: #1f8093;
-    border-radius: 9999px;
-  }
-  .clinical-ref {
-    background: rgba(31,128,147,0.05);
-    border-radius: 14px;
-    border: 1px solid rgba(31,128,147,0.2);
-    padding: 20px;
-    margin-top: 16px;
-    border-left: 4px solid #1f8093;
-  }
-  .clinical-header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 12px;
-  }
-  .clinical-title {
-    font-size: 15px;
-    font-weight: 600;
-  }
-  .clinical-text {
-    font-size: 12px;
-    color: #555;
-    line-height: 1.7;
-  }
-  .footer-line {
-    width: 100%;
-    height: 1px;
-    background: rgba(31,128,147,0.2);
-    position: absolute;
-    bottom: 50px;
-  }
-  .footer {
-    text-align: center;
-    font-size: 11px;
-    color: #808080;
-    position: absolute;
-    bottom: 22px;
-    width: 100%;
-  }
+/* ---------------- PAGE LAYOUT ---------------- */
+.p5-wrapper {
+  width: 100%;
+  min-height: 100vh;
+  padding: 50px 40px 60px 40px;
+  box-sizing: border-box;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+
+  font-family: "Poppins", sans-serif;
+  background: #F3FAFB;
+}
+
+/* ---------------- HEADER ---------------- */
+.p5-logo {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+}
+
+.p5-tag {
+  position: absolute;
+  top: 22px;
+  right: 22px;
+  background: rgba(31,128,147,0.08);
+  padding: 6px 22px;
+  border-radius: 9999px;
+  font-size: 13px;
+  color: #7E8C9A;
+}
+
+.p5-header-line {
+  width: 150%;
+  height: 2px;
+  background: rgba(31,128,147,0.30);
+  margin-top: 50px;
+}
+
+/* ---------------- TITLE ---------------- */
+.p5-title-wrap {
+  width: 100%;
+  margin-top: 45px; /* Proper gap like Figma */
+  padding-left: 20px;
+}
+
+.p5-title {
+  font-size: 30px;
+  font-weight: 600;
+  color: #1F8093;
+}
+
+.p5-underline {
+  width: 120px;
+  height: 4px;
+  background: linear-gradient(90deg, #1F8093, rgba(31,128,147,0.5));
+  border-radius: 999px;
+  margin-top: 8px;
+}
+
+/* ---------------- TABLE CARD ---------------- */
+.p5-table-card {
+  width: calc(100% - 32px);
+  margin: 40px auto 0;
+  background: #fff;
+  overflow: hidden;
+  border: 1px solid rgba(0,0,0,0.15);
+  box-shadow: 0px 2px 6px rgba(0,0,0,0.05);
+}
+
+.p5-table-header {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr 1.6fr;
+  background: #1F4E79;
+  color: white;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 12px 16px;
+}
+
+.p5-row {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr 1.6fr;
+  padding: 14px 16px;
+  border-bottom: 1px solid #eee;
+  font-size: 13px;
+  align-items: center;
+}
+
+.p5-row:last-child {
+  border-bottom: none;
+}
+
+/* ---------------- OBSERVATION BADGES ---------------- */
+.p5-pill {
+  padding: 3px 10px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  display: inline-block;
+}
+
+.p5-pill-green { 
+  background: #D5F5E3; 
+  color: #21C45D; 
+}
+
+.p5-pill-yellow { 
+  background: #FFF4CC; 
+  color: #E7B008; 
+}
+
+.p5-pill-red { 
+  background: #FEDFDF; 
+  color: #E92B2B; 
+}
+
+.p5-comment {
+  font-size: 13px;
+  color: #666;
+}
+
+/* ---------------- FOOTER ---------------- */
+.p5-footer-line {
+  width: 100%;
+  height: 2px;
+  background: rgba(31,128,147,0.30);
+  position: absolute;
+  bottom: 50px;
+}
+
+.p5-footer {
+  text-align: center;
+  width: 100%;
+  position: absolute;
+  bottom: 20px;
+  font-size: 13px;
+  color: #808080;
+}
 </style>
 </head>
+
 <body>
-<div class="page">
-  <!-- Logo -->
-  <div class="logo">
-    <img src="../assets/provencodee.png" alt="The Proven Code">
+
+<div class="p5-wrapper">
+
+  <!-- LOGO -->
+  <img class="p5-logo" src="../assets/provencodee.png" width="100">
+
+  <!-- PAGE TAG -->
+  <div class="p5-tag">Page 5</div>
+
+  <!-- HEADER LINE -->
+  <div class="p5-header-line"></div>
+
+  <!-- TITLE -->
+  <div class="p4-title-wrap">
+    <div class="p4-title">Summary Page</div>
+    <div class="p4-underline"></div>
   </div>
-  <!-- Page number -->
-  <div class="page-tag">Page 5</div>
-  <div class="header-line"></div>
-  <div class="title">What We Observed</div>
-  <div class="underline"></div>
-  <div class="observation-wrapper">
-    <!-- Observation 1: Specimen Validity -->
-    <div class="obs-card">
-      <div class="obs-header">
-        <div class="obs-left">
-          <div class="icon-circle">
-            <svg viewBox="0 0 24 24">
-              <circle cx="12" cy="12" r="10"/>
-              <path d="M8 12l3 3 5-5"/>
-            </svg>
-          </div>
-          <div class="obs-title">Specimen Validity</div>
-        </div>
-        <div class="status-badge">
-          ${report.calculatedData?.specimenStatus || "Invalid"}
-        </div>
+
+  <!-- TABLE -->
+  <div class="p5-table-card">
+
+      <div class="p5-table-header">
+        <div>Parameter</div>
+        <div>Observation</div>
+        <div>Comment</div>
       </div>
-      <div class="obs-description">
-        ${report.calculatedData?.specimenDescription || "Specimen analysis indicates potential issues with sample collection or handling."}
-      </div>
-      <div class="progress-bar">
-        <div class="progress-fill" style="width: ${report.calculatedData?.specimenPercent || 30}%;"></div>
-      </div>
-    </div>
-    <!-- Observation 2: Bacterial Signal -->
-    <div class="obs-card">
-      <div class="obs-header">
-        <div class="obs-left">
-          <div class="icon-circle">
-            <svg viewBox="0 0 24 24">
-              <circle cx="12" cy="12" r="3"/>
-              <circle cx="6" cy="8" r="2"/>
-              <circle cx="18" cy="8" r="2"/>
-              <circle cx="6" cy="16" r="2"/>
-              <circle cx="18" cy="16" r="2"/>
-            </svg>
-          </div>
-          <div class="obs-title">Bacterial Signal</div>
+
+      <!-- ROW 1 : Bacterial Signal -->
+      <div class="p5-row">
+        <div>Bacterial Signal</div>
+
+        <div>
+          <span class="p5-pill ${report.calculatedData?.bacterialStatus === "Detected"
+      ? "p5-pill-red"
+      : "p5-pill-green"
+    }">
+            ${report.calculatedData?.bacterialStatus || "-"}
+          </span>
         </div>
-        <div class="status-badge">
-          ${report.calculatedData?.bacterialStatus || "Detected"}
+
+        <div class="p5-comment">
+          ${report.calculatedData?.bacterialDescription ||
+    "Bacterial signal indicates presence of bacterial activity in the sample."}
         </div>
       </div>
-      <div class="obs-description">
-        ${report.calculatedData?.bacterialDescription || "Bacterial signal indicates presence of bacterial activity in the sample."}
-      </div>
-      <div class="progress-bar">
-        <div class="progress-fill" style="width: ${report.calculatedData?.bPercent || 60}%;"></div>
-      </div>
-    </div>
-    <!-- Observation 3: Yeast Signal -->
-    <div class="obs-card">
-      <div class="obs-header">
-        <div class="obs-left">
-          <div class="icon-circle">
-            <svg viewBox="0 0 24 24">
-              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/>
-              <circle cx="8" cy="10" r="1.5"/>
-              <circle cx="16" cy="10" r="1.5"/>
-            </svg>
-          </div>
-          <div class="obs-title">Yeast Signal</div>
+
+      <!-- ROW 2 : Yeast Signal -->
+      <div class="p5-row">
+        <div>Yeast Signal</div>
+
+        <div>
+          <span class="p5-pill ${report.calculatedData?.yeastStatus === "Detected"
+      ? "p5-pill-red"
+      : "p5-pill-green"
+    }">
+            ${report.calculatedData?.yeastStatus || "-"}
+          </span>
         </div>
-        <div class="status-badge">
-          ${report.calculatedData?.yeastStatus || "Not Detected"}
+
+        <div class="p5-comment">
+          ${report.calculatedData?.yeastDescription ||
+    "Yeast signal analysis shows no significant yeast presence."}
         </div>
       </div>
-      <div class="obs-description">
-        ${report.calculatedData?.yeastDescription || "Yeast signal analysis shows no significant yeast presence."}
-      </div>
-      <div class="progress-bar">
-        <div class="progress-fill" style="width: ${report.calculatedData?.yPercent || 20}%;"></div>
-      </div>
-    </div>
-    <!-- Clinical Reference -->
-    <div class="clinical-ref">
-      <div class="clinical-header">
-        <div class="icon-circle" style="width: 36px; height: 36px;">
-          <svg viewBox="0 0 24 24" style="width: 20px; height: 20px;">
-            <circle cx="12" cy="12" r="10"/>
-            <path d="M12 8v4M12 16h.01"/>
-          </svg>
+
+      <!-- ROW 3 : Specimen Validity -->
+      <div class="p5-row">
+        <div>Specimen Validity</div>
+
+        <div>
+          <span class="p5-pill ${report.calculatedData?.specimenStatus === "Valid"
+      ? "p5-pill-green"
+      : "p5-pill-red"
+    }">
+            ${report.calculatedData?.specimenStatus || "-"}
+          </span>
         </div>
-        <div class="clinical-title">Clinical Reference</div>
+
+        <div class="p5-comment">
+          ${report.calculatedData?.specimenDescription ||
+    "Specimen analysis indicates potential issues with sample collection or handling."}
+        </div>
       </div>
-      <div class="clinical-text">
-        These observations represent laboratory screening results and do not constitute a medical diagnosis.
-        Consult your healthcare provider for clinical interpretation.
-      </div>
-    </div>
   </div>
-  <div class="footer-line"></div>
-  <div class="footer">Microbiome Health Check Report — Version 7.0</div>
+
+  <!-- FOOTER -->
+  <div class="p5-footer-line"></div>
+  <div class="p5-footer">Made by The Proven Code | Biome360 Health Check | Wellness Tool</div>
+
 </div>
+
 </body>
-</html>`;
+</html>
+`;
 
   return inlineLocalImages(page5HTML);
 };
@@ -1308,313 +1629,242 @@ const getPage6HTML = (report) => {
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-  body {
-    margin: 0;
-    padding: 0;
-    font-family: 'Poppins', sans-serif;
-    background: linear-gradient(180deg, #d4eef3 0%, #e8f6f8 50%, #e5fcff 100%);
-  }
-  .page {
-    width: 595px;
-    height: 900px;
-    margin: 0 auto;
-    position: relative;
-    background: linear-gradient(180deg, #d4eef3 0%, #e8f6f8 50%, #e5fcff 100%);
-    padding-top: 80px;
-  }
-  .logo {
-    position: absolute;
-    top: 20px;
-    left: 20px;
-  }
-  .page-tag {
-    position: absolute;
-    top: 22px;
-    right: 22px;
-    background: rgba(31,128,147,0.08);
-    padding: 6px 22px;
-    border-radius: 9999px;
-    font-size: 14px;
-    color: #7e8c9a;
-  }
-  .header-line {
+  /* Page layout - consistent with other pages */
+  .p6-wrapper {
     width: 100%;
-    height: 1px;
-    background: rgba(31,128,147,0.2);
-    margin: 20px auto 25px;
-  }
-  .title {
-    font-size: 36px;
-    font-weight: 600;
-    color: #1f8093;
-    padding-left: 16px;
-    margin-top: 0;
-  }
-  .underline {
-    width: 80px;
-    height: 4px;
-    background: linear-gradient(90deg, #1f8093, rgba(31,128,147,0.5));
-    border-radius: 9999px;
-    margin-top: 8px;
-    margin-left: 16px;
-  }
-  .functional-wrapper {
-    margin-top: 30px;
-    padding: 0 16px;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-  }
-  .func-card {
-    background: white;
-    border-radius: 10px;
-    padding: 12px 20px;
-    box-shadow: 0 3px 5px rgba(0,0,0,0.1);
+    min-height: 100vh;
+    padding: 50px 40px 60px 40px;
+    box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    gap: 8px;
-  }
-  /* Dynamic border colors */
-  .green { border-left: 3px solid #00C448; }
-  .orange { border-left: 3px solid #FE7B02; }
-  .red { border-left: 3px solid #F34E1B; }
-  .func-header {
-    display: flex;
     align-items: center;
-    gap: 12px;
+    position: relative;
+    font-family: "Poppins", sans-serif;
+    background: #F3FAFB;
   }
-  .func-icon {
-    width: 44px;
-    height: 44px;
-    background: rgba(31,128,147,0.1);
-    border-radius: 10px;
-    display: flex;
-    justify-content: center;
+
+  /* Header */
+  .p6-logo { position: absolute; top: 20px; left: 20px; }
+  .p6-tag {
+    position: absolute; top: 22px; right: 22px;
+    background: rgba(31,128,147,0.08); padding: 6px 22px; border-radius: 9999px;
+    font-size: 13px; color: #7E8C9A;
+  }
+  .p6-header-line {
+    width: 150%; height: 2px; background: rgba(31,128,147,0.30); margin-top: 50px;
+  }
+
+  .p5-title-wrap {
+    width: 100%;
+    margin-top: 45px;
+    padding-left: 20px;
+  }
+
+  .p5-title {
+    font-size: 30px;
+    font-weight: 600;
+    color: #1F8093;
+  }
+
+  .p5-underline {
+    width: 120px;
+    height: 4px;
+    background: linear-gradient(90deg, #1F8093, rgba(31,128,147,0.5));
+    border-radius: 999px;
+    margin-top: 8px;
+  }
+
+  /* Legend / scoring system */
+  .p6-legend {
+    width: calc(100% - 32px);
+    margin: 18px auto 0;
+    padding: 12px 16px;
+    background: #fff; border-radius: 8px;
+    border: 1px solid rgba(0,0,0,0.06);
+    display:flex; align-items:center; gap:12px; box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+  }
+  .p6-legend .legend-label { font-weight:600; color:#1F4E79; font-size:13px; margin-right:12px; }
+  .p6-legend .legend-item { display:flex; align-items:center; gap:8px; font-size:13px; color:#444; margin-right:10px; }
+  .p6-dot { width:12px; height:12px; border-radius:50%; display:inline-block; }
+
+  /* Scoring System Colors EXACTLY as shown in screenshot */
+  .dot-green { background:#12C254; }
+  .dot-yellow { background:#E2B420; }
+  .dot-orange { background:#F77A21; }
+  .dot-red { background:#E44B47; }
+
+  /* Table card */
+  .p6-table-card {
+    width: 100%;
+    max-width: 900px; /* Or whatever max width you want */
+    margin: 20px auto 0;
+    background: #fff;
+    overflow: hidden;
+    border: 1px solid rgba(0,0,0,0.12);
+    box-shadow: 0px 2px 6px rgba(0,0,0,0.05);
+}
+
+  .p6-table-header {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 0.6fr;
+    background: #1F4E79;
+    color: white;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 12px 16px;
     align-items: center;
   }
-  .func-icon svg {
-    width: 22px;
-    height: 22px;
-    stroke: #1f8093;
-    stroke-width: 2;
-    fill: none;
+
+  .p6-row {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 0.6fr;
+    padding: 14px 16px;
+    border-bottom: 1px solid #eee;
+    font-size: 13px;
+    align-items: center;
   }
-  .func-title {
-    font-size: 14px;
-    font-weight: 500;
-  }
-  .func-status {
-    display: flex;
-    justify-content: flex-end;
-  }
-  .status-pill {
-    padding: 3px 10px;
+
+  .p6-row:last-child { border-bottom: none; }
+
+  /* pills */
+  .p6-pill {
+    padding: 6px 10px;
     border-radius: 9999px;
-    font-size: 11px;
-    font-weight: 500;
+    font-size: 13px;
+    font-weight: 600;
+    display: inline-block;
   }
-  .status-pill.green { color: #00C448; background: #E8F9EE; }
-  .status-pill.orange { color: #FE7B02; background: #FFF3E8; }
-  .status-pill.red { color: #F34E1B; background: #FFE9E6; }
-  .footer-line {
-    width: 100%;
-    height: 1px;
-    background: rgba(31,128,147,0.2);
-    position: absolute;
-    bottom: 50px;
-  }
-  .footer {
-    text-align: center;
-    font-size: 11px;
-    color: #808080;
-    position: absolute;
-    bottom: 22px;
-    width: 100%;
-  }
+
+  .p6-pill-green { background: #E8F8EF; color: #12C254; }
+  .p6-pill-yellow { background: #FFF7D9; color: #E2B420; }
+  .p6-pill-orange { background: #FFE9D9; color: #F77A21; }
+  .p6-pill-red { background: #FFE5E3; color: #E44B47; }
+
+  .p6-score { font-weight:600; color:#1F8093; text-align:right; }
+
+  /* Footer */
+  .p6-footer-line { width: 100%; height: 2px; background: rgba(31,128,147,0.30); position: absolute; bottom: 50px; }
+  .p6-footer { text-align:center; width:100%; position:absolute; bottom:22px; font-size:13px; color:#808080; }
+
 </style>
 </head>
 <body>
-<div class="page">
-  <div class="logo">
-    <img src="../assets/provencodee.png" alt="The Proven Code">
+  <div class="p6-wrapper">
+
+    <!-- logo -->
+    <img class="p6-logo" src="../assets/provencodee.png" width="100" alt="The Proven Code">
+
+    <!-- page tag -->
+    <div class="p6-tag">Page 6</div>
+
+    <!-- header line -->
+    <div class="p6-header-line"></div>
+
+    <!-- TITLE -->
+    <div class="p5-title-wrap">
+      <div class="p5-title">Analytical Observations</div>
+      <div class="p5-underline"></div>
+    </div>
+
+    <!-- scoring legend -->
+    <div class="p6-legend">
+      <div class="legend-label">Scoring System:</div>
+      <div class="legend-item"><span class="p6-dot dot-green"></span>1-2 Normal</div>
+      <div class="legend-item"><span class="p6-dot dot-yellow"></span>3 Borderline</div>
+      <div class="legend-item"><span class="p6-dot dot-orange"></span>4 Elevated</div>
+      <div class="legend-item"><span class="p6-dot dot-red"></span>5 High</div>
+    </div>
+
+    <!-- FUNCTIONAL TABLE -->
+    <div class="p6-table-card">
+
+      <div class="p6-table-header">
+        <div>Parameter</div>
+        <div>Status</div>
+        <div style="text-align:right;">Score</div>
+      </div>
+
+      <!-- FIXED LOGIC FUNCTION (Inline JS Expression) -->
+      <!-- Format reused for all rows -->
+
+      <!-- FS1 -->
+      <div class="p6-row">
+        <div>Digestive Rhythm</div>
+        <div>
+          <span class="p6-pill ${(() => {
+      const s = Math.min(5, Math.round((report.calculatedData?.scores?.FS1 || 0) / 2));
+      if (s === 5) return "p6-pill-red";
+      if (s === 4) return "p6-pill-orange";
+      if (s === 3) return "p6-pill-yellow";
+      return "p6-pill-green";
+    })()
+    }">
+            ${(() => {
+      const s = Math.min(5, Math.round((report.calculatedData?.scores?.FS1 || 0) / 2));
+      if (s === 5) return "High";
+      if (s === 4) return "Elevated";
+      if (s === 3) return "Borderline";
+      return "Normal";
+    })()
+    }
+          </span>
+        </div>
+        <div class="p6-score">
+          ${Math.min(5, Math.round((report.calculatedData?.scores?.FS1 || 0) / 2))}/5
+        </div>
+      </div>
+
+      <!-- COPY–PASTE the same fixed logic for FS2–FS10 -->
+
+      ${["FS2", "FS3", "FS4", "FS5", "FS6", "FS7", "FS8", "FS9", "FS10"].map((key, i) => {
+      const labels = [
+        "Fermentation Load",
+        "Bacterial Balance",
+        "Yeast Balance",
+        "Immune Tone",
+        "Gut–Brain Stress",
+        "Circadian Sleep",
+        "Diet Quality",
+        "Medication Impact",
+        "Hydration & Recovery"
+      ];
+      return `
+        <div class="p6-row">
+          <div>${labels[i]}</div>
+          <div>
+            <span class="p6-pill ${(() => {
+          const s = Math.min(5, Math.round((report.calculatedData?.scores?.[key] || 0) / 2));
+          if (s === 5) return "p6-pill-red";
+          if (s === 4) return "p6-pill-orange";
+          if (s === 3) return "p6-pill-yellow";
+          return "p6-pill-green";
+        })()
+        }">
+              ${(() => {
+          const s = Math.min(5, Math.round((report.calculatedData?.scores?.[key] || 0) / 2));
+          if (s === 5) return "High";
+          if (s === 4) return "Elevated";
+          if (s === 3) return "Borderline";
+          return "Normal";
+        })()
+        }
+            </span>
+          </div>
+          <div class="p6-score">
+            ${Math.min(5, Math.round((report.calculatedData?.scores?.[key] || 0) / 2))}/5
+          </div>
+        </div>`;
+    }).join("")}
+
+    </div>
+
+    <div class="p6-footer-line"></div>
+    <div class="p6-footer">Made by The Proven Code | Biome360 Health Check | Wellness Tool</div>
+
   </div>
-  <div class="page-tag">Page 6</div>
-  <div class="header-line"></div>
-  <div class="title">Functional Assessment</div>
-  <div class="underline"></div>
-  <div class="functional-wrapper">
-    <!-- CARD 1 -->
-    <div class="func-card ${report.calculatedData?.statusColors?.FS1 || "green"}">
-      <div class="func-header">
-        <div class="func-icon">
-          <svg viewBox="0 0 24 24">
-            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
-          </svg>
-        </div>
-        <div class="func-title">Digestive Rhythm</div>
-      </div>
-      <div class="func-status">
-        <div class="status-pill ${report.calculatedData?.statusColors?.FS1 || "green"}">
-          ${report.calculatedData?.statuses?.FS1 || "Within Range"}
-        </div>
-      </div>
-    </div>
-    <!-- CARD 2 -->
-    <div class="func-card ${report.calculatedData?.statusColors?.FS2 || "orange"}">
-      <div class="func-header">
-        <div class="func-icon">
-          <svg viewBox="0 0 24 24">
-            <path d="M12 2L12 22M8 6L16 6M8 10L16 10M10 14L14 14"/>
-          </svg>
-        </div>
-        <div class="func-title">Fermentation Load</div>
-      </div>
-      <div class="func-status">
-        <div class="status-pill ${report.calculatedData?.statusColors?.FS2 || "orange"}">
-          ${report.calculatedData?.statuses?.FS2 || "Borderline"}
-        </div>
-      </div>
-    </div>
-    <!-- CARD 3 -->
-    <div class="func-card ${report.calculatedData?.statusColors?.FS3 || "red"}">
-      <div class="func-header">
-        <div class="func-icon">
-          <svg viewBox="0 0 24 24">
-            <circle cx="12" cy="8" r="3"/>
-            <circle cx="6" cy="16" r="2"/>
-            <circle cx="18" cy="16" r="2"/>
-            <circle cx="12" cy="18" r="1.5"/>
-          </svg>
-        </div>
-        <div class="func-title">Bacterial Balance</div>
-      </div>
-      <div class="func-status">
-        <div class="status-pill ${report.calculatedData?.statusColors?.FS3 || "red"}">
-          ${report.calculatedData?.statuses?.FS3 || "Elevated"}
-        </div>
-      </div>
-    </div>
-    <!-- CARD 4 -->
-    <div class="func-card ${report.calculatedData?.statusColors?.FS4 || "green"}">
-      <div class="func-header">
-        <div class="func-icon">
-          <svg viewBox="0 0 24 24">
-            <circle cx="12" cy="8" r="4"/>
-            <path d="M8 12L12 16M16 12L12 16"/>
-          </svg>
-        </div>
-        <div class="func-title">Yeast Balance</div>
-      </div>
-      <div class="func-status">
-        <div class="status-pill ${report.calculatedData?.statusColors?.FS4 || "green"}">
-          ${report.calculatedData?.statuses?.FS4 || "Within Range"}
-        </div>
-      </div>
-    </div>
-    <!-- CARD 5 -->
-    <div class="func-card ${report.calculatedData?.statusColors?.FS5 || "orange"}">
-      <div class="func-header">
-        <div class="func-icon">
-          <svg viewBox="0 0 24 24">
-            <path d="M12 2L4 6v6c0 5 3 9 8 11 5-2 8-6 8-11V6l-8-4z"/>
-          </svg>
-        </div>
-        <div class="func-title">Immune Tone</div>
-      </div>
-      <div class="func-status">
-        <div class="status-pill ${report.calculatedData?.statusColors?.FS5 || "orange"}">
-          ${report.calculatedData?.statuses?.FS5 || "Borderline"}
-        </div>
-      </div>
-    </div>
-    <!-- CARD 6 -->
-    <div class="func-card ${report.calculatedData?.statusColors?.FS6 || "green"}">
-      <div class="func-header">
-        <div class="func-icon">
-          <svg viewBox="0 0 24 24">
-            <circle cx="12" cy="12" r="10"/>
-            <path d="M8 9h.01M16 9h.01M9 14h6"/>
-          </svg>
-        </div>
-        <div class="func-title">Gut- Brain Stress</div>
-      </div>
-      <div class="func-status">
-        <div class="status-pill ${report.calculatedData?.statusColors?.FS6 || "green"}">
-          ${report.calculatedData?.statuses?.FS6 || "Within Range"}
-        </div>
-      </div>
-    </div>
-    <!-- CARD 7 -->
-    <div class="func-card ${report.calculatedData?.statusColors?.FS7 || "red"}">
-      <div class="func-header">
-        <div class="func-icon">
-          <svg viewBox="0 0 24 24">
-            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-          </svg>
-        </div>
-        <div class="func-title">Circadian Sleep</div>
-      </div>
-      <div class="func-status">
-        <div class="status-pill ${report.calculatedData?.statusColors?.FS7 || "red"}">
-          ${report.calculatedData?.statuses?.FS7 || "Elevated"}
-        </div>
-      </div>
-    </div>
-    <!-- CARD 8 -->
-    <div class="func-card ${report.calculatedData?.statusColors?.FS8 || "orange"}">
-      <div class="func-header">
-        <div class="func-icon">
-          <svg viewBox="0 0 24 24">
-            <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2M7 2v20M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3z"/>
-          </svg>
-        </div>
-        <div class="func-title">Diet Quality</div>
-      </div>
-      <div class="func-status">
-        <div class="status-pill ${report.calculatedData?.statusColors?.FS8 || "orange"}">
-          ${report.calculatedData?.statuses?.FS8 || "Borderline"}
-        </div>
-      </div>
-    </div>
-    <!-- CARD 9 -->
-    <div class="func-card ${report.calculatedData?.statusColors?.FS9 || "green"}">
-      <div class="func-header">
-        <div class="func-icon">
-          <svg viewBox="0 0 24 24">
-            <circle cx="12" cy="12" r="10"/>
-            <circle cx="12" cy="12" r="4"/>
-          </svg>
-        </div>
-        <div class="func-title">Medication Impact</div>
-      </div>
-      <div class="func-status">
-        <div class="status-pill ${report.calculatedData?.statusColors?.FS9 || "green"}">
-          ${report.calculatedData?.statuses?.FS9 || "Within Range"}
-        </div>
-      </div>
-    </div>
-    <!-- CARD 10 -->
-    <div class="func-card ${report.calculatedData?.statusColors?.FS10 || "red"}">
-      <div class="func-header">
-        <div class="func-icon">
-          <svg viewBox="0 0 24 24">
-            <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/>
-          </svg>
-        </div>
-        <div class="func-title">Hydration Recovery</div>
-      </div>
-      <div class="func-status">
-        <div class="status-pill ${report.calculatedData?.statusColors?.FS10 || "red"}">
-          ${report.calculatedData?.statuses?.FS10 || "Elevated"}
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="footer-line"></div>
-  <div class="footer">Microbiome Health Check Report — Version 7.0</div>
-</div>
 </body>
-</html>`;
+</html>
+`;
 
   return inlineLocalImages(page6HTML);
 };
@@ -1627,208 +1877,163 @@ const getPage7HTML = (report) => {
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
 <style>
-  body {
-    margin: 0;
-    padding: 0;
-    font-family: 'Poppins', sans-serif;
-    background: linear-gradient(180deg, #d4eef3 0%, #e8f6f8 50%, #e5fcff 100%);
+  body { margin:0; padding:0; background:#F3FAFB; font-family:'Poppins',sans-serif; }
+
+  .p7-page {
+    width:100%;
+    min-height:100vh;
+    padding:50px 40px 60px 40px;
+    box-sizing:border-box;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    position:relative;
+    background:#F3FAFB;
   }
-  .page {
-    width: 595px;
-    height: 842px;
-    margin: 0 auto;
-    position: relative;
-    background: linear-gradient(180deg, #d4eef3 0%, #e8f6f8 50%, #e5fcff 100%);
-    padding-top: 80px;
+
+  .p7-logo { position:absolute; top:20px; left:20px; }
+  .p7-tag {
+    position:absolute; top:22px; right:22px;
+    background:rgba(31,128,147,0.08);
+    padding:6px 22px; border-radius:9999px;
+    font-size:13px; color:#7E8C9A;
   }
-  /* LOGO */
-  .logo {
-    position: absolute;
-    top: 20px;
-    left: 20px;
-    font-family: 'Poppins', sans-serif;
-    font-size: 22px;
-    font-weight: 600;
-    color: #1f8093;
-    line-height: 1.2;
+
+  .p7-header-line { width:150%; height:2px; background:rgba(31,128,147,0.30); margin-top:50px; }
+
+  .p7-title-wrap { width:100%; margin-top:45px; padding-left:20px; }
+  .p7-title { font-size:30px; font-weight:600; color:#1F8093; }
+  .p7-underline {
+    width:120px; height:4px;
+    background:linear-gradient(90deg,#1F8093,rgba(31,128,147,0.5));
+    border-radius:999px; margin-top:8px;
   }
-  /* PAGE TAG */
-  .page-tag {
-    position: absolute;
-    top: 22px;
-    right: 22px;
-    background: rgba(31,128,147,0.08);
-    padding: 6px 22px;
-    border-radius: 9999px;
-    font-size: 14px;
-    color: #7e8c9a;
-    font-family: 'Poppins', sans-serif;
+
+  .p7-narrative-box {
+    width:640px; background:#FFF;
+    margin-top:25px; padding:20px 28px; border:1px solid #BDBDBD;
   }
-  /* HEADER LINE */
-  .header-line {
-    width: 100%;
-    height: 1px;
-    background: rgba(31,128,147,0.2);
-    margin: 20px auto 25px;
+
+  .p7-narrative-title { font-size:13px; font-weight:600; color:#1F8093; margin-bottom:12px; }
+  .p7-narrative-text {
+    font-family:'Inter',sans-serif;
+    font-size:13px; line-height:22px; color:#29303D;
+    margin-bottom:12px;
   }
-  /* TITLE */
-  .title {
-    font-family: 'Poppins', sans-serif;
-    font-size: 36px;
-    font-weight: 600;
-    color: #1f8093;
-    padding-left: 16px;
-    margin-top: 0;
+
+  .p7-key-title {
+    width:695px; margin-top:25px;
+    font-size:13px; font-weight:600; color:black;
+    margin-bottom:20px;
   }
-  .underline {
-    width: 80px;
-    height: 4px;
-    background: linear-gradient(90deg, #1f8093, rgba(31,128,147,0.5));
-    border-radius: 9999px;
-    margin-top: 8px;
-    margin-left: 16px;
+
+  .p7-key-item { width:695px; display:flex; gap:20px; margin-bottom:15px; align-items: center;}
+
+  .p7-key-icon-wrap {
+    width:32px; height:32px;
+    background:rgba(104,166,166,0.10);
+    border-radius:999px;
+    display:flex; justify-content:center; align-items:center;
   }
-  /* CONTENT WRAPPER */
-  .content-wrapper {
-    margin-top: 30px;
-    padding: 0 16px;
+  .p7-key-icon { width:12px; height:12px; background:#68A6A6; border-radius:999px; }
+
+  .p7-key-text {
+    width:494px;
+    font-family:'Inter',sans-serif;
+    font-size:13px; line-height:20px; color:#29303D;
   }
-  /* INTERPRETIVE NARRATIVE BOX */
-  .narrative-box {
-    background: white;
-    border-radius: 12px;
-    border: 2px solid #e0e6eb;
-    padding: 20px 28px;
-    margin-bottom: 20px;
+
+  .p7-footer-line {
+    width:100%; height:2px;
+    background:rgba(31,128,147,0.30);
+    position:absolute; bottom:50px;
   }
-  .narrative-title {
-    font-family: 'Poppins', sans-serif;
-    font-size: 13px;
-    font-weight: 700;
-    color: #1f8093;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-bottom: 12px;
-  }
-  .narrative-text {
-    font-family: 'Poppins', sans-serif;
-    font-size: 14px;
-    color: #000;
-    line-height: 1.6;
-  }
-  /* IMPORTANT NOTE BOX */
-  .note-box {
-    background: rgba(243, 245, 247, 0.6);
-    border-radius: 10px;
-    border-left: 4px solid #1f8093;
-    padding: 18px 24px;
-    display: flex;
-    gap: 14px;
-  }
-  .note-icon {
-    width: 24px;
-    height: 24px;
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .note-icon svg {
-    width: 20px;
-    height: 20px;
-    fill: #1f8093;
-  }
-  .note-content {
-    flex: 1;
-  }
-  .note-title {
-    font-family: 'Poppins', sans-serif;
-    font-size: 13px;
-    font-weight: 700;
-    color: #000;
-    margin-bottom: 8px;
-  }
-  .note-text {
-    font-family: 'Poppins', sans-serif;
-    font-size: 14px;
-    color: #121212;
-    line-height: 1.5;
-  }
-  /* FOOTER LINE */
-  .footer-line {
-    width: 100%;
-    height: 1px;
-    background: rgba(31,128,147,0.2);
-    position: absolute;
-    bottom: 50px;
-  }
-  /* FOOTER */
-  .footer {
-    text-align: center;
-    font-size: 11px;
-    color: #808080;
-    font-family: 'Poppins', sans-serif;
-    position: absolute;
-    bottom: 22px;
-    width: 100%;
+
+  .p7-footer {
+    width:100%; text-align:center;
+    position:absolute; bottom:22px;
+    color:#808080; font-size:13px;
+    font-family:'Inter',sans-serif;
   }
 </style>
 </head>
+
 <body>
-<div class="page">
-  <!-- Logo -->
-  <div class="logo"><img src="../assets/provencodee.png" alt="The Proven Code"></div>
-  <!-- Page number -->
-  <div class="page-tag">Page 7</div>
-  <!-- Header line -->
-  <div class="header-line"></div>
-  <!-- Title -->
-  <div class="title">Clinical Summary</div>
-  <div class="underline"></div>
-  <!-- CONTENT -->
-  <div class="content-wrapper">
-    <!-- Interpretive Narrative -->
-    <div class="narrative-box">
-      <div class="narrative-title">Interpretive Narrative</div>
-      <div class="narrative-text">
-        ${report.clinicalSummary?.narrative || "Your screening reveals mild functional imbalance with detected bacterial and yeast signals, primarily affecting fermentation load, sleep quality, and dietary patterns. This pattern typically responds well to targeted lifestyle modifications within 4-6 weeks."}
-      </div>
-    </div>
-    <!-- Important Note -->
-    <div class="note-box">
-      <div class="note-icon">
-        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <path d="M12 2L12 16M12 20L12 22"/>
-          <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/>
-        </svg>
-      </div>
-      <div class="note-content">
-        <div class="note-title">Important Note</div>
-        <div class="note-text">
-          Interpretation Note: This summary is generated based on your laboratory signals and questionnaire responses. It reflects functional patterns and is not a medical diagnosis. Always consult with a healthcare provider for medical advice.
-        </div>
-      </div>
-    </div>
+
+<div class="p7-page">
+
+  <!-- LOGO -->
+  <img class="p7-logo" src="../assets/provencodee.png" width="100" alt="The Proven Code">
+
+  <!-- PAGE TAG -->
+  <div class="p7-tag">Page 7</div>
+
+  <!-- HEADER LINE -->
+  <div class="p7-header-line"></div>
+
+  <!-- TITLE -->
+  <div class="p7-title-wrap">
+    <div class="p7-title">Interpretive Narrative</div>
+    <div class="p7-underline"></div>
   </div>
-  <!-- Footer line -->
-  <div class="footer-line"></div>
-  <!-- Footer -->
-  <div class="footer">Microbiome Health Check Report — Version 7.0</div>
+
+  <!-- NARRATIVE BOX -->
+  <div class="p7-narrative-box">
+
+      ${(report.clinicalSummary?.narrative || "")
+      .split(". ")
+      .filter(p => p.trim().length > 0)
+      .map(p => `<div class='p7-narrative-text'>${p.trim()}.</div>`)
+      .join("")
+    }
+  </div>
+
+  <!-- KEY FINDINGS TITLE -->
+  <div class="p7-key-title">Key Findings</div>
+
+  <!-- KEY FINDINGS ITEMS -->
+  ${(report.clinicalSummary?.keyFindings || [])
+      .map(f => `
+        <div class="p7-key-item">
+          <div class="p7-key-icon-wrap"><div class="p7-key-icon"></div></div>
+          <div class="p7-key-text">${f}</div>
+        </div>
+      `)
+      .join("")
+    }
+
+  <!-- FOOTER -->
+  <div class="p7-footer-line"></div>
+  <div class="p7-footer">Made by The Proven Code | Biome360 Health Check | Wellness Tool</div>
+
 </div>
+
 </body>
-</html>`;
+</html>
+`;
 
   return inlineLocalImages(page7HTML);
 };
 
 const getPage8HTML = (report) => {
   const durationMap = {
-  "Balanced": "No structured reset required",
-  "Mild Imbalance": "4-week reset routine recommended",
-  "Moderate Dysbiosis": "Structured 4-week plan + clinician review",
-  "Significant Dysbiosis": "Advanced analysis recommended"
-};
+    "Balanced": "No structured reset required",
+    "Mild Imbalance": "4-week reset routine recommended",
+    "Moderate Dysbiosis": "Structured 4-week plan + clinician review",
+    "Significant Dysbiosis": "Advanced analysis recommended"
+  };
+
+  const recColor = status => {
+    switch (status) {
+      case "Balanced": return "green";
+      case "Mild Imbalance": return "yellow";
+      case "Moderate Dysbiosis": return "orange";
+      case "Significant Dysbiosis": return "red";
+    }
+  };
   // Your Page 8 HTML with Recommendations
   let page8HTML = `
 <!DOCTYPE html>
@@ -1836,643 +2041,499 @@ const getPage8HTML = (report) => {
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap" rel="stylesheet">
+
 <style>
   body {
     margin: 0;
     padding: 0;
-    font-family: 'Lato', sans-serif;
-    background: linear-gradient(180deg, #d4eef3 0%, #e8f6f8 50%, #e5fcff 100%);
-  }
-  .page {
-    width: 595px;
-    height: 842px;
-    margin: 0 auto;
-    position: relative;
-    background: linear-gradient(180deg, #d4eef3 0%, #e8f6f8 50%, #e5fcff 100%);
-    padding-top: 80px;
-  }
-  /* LOGO */
-  .logo {
-    position: absolute;
-    top: 20px;
-    left: 20px;
+    background: #F3FAFB;
     font-family: 'Poppins', sans-serif;
-    font-size: 22px;
-    font-weight: 600;
-    color: #1f8093;
-    line-height: 1.1;
   }
-  /* PAGE TAG */
-  .page-tag {
-    position: absolute;
-    top: 22px;
-    right: 22px;
-    background: rgba(31,128,147,0.08);
-    padding: 6px 22px;
-    border-radius: 9999px;
-    font-size: 14px;
-    color: #7e8c9a;
-    font-family: 'Lato', sans-serif;
+
+  .p8-page {
+    width:100%;
+    min-height:100vh;
+    padding:50px 40px 60px 40px;
+    box-sizing:border-box;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    position:relative;
+    background:#F3FAFB;
   }
-  /* HEADER LINE - FIXED */
-  .header-line {
-    width: 100%;
-    height: 1px;
-    background: rgba(31,128,147,0.2);
-    margin: 20px auto 25px;
+
+  .p7-logo { position:absolute; top:20px; left:20px; }
+  .p7-tag {
+    position:absolute; top:22px; right:22px;
+    background:rgba(31,128,147,0.08);
+    padding:6px 22px; border-radius:9999px;
+    font-size:13px; color:#7E8C9A;
   }
-  /* TITLE */
-  .title {
-    font-family: 'Poppins', sans-serif;
-    font-size: 36px;
-    font-weight: 600;
-    color: #1f8093;
-    padding-left: 16px;
-    margin-top: 0;
+
+  .p7-header-line { width:150%; height:2px; background:rgba(31,128,147,0.30); margin-top:50px; }
+
+  .p7-title-wrap { width:100%; margin-top:45px; padding-left:20px; }
+  .p7-title { font-size:30px; font-weight:600; color:#1F8093; }
+  .p7-underline {
+    width:120px; height:4px;
+    background:linear-gradient(90deg,#1F8093,rgba(31,128,147,0.5));
+    border-radius:999px; margin-top:8px;
   }
-  .underline {
-    width: 80px;
-    height: 4px;
-    background: linear-gradient(90deg, #1f8093, rgba(31,128,147,0.5));
-    border-radius: 9999px;
-    margin-top: 8px;
-    margin-left: 16px;
-  }
-  /* CONTENT WRAPPER */
-  .content-wrapper {
-    margin-top: 30px;
-    padding: 0 16px;
-  }
-  /* MAIN RECOMMENDATION BOX */
+
+  .rec-wrapper { margin-top:40px; }
+
   .rec-box {
-    background: linear-gradient(159deg, #FEF5E7 0%, rgba(254, 245, 231, 0.5) 100%);
-    border-radius: 12px;
-    padding: 22px;
-    margin-bottom: 20px;
-    box-shadow: 0 6px 8px -4px rgba(0,0,0,0.05);
-    border: 1px solid rgba(254, 245, 231, 0.8);
+    width:560px;
+    background:white;
+    border:1px solid #BDBDBD;
+    padding:18px 20px;
+    border-radius:8px;
+    margin-bottom:22px;
   }
+
   .rec-header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 16px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
   }
+
+  .rec-title-wrap {
+    display:flex;
+    gap:14px;
+    align-items:center;
+  }
+
+  /* Circular icons */
   .rec-icon {
-    width: 48px;
-    height: 48px;
-    background: rgba(255,255,255,0.5);
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
+    width:44px;
+    height:44px;
+    border-radius:50%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
   }
-  .icon-outline {
-    width: 27px;
-    height: 27px;
-    border: 2px solid #FE7B02;
-    border-radius: 2px;
-    position: relative;
+
+  .rec-icon-img {
+    width:22px;
+    height:22px;
+    object-fit:contain;
   }
+
+  /* Icon background colors */
+  .icon-green  { background:#E8F8EF; }
+  .icon-yellow { background:#FFF7D9; }
+  .icon-orange { background:#FFE9D9; }
+  .icon-red    { background:#FFE5E3; }
+
+  /* Title dynamic colors */
+  .title-green  { color:#12C254!important; }
+  .title-yellow { color:#E2B420!important; }
+  .title-orange { color:#F77A21!important; }
+  .title-red    { color:#E44B47!important; }
+
   .rec-title {
-    font-family: 'Lato', sans-serif;
-    font-size: 22px;
-    font-weight: 600;
-    color: #000;
-    line-height: 1.2;
+    font-family:'Inter';
+    font-size:16px;
+    font-weight:600;
+    color:#000;
   }
-  .rec-description {
-    background: rgba(255,255,255,0.3);
-    border-radius: 9px;
-    padding: 14px 18px;
-    margin-bottom: 14px;
-    backdrop-filter: blur(3px);
+
+  .rec-desc {
+    margin-top:12px;
+    font-family:'Inter';
+    font-size:13px;
+    line-height:19px;
+    color:#29303D;
   }
-  .rec-text {
-    font-family: 'Lato', sans-serif;
-    font-size: 13px;
-    color: #000;
-    line-height: 1.6;
+
+  /* Status badge */
+  .status-badge {
+    background:#1E3FA2;
+    padding:4px 12px;
+    border-radius:4px;
+    color:white;
+    font-size:11px;
+    font-family:'Inter';
   }
-  .check-item {
-    background: rgba(255,255,255,0.5);
-    border-radius: 9px;
-    padding: 8px 15px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
+
+  /* Advanced box */
+  .adv-box {
+    width:560px;
+    margin-top:28px;
+    background:white;
+    border:1px solid #BDBDBD;
+    padding:16px 20px;
+    border-radius:6px;
   }
-  .check-icon {
-    width: 18px;
-    height: 18px;
-    border: 1.5px solid #1f8093;
-    border-radius: 2px;
-    position: relative;
-    flex-shrink: 0;
+
+  .adv-row {
+    display:flex;
+    gap:12px;
   }
-  .check-icon::after {
-    content: '';
-    position: absolute;
-    width: 4px;
-    height: 6px;
-    border: solid #1f8093;
-    border-width: 0 1.5px 1.5px 0;
-    transform: rotate(45deg);
-    left: 6px;
-    top: 3px;
-  }
-  .check-text {
-    font-family: 'Lato', sans-serif;
-    font-size: 13px;
-    color: #1f8093;
-    font-weight: 500;
-  }
-  /* ADVANCED ANALYSIS BOX */
-  .advanced-box {
-    background: linear-gradient(175deg, rgba(31,128,147,0.1) 0%, rgba(31,128,147,0.05) 100%);
-    border-radius: 12px;
-    padding: 20px;
-    margin-bottom: 20px;
-  }
-  .adv-header {
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
-  }
-  .adv-icon {
-    width: 38px;
-    height: 38px;
-    background: rgba(31,128,147,0.1);
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-  }
-  .square-icon {
-    width: 19px;
-    height: 19px;
-    background: #1f8093;
-  }
-  .adv-content {
-    flex: 1;
-  }
+
+  .adv-box {
+    width: calc(85% - 32px); /* Same as your table width */
+    margin-top:28px;
+    background:white;
+    border:1px solid #BDBDBD;
+    padding:16px 20px;
+    border-radius:6px;
+}
+
   .adv-title {
-    font-family: 'Lato', sans-serif;
-    font-size: 19px;
-    font-weight: 600;
-    color: #000;
-    margin-bottom: 8px;
+    font-size:16px;
+    font-weight:600;
   }
+
   .adv-text {
-    font-family: 'Lato', sans-serif;
-    font-size: 12px;
-    color: #000;
-    line-height: 1.7;
+    font-size:13px;
+    color:#808080;
+    line-height:16px;
   }
-  .adv-bold {
-    font-weight: 700;
+
+  .p8-footer-line {
+    width:100%;
+    height:2px;
+    background:rgba(31,128,147,0.3);
+    position:absolute;
+    bottom:55px;
   }
-  /* IMPORTANT NOTE BOX */
-  .important-box {
-    background: rgba(243, 245, 247, 0.5);
-    border-radius: 11px;
-    border-left: 4px solid #1f8093;
-    padding: 22px 26px;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-  }
-  .imp-header {
-    display: flex;
-    align-items: flex-start;
-    gap: 11px;
-  }
-  .imp-icon {
-    width: 19px;
-    height: 21px;
-    padding-top: 2px;
-  }
-  .imp-icon-inner {
-    width: 19px;
-    height: 19px;
-    position: relative;
-  }
-  .imp-icon-box {
-    width: 16px;
-    height: 16px;
-    border: 1.6px solid #1f8093;
-    border-radius: 2px;
-    position: absolute;
-    left: 2px;
-    top: 2px;
-  }
-  .imp-icon-check {
-    width: 5px;
-    height: 3px;
-    border: solid #1f8093;
-    border-width: 0 1.6px 1.6px 0;
-    transform: rotate(45deg);
-    position: absolute;
-    left: 7px;
-    top: 8px;
-  }
-  .imp-text {
-    font-family: 'Lato', sans-serif;
-    font-size: 13px;
-    line-height: 1.4;
-    color: #1F2933;
-    padding-right: 8px;
-  }
-  .imp-bold {
-    font-weight: 700;
-    color: #000;
-  }
-  /* FOOTER LINE */
-  .footer-line {
-    width: 100%;
-    height: 2px;
-    background: rgba(31,128,147,0.3);
-    position: absolute;
-    bottom: 68px;
-    left: 0;
-  }
-  /* FOOTER */
-  .footer {
-    text-align: center;
-    font-size: 12px;
-    color: #808080;
-    font-family: 'Lato', sans-serif;
-    position: absolute;
-    bottom: 22px;
-    width: 100%;
+
+  .p8-footer {
+    width:100%;
+    text-align:center;
+    bottom:22px;
+    position:absolute;
+    font-size:13px;
+    color:#808080;
   }
 </style>
 </head>
+
 <body>
-<div class="page">
-  <!-- Logo -->
-  <div class="logo"><img src="../assets/provencodee.png" alt="The Proven Code"></div>
-  <!-- Page number -->
-  <div class="page-tag">Page 8</div>
-  <!-- Header line -->
-  <div class="header-line"></div>
-  <!-- Title -->
-  <div class="title">Recommendations</div>
-  <div class="underline"></div>
-  <!-- CONTENT -->
-  <div class="content-wrapper">
-    <!-- Main Recommendation Box -->
+
+<div class="p8-page">
+
+  <img class="p7-logo" src="../assets/provencodee.png" width="100">
+  <div class="p7-tag">Page 8</div>
+  <div class="p7-header-line"></div>
+
+  <div class="p7-title-wrap">
+    <div class="p7-title">Recommendations</div>
+    <div class="p7-underline"></div>
+  </div>
+
+<div class="rec-wrapper">
+${["Balanced", "Mild Imbalance", "Moderate Dysbiosis", "Significant Dysbiosis"]
+      .map(status => {
+
+        const colorMap = {
+          "Balanced": "green",
+          "Mild Imbalance": "yellow",
+          "Moderate Dysbiosis": "orange",
+          "Significant Dysbiosis": "red"
+        };
+
+        const color = colorMap[status];
+
+        return `
     <div class="rec-box">
+
       <div class="rec-header">
-        <div class="rec-icon">
-          <div class="icon-outline"></div>
-        </div>
-        <div class="rec-title">Begin a Microbiome Reset Routine</div>
-      </div>
-      <div class="rec-description">
-        <div class="rec-text">
-          ${report.calculatedData?.recommendation || "Your prANJAL indicates mild imbalance. We recommend beginning a 4 week microbiome reset routine focusing on dietary modifications, stress management, and sleep hygiene. Follow the lifestyle guidance provided in this report."}
-        </div>
-      </div>
-      <div class="check-item">
-        <div class="check-icon"></div>
-        <div class="check-text">${durationMap[report.calculatedData?.overallStatus] || "4-week reset PRANJAL routine recommended"}</div>
-      </div>
-    </div>
-    <!-- Advanced Analysis Box -->
-    <div class="advanced-box">
-      <div class="adv-header">
-        <div class="adv-icon">
-          <div class="square-icon"></div>
-        </div>
-        <div class="adv-content">
-          <div class="adv-title">Want Advanced Analysis?</div>
-          <div class="adv-text">
-            ${report.recommendations?.advancedAnalysisText || "For those seeking deeper insights into their microbiome composition and function, our <span class='adv-bold'>Advanced Functional Microbiome Analysis</span> is available on request. (typical turnaround 20–25 days)."}
+
+        <div class="rec-title-wrap">
+
+          <!-- Circular Icon -->
+          <div class="rec-icon icon-${color}">
+            <img 
+              src="${status === 'Balanced' ? '../assets/tick.png' : '../assets/woah.png'}"
+              class="rec-icon-img"
+            />
           </div>
+
+          <!-- Colored title if user status -->
+          <div class="rec-title ${report.calculatedData?.overallStatus === status
+            ? "title-" + color
+            : ""
+          }">${status}</div>
         </div>
+
+        ${report.calculatedData?.overallStatus === status
+            ? `<div class="status-badge">Your Status</div>`
+            : ""
+          }
+
       </div>
+
+      <div class="rec-desc">
+        ${status === "Balanced"
+            ? "Maintain current lifestyle and dietary habits. Continue with regular wellness monitoring."
+            : status === "Mild Imbalance"
+              ? "Consider a 4-week gut reset program focusing on dietary modifications and probiotic support."
+              : status === "Moderate Dysbiosis"
+                ? "Consider a structured 4-week gut reset program with clinician review."
+                : "Recommend Advanced Functional Microbiome Analysis for comprehensive assessment and personalized treatment plan."
+          }
+      </div>
+
     </div>
-    <!-- Important Note Box -->
-    <div class="important-box">
-      <div class="imp-header">
-        <div class="imp-icon">
-          <div class="imp-icon-inner">
-            <div class="imp-icon-box"></div>
-            <div class="imp-icon-check"></div>
-          </div>
-        </div>
-        <div class="imp-text">
-          <span class="imp-bold">Important:</span> These recommendations are based on functional screening and should not replace medical advice. Please consult with your healthcare provider before making significant changes to your health routine.
-        </div>
+    `;
+      }).join("")}
+</div>
+
+<div class="adv-box">
+  <div class="adv-row">
+    <div class="adv-icon">
+  <img src="../assets/background.png" width="18" />
+</div>
+    <div>
+      <div class="adv-title">Advanced Analysis Available</div>
+      <div class="adv-text">
+        For a more comprehensive understanding of your gut microbiome, consider our Advanced
+        Functional Microbiome Analysis. This assessment provides species-level
+        identification, metabolic pathway mapping, and personalized intervention recommendations.
       </div>
     </div>
   </div>
-  <!-- Footer line -->
-  <div class="footer-line"></div>
-  <!-- Footer -->
-  <div class="footer">Microbiome Health Check Report - Version 7.0</div>
+</div>
+
+<div class="p8-footer-line"></div>
+<div class="p8-footer">Made by The Proven Code | Biome360 Health Check | Wellness Tool</div>
 </div>
 </body>
-</html>`;
+</html>
+`;
 
   return inlineLocalImages(page8HTML);
 };
 const getPage9HTML = (report) => {
-
-  console.log("PAGE 9 — FULL REPORT:", report);
-console.log("PAGE 9 — KEY INSIGHT:", report.calculatedData?.keyInsight);
-  // Your Page 9 HTML with Lifestyle Guidance
+  let lifestyleData = [];
+  
+  // Handle both string and array cases
+  if (report && report.calculatedData && report.calculatedData.lifestyle) {
+    const lifestyle = report.calculatedData.lifestyle;
+    if (typeof lifestyle === 'string') {
+      try {
+        lifestyleData = JSON.parse(lifestyle);
+      } catch(e) {
+        console.error('Error parsing lifestyle data:', e);
+        lifestyleData = [];
+      }
+    } else if (Array.isArray(lifestyle)) {
+      lifestyleData = lifestyle;
+    }
+  }
+  
   let page9HTML = `
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap" rel="stylesheet">
+
 <style>
-  body {
-    margin: 0;
-    padding: 0;
-    font-family: 'Poppins', sans-serif;
-    background: linear-gradient(180deg, #d4eef3 0%, #e8f6f8 50%, #e5fcff 100%);
+
+body{
+ margin:0;
+ background:#F3FAFB; 
+ font-family:'Poppins',sans-serif;
+}
+
+.page9{
+    width:100%;
+    min-height:100vh;
+    padding:50px 40px 60px 40px;
+    box-sizing:border-box;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    position:relative;
+    background:#F3FAFB;
+}
+
+
+/* TOP */
+.pg9-logo{
+ position:absolute;
+ top:22px;left:22px;
+}
+
+.pg9-tag{
+ position:absolute;
+ top:22px;right:22px;
+ padding:5px 20px;
+ border-radius:100px;
+ background:rgba(31,128,147,.08);
+ color:#7E8C9A;
+ font-size:14px;
+ font-family:'Lato';
+}
+
+.pg9-line{
+ width:150%;
+ height:2px;
+ margin-top:70px;
+ background:rgba(31,128,147,.30);
+}
+
+
+.p9-title-wrap { width:100%; margin-top:45px; padding-left:20px; }
+  .p9-title { font-size:30px; font-weight:600; color:#1F8093; }
+  .p9-underline {
+    width:120px; height:4px;
+    background:linear-gradient(90deg,#1F8093,rgba(31,128,147,0.5));
+    border-radius:999px; margin-top:8px;
   }
-  .page {
-    width: 595px;
-    height: 842px;
-    margin: 0 auto;
-    position: relative;
-    background: linear-gradient(180deg, #d4eef3 0%, #e8f6f8 50%, #e5fcff 100%);
-    padding-top: 80px;
-    overflow: hidden;
-  }
-  /* LOGO */
-  .logo {
-    position: absolute;
-    top: 20px;
-    left: 20px;
-    font-family: 'Poppins', sans-serif;
-    font-size: 22px;
-    font-weight: 600;
-    color: #1f8093;
-    line-height: 1.1;
-  }
-  /* PAGE TAG */
-  .page-tag {
-    position: absolute;
-    top: 22px;
-    right: 22px;
-    background: rgba(31,128,147,0.08);
-    padding: 6px 22px;
-    border-radius: 9999px;
-    font-size: 14px;
-    color: #7e8c9a;
-    font-family: 'Poppins', sans-serif;
-  }
-  /* HEADER LINE */
-  .header-line {
-    width: calc(100% - 32px);
-    height: 1px;
-    background: rgba(31,128,147,0.2);
-    margin: 20px auto 25px;
-    margin-left: 16px;
-    margin-right: 16px;
-  }
-  /* TITLE */
-  .title {
-    font-family: 'Poppins', sans-serif;
-    font-size: 36px;
-    font-weight: 600;
-    color: #1f8093;
-    padding-left: 16px;
-    margin-top: 0;
-    margin-bottom: 8px;
-  }
-  .underline {
-    width: 80px;
-    height: 4px;
-    background: linear-gradient(90deg, #1f8093, rgba(31,128,147,0.5));
-    border-radius: 9999px;
-    margin-left: 16px;
-    margin-bottom: 20px;
-  }
-  /* CONTENT WRAPPER */
-  .content-wrapper {
-    margin-top: 10px;
-    padding: 0 16px;
-    height: 570px;
-  }
-  /* ICONS ROW */
-  .icons-row {
-    display: flex;
-    justify-content: space-between;
-    margin: 10px 0 20px;
-    gap: 16px;
-  }
-  .icon-container {
-    width: 48px;
-    height: 48px;
-    background: rgba(31,128,147,0.1);
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-  }
-  .icon {
-    width: 24px;
-    height: 24px;
-    position: relative;
-  }
-  .icon-part {
-    position: absolute;
-    outline: 2px solid #1f8093;
-    outline-offset: -1px;
-  }
-  /* MAIN GUIDANCE BOX */
-  .guidance-box {
-    background: linear-gradient(148deg, #FCFBF8 0%, white 50%, #C8E4EA 100%);
-    border-radius: 12px;
-    padding: 20px 24px;
-    margin-bottom: 20px;
-    height: 320px;
-    overflow: hidden;
-  }
-  .guidance-text {
-    font-family: 'Poppins', sans-serif;
-    font-size: 11.5px;
-    line-height: 1.7;
-    color: #000;
-    margin: 0;
-  }
-  .guidance-bold {
-    font-weight: 700;
-  }
-  /* KEY INSIGHT BOX */
-  .insight-box {
-    background: linear-gradient(90deg, rgba(31,128,147,0.1) 0%, rgba(31,128,147,0.05) 50%, rgba(31,128,147,0) 100%);
-    border-radius: 12px;
-    border-left: 4px solid #1f8093;
-    padding: 16px 24px;
-    display: flex;
-    align-items: flex-start;
-    gap: 16px;
-    margin-top: 10px;
-    height: 110px;
-  }
-  .insight-icon {
-    width: 33px;
-    height: 33px;
-    background: rgba(31,128,147,0.2);
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-  }
-  .insight-icon-inner {
-    width: 16px;
-    height: 16px;
-    position: relative;
-  }
-  .insight-icon-square {
-    width: 8px;
-    height: 8px;
-    outline: 1.4px solid #1f8093;
-    outline-offset: -0.7px;
-    position: absolute;
-    left: 4px;
-    top: 1px;
-  }
-  .insight-content {
-    flex: 1;
-  }
-  .insight-title {
-    font-family: 'Poppins', sans-serif;
-    font-size: 14px;
-    font-weight: 700;
-    color: #000;
-    margin-bottom: 6px;
-  }
-  .insight-text {
-    font-family: 'Poppins', sans-serif;
-    font-size: 13.5px;
-    color: #000;
-    line-height: 1.5;
-    margin: 0;
-  }
-  /* FOOTER LINE */
-  .footer-line {
-    width: calc(100% - 32px);
-    height: 2px;
-    background: rgba(31,128,147,0.3);
-    position: absolute;
-    bottom: 68px;
-    left: 16px;
-    right: 16px;
-  }
-  /* FOOTER */
-  .footer {
-    text-align: center;
-    font-size: 12px;
-    color: #808080;
-    font-family: 'Poppins', sans-serif;
-    position: absolute;
-    bottom: 22px;
-    width: 100%;
-  }
+
+
+/* BLOCK WRAPPER */
+.pg9-wrap{
+ margin-top:32px;
+ width:100%;
+ display:flex;
+ flex-direction:column;
+ gap:14px;
+}
+
+
+/* BLOCK */
+.pg9-box{
+ background:white;
+ border:1px solid #BDBDBD;
+ border-radius:6px;
+ padding:16px 18px;
+}
+
+
+/* ROW */
+.pg9-row{
+ display:flex;
+ align-items:flex-start;
+ gap:12px;
+}
+
+/* ICON */
+.pg9-ico{
+ width:28px;height:28px;
+ background:rgba(31,128,147,.08);
+ border-radius:50%;
+ display:flex;align-items:center;justify-content:center;
+ margin-top:5px;
+}
+
+.pg9-ico-dot{
+ width:12px;height:12px;
+ border-radius:2px;
+ border:1.4px solid #1F8093;
+}
+
+
+/* NUMBER */
+.pg9-num{
+ font-size:14px;
+ font-weight:700;
+ color:#1F8093;
+ font-family:'Poppins';
+}
+
+/* TITLE */
+.pg9-label{
+ font-size:15px;margin-top:4px;
+ font-weight:600;
+ color:#1F8093;
+ font-family:'Poppins';
+}
+
+/* TEXT */
+.pg9-txt{
+ margin-top:6px;
+ font-size:13px;
+ line-height:20px;
+ color:#737373;
+ font-family:'Inter';
+}
+
+
+/* FOOTER FIXED */
+.pg9-footer-line{
+ width:100%;
+ height:2px;
+ background:rgba(31,128,147,.30);
+ position:absolute;
+ bottom:50px;left:0;
+}
+
+.pg9-footer{
+ position:absolute;
+ bottom:20px;left:0;width:100%;
+ text-align:center;
+ font-size:12px;
+ color:#808080;
+ font-family:'Inter';
+}
+
 </style>
 </head>
+
 <body>
-<div class="page">
-  <!-- Logo -->
-  <div class="logo"><img src="../assets/provencodee.png" alt="The Proven Code"></div>
-  <!-- Page number -->
-  <div class="page-tag">Page 9</div>
-  <!-- Header line -->
-  <div class="header-line"></div>
-  <!-- Title -->
-  <div class="title">Lifestyle Guidance</div>
-  <div class="underline"></div>
-  <!-- CONTENT -->
-  <div class="content-wrapper">
-    <!-- Icons Row -->
-    <div class="icons-row">
-      <!-- Icon 1 -->
-      <div class="icon-container">
-        <div class="icon">
-          <div class="icon-part" style="width: 8px; height: 9px; left: 3px; top: 2px;"></div>
-          <div class="icon-part" style="width: 5px; height: 20px; left: 16px; top: 2px;"></div>
-        </div>
-      </div>
-      <!-- Icon 2 -->
-      <div class="icon-container">
-        <div class="icon">
-          <div class="icon-part" style="width: 18px; height: 18px; left: 3px; top: 3px;"></div>
-        </div>
-      </div>
-      <!-- Icon 3 -->
-      <div class="icon-container">
-        <div class="icon">
-          <div class="icon-part" style="width: 8px; height: 11px; left: 3px; top: 5px;"></div>
-          <div class="icon-part" style="width: 12px; height: 19px; left: 9px; top: 3px;"></div>
-        </div>
-      </div>
-      <!-- Icon 4 -->
-      <div class="icon-container">
-        <div class="icon">
-          <div class="icon-part" style="width: 10px; height: 20px; left: 2px; top: 2px;"></div>
-          <div class="icon-part" style="width: 10px; height: 20px; left: 12px; top: 2px;"></div>
-          <div class="icon-part" style="width: 6px; height: 4px; left: 9px; top: 9px;"></div>
-        </div>
-      </div>
-      <!-- Icon 5 -->
-      <div class="icon-container">
-        <div class="icon">
-          <div class="icon-part" style="width: 20px; height: 20px; left: 2px; top: 2px;"></div>
-        </div>
-      </div>
-      <!-- Icon 6 -->
-      <div class="icon-container">
-        <div class="icon">
-          <div class="icon-part" style="width: 12px; height: 12px; left: 6px; top: 2px;"></div>
-        </div>
-      </div>
-    </div>
-    <!-- Main Guidance Box -->
-    <div class="guidance-box">
-      <div class="guidance-text">
-      ${report.calculatedData.lifestyle}
 
-      </div>
-    </div>
-    <!-- Key Insight Box -->
-    <div class="insight-box">
-      <div class="insight-icon">
-        <div class="insight-icon-inner">
-          <div class="insight-icon-square"></div>
-        </div>
-      </div>
-      <div class="insight-content">
-        <div class="insight-title">Key Insight</div>
-       <div class="insight-text">${report.calculatedData.keyInsight}</div>
+<div class="page9">
 
+ <img class="pg9-logo" width="110" src="../assets/provencodee.png">
+ <div class="pg9-tag">Page 9</div>
+
+ <div class="pg9-line"></div>
+
+ <div class="p9-title-wrap">
+    <div class="p9-title">Lifestyle Guidance</div>
+    <div class="p9-underline"></div>
+  </div>
+
+<!-- DYNAMIC BLOCKS -->
+<div class="pg9-wrap">
+
+${lifestyleData.map((item, i)=>`
+
+  <div class="pg9-box">
+    <div class="pg9-row">
+
+      <!-- ICON IMAGE -->
+      <img 
+        src="../assets/photo${i+1}.png"
+        class="pg9-icon-img"
+        alt="icon${i+1}"
+      />
+
+      <div>
+        <div class="pg9-num">${i+1}- ${item.title}</div>
+        <div class="pg9-txt">${item.text}</div>
       </div>
+
     </div>
   </div>
-  <!-- Footer line -->
-  <div class="footer-line"></div>
-  <!-- Footer -->
-  <div class="footer">Microbiome Health Check Report - Version 7.0</div>
+
+`).join("")}
+
+</div>
+
+ <div class="pg9-footer-line"></div>
+ <div class="pg9-footer">
+  Made by The Proven Code | Biome360 Health Check | Wellness Tool
+ </div>
 </div>
 </body>
-</html>`;
+</html>
+`;
 
   return inlineLocalImages(page9HTML);
 };
-
 
 const getPage10HTML = (report) => {
   // Your Page 10 HTML with Expert Review
@@ -2480,381 +2541,297 @@ const getPage10HTML = (report) => {
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap" rel="stylesheet">
+
 <style>
-  body {
-    margin: 0;
-    padding: 0;
-    font-family: 'Poppins', sans-serif;
-    background: linear-gradient(180deg, #d4eef3 0%, #e8f6f8 50%, #e5fcff 100%);
+  body{
+    margin:0;
+    padding:0;
+    background:#F3FAFB;
+    font-family:'Poppins',sans-serif;
   }
-  .page {
-    width: 595px;
-    height: 842px;
-    margin: 0 auto;
-    position: relative;
-    background: linear-gradient(180deg, #d4eef3 0%, #e8f6f8 50%, #e5fcff 100%);
-    padding-top: 80px;
-    overflow: hidden;
+
+  .p10-page{
+    width:100%;
+    min-height:100vh;
+    padding:50px 40px 60px 40px;
+    box-sizing:border-box;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    position:relative;
+    background:#F3FAFB;
   }
-  /* LOGO */
-  .logo {
-    position: absolute;
-    top: 20px;
-    left: 20px;
-    font-family: 'Poppins', sans-serif;
-    font-size: 22px;
-    font-weight: 600;
-    color: #1f8093;
-    line-height: 1.1;
+
+  /* TOP */
+.pg10-logo{
+ position:absolute;
+ top:22px;left:22px;
+}
+
+.pg10-tag{
+ position:absolute;
+ top:22px;right:22px;
+ padding:5px 20px;
+ border-radius:100px;
+ background:rgba(31,128,147,.08);
+ color:#7E8C9A;
+ font-size:14px;
+ font-family:'Inter';
+}
+
+.pg10-line{
+ width:150%;
+ height:2px;
+ margin-top:70px;
+ background:rgba(31,128,147,.30);
+}
+
+  .p10-title-wrap { width:100%; margin-top:45px; padding-left:20px; }
+  .p10-title { font-size:30px; font-weight:600; color:#1F8093; }
+  .p10-underline {
+    width:120px; height:4px;
+    background:linear-gradient(90deg,#1F8093,rgba(31,128,147,0.5));
+    border-radius:999px; margin-top:8px;
   }
-  /* PAGE TAG */
-  .page-tag {
-    position: absolute;
-    top: 22px;
-    right: 22px;
-    background: rgba(31,128,147,0.08);
-    padding: 6px 22px;
-    border-radius: 9999px;
-    font-size: 14px;
-    color: #7e8c9a;
-    font-family: 'Poppins', sans-serif;
+  .p10-box{
+    width:calc(100% - 40px);
+    margin:28px auto;
+    background:white;
+    border-radius:5px;
+    border:1px solid rgba(200,200,200,0.5);
+    padding:18px 20px;
   }
-  /* HEADER LINE */
-  .header-line {
-    width: calc(100% - 32px);
-    height: 1px;
-    background: rgba(31,128,147,0.2);
-    margin: 20px auto 25px;
-    margin-left: 16px;
-    margin-right: 16px;
+
+  .p10-box h4{
+    font-size:16px;
+    font-weight:600;
+    margin-bottom:8px;
+    color:#1F8093;
   }
-  /* TITLE */
-  .title {
-    font-family: 'Poppins', sans-serif;
-    font-size: 36px;
-    font-weight: 600;
-    color: #1f8093;
-    padding-left: 16px;
-    margin-top: 0;
+
+  .p10-box p{
+    font-size:14px;
+    line-height:22px;
+    color:#29303D;
+    font-family:'Inter';
     margin-bottom: 8px;
   }
-  .underline {
-    width: 80px;
-    height: 4px;
-    background: linear-gradient(90deg, #1f8093, rgba(31,128,147,0.5));
-    border-radius: 9999px;
-    margin-left: 16px;
-    margin-bottom: 20px;
-  }
-  /* CONTENT WRAPPER */
-  .content-wrapper {
-    margin-top: 10px;
-    padding: 0 16px;
-    height: 570px;
-  }
-  /* CLINICAL PERSPECTIVE BOX */
-  .clinical-box {
-    background: linear-gradient(175deg, #FCFBF8 0%, white 100%);
-    border-radius: 14px;
-    padding: 20px 28px;
-    margin-bottom: 20px;
-    border: 0.87px solid rgba(224, 230, 235, 0.5);
-    border-left: none;
-    position: relative;
-    overflow: hidden;
-  }
-  .clinical-box:before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 4px;
-    background: #1f8093;
-  }
-  .clinical-header {
+
+  /* Contact Section */
+.p10-contact-section {
+    width: calc(100% - 40px);
+    margin: 20px auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    box-sizing: border-box;
+    gap: 0;
+}
+
+.p10-contact-left,
+.p10-contact-right {
     display: flex;
     align-items: flex-start;
-    gap: 14px;
-    margin-bottom: 12px;
-  }
-  .clinical-icon {
-    width: 49px;
-    height: 49px;
-    background: rgba(31,128,147,0.1);
-    border-radius: 10.5px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    gap: 16px;
+    flex: 1;
+}
+
+.p10-contact-left {
+    justify-content: flex-start;
+    padding-right: 20px;
+}
+
+.p10-contact-right {
+    justify-content: flex-end;
+    padding-left: 20px;
+}
+
+.p10-icon-container {
     flex-shrink: 0;
-  }
-  .clinical-icon-inner {
+    width: 24px;
+    height: 26px;
+    padding-top: 2px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
+.p10-icon {
     width: 24px;
     height: 24px;
     position: relative;
-  }
-  .clinical-icon-part {
+    flex-shrink: 0;
+}
+
+.p10-icon-outline {
+    width: 16px;
+    height: 20px;
+    left: 4px;
+    top: 2px;
     position: absolute;
-    outline: 2px solid #1f8093;
+    outline: 2px #1F8093 solid;
     outline-offset: -1px;
-  }
-  .clinical-title {
-    font-family: 'Lato', sans-serif;
-    font-size: 17.5px;
-    font-weight: 400;
-    color: #000;
-    margin-bottom: 5px;
-  }
-  .clinical-text {
-    font-family: 'Lato', sans-serif;
-    font-size: 14px;
-    line-height: 1.5;
-    color: #1f8093;
-    font-style: italic;
-    margin: 0;
-  }
-  /* FIXED CERTIFIED BY BOX */
-  .certified-box {
-    background: linear-gradient(172deg, rgba(31,128,147,0.10) 0%, rgba(31,128,147,0.05) 100%);
-    border-radius: 19px;
-    padding: 1px 26px 26px;
-    margin: 20px auto;
-    width: 260px;
-    border: 1.2px solid rgba(31,128,147,0.20);
-    box-shadow: 0px 2.38px 4.76px -2.38px rgba(0, 0, 0, 0.1);
-    position: relative;
-    text-align: center;
-  }
-  /* TITLE */
-  .certified-title {
-    font-family: 'Lato', sans-serif;
-    font-size: 17px;
-    font-weight: 700;
-    text-transform: uppercase;
-    color: #000;
-    margin-bottom: 12px;
-  }
-  .ribbon {
-    width: 38px;
-    height: 55px;
-    position: relative;
-  }
-  .ribbon-body {
-    width: 34.38px;
-    height: 55px;
-    background: #FF552F;
+}
+
+.p10-icon-dot {
+    width: 6px;
+    height: 6px;
+    left: 9px;
+    top: 7px;
     position: absolute;
-    left: 6.88px;
-    top: 0;
-    border-radius: 4px;
-  }
-  .ribbon-tail {
-    position: absolute;
-    left: 6.88px;
-    bottom: -12px;
-    width: 0;
-    height: 0;
-    border-left: 17px solid transparent;
-    border-right: 17px solid transparent;
-    border-top: 12px solid #FF552F;
-  }
-  /* PROVEN CODE LOGO */
-  .proven-logo {
-    font-family: 'Poppins', sans-serif;
-    color: #1f8093;
-    line-height: 1;
-  }
-  .proven-logo .logo-line1 {
-    display: block;
-    font-size: 18px;
-    font-weight: 400;
-  }
-  .proven-logo .logo-line2 {
-    display: block;
-    font-size: 29px;
-    font-weight: 600;
-    margin-top: 2px;
-  }
-  .proven-logo .logo-line3 {
-    display: block;
-    font-size: 23px;
-    font-weight: 500;
-    margin-top: -2px;
-  }
-  /* CONTACT BOXES */
-  .contact-container {
+    outline: 2px #1F8093 solid;
+    outline-offset: -1px;
+}
+
+.p10-contact-content {
     display: flex;
-    justify-content: center;
-    gap: 13px;
-    margin: 30px 0;
-  }
-  .contact-box {
-    width: 178px;
-    height: 85px;
-    background: white;
-    border-radius: 9.6px;
-    border: 0.8px solid #E0E6EB;
-    position: relative;
-    padding-top: 40px;
-  }
-  .contact-icon {
-    width: 19px;
-    height: 19px;
-    position: absolute;
-    left: 50%;
-    top: 14px;
-    transform: translateX(-50%);
-  }
-  .contact-icon-part {
-    position: absolute;
-    outline: 1.6px solid #1f8093;
-    outline-offset: -0.8px;
-  }
-  .contact-label {
-    font-family: 'Lato', sans-serif;
-    font-size: 9.6px;
-    color: #000;
-    text-align: center;
-    margin-bottom: 2px;
-  }
-  .contact-value {
-    font-family: 'Poppins', sans-serif;
-    font-size: 11.2px;
-    color: #808080;
-    text-align: center;
-  }
-  /* FOOTER */
-  .footer-section {
-    border-top: 1.8px solid rgba(31,128,147,0.3);
-    padding-top: 10px;
-    margin-top: 108px;
-  }
-  .footer-text {
-    font-family: 'Lato', sans-serif;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 5px;
+    min-width: 0;
+    flex: 1;
+}
+
+.p10-contact-title {
+    color: #1F8093;
     font-size: 12px;
-    color: #000;
-    text-align: center;
-    margin-bottom: 5px;
-  }
-  .footer-company {
-    font-family: 'Lato', sans-serif;
-    font-size: 16px;
-    color: #1f8093;
-    text-align: center;
-    margin-bottom: 8px;
-  }
-  .footer-note {
-    font-family: 'Lato', sans-serif;
-    font-size: 10.7px;
-    color: #808080;
-    text-align: center;
-    margin-bottom: 3px;
-  }
-  .footer-version {
-    font-family: 'Lato', sans-serif;
-    font-size: 10.7px;
-    color: #7e8c9a;
-    text-align: center;
-  }
-  /* FOOTER LINE */
-  .footer-line {
-    width: calc(100% - 32px);
-    height: 2px;
-    background: rgba(31,128,147,0.3);
-    position: absolute;
-    bottom: 68px;
-    left: 16px;
-    right: 16px;
-  }
-  /* FOOTER */
-  .footer {
-    text-align: center;
+    font-family: 'Poppins';
+    font-weight: 700;
+    line-height: 20px;
+    white-space: nowrap;
+}
+
+.p10-contact-text {
+    color: #737373;
     font-size: 12px;
-    color: #808080;
-    font-family: 'Poppins', sans-serif;
-    position: absolute;
-    bottom: 22px;
+    font-family: 'Inter';
+    font-weight: 400;
+    line-height: 20px;
+    white-space: pre-line;
+    word-break: break-word;
+}
+
+.p10-contact-link {
+    color: #737373;
+    font-size: 12px;
+    font-family: 'Inter';
+    font-weight: 400;
+    text-decoration: underline;
+    line-height: 20px;
+    display: inline-block;
+}
+
+.p10-right-align .p10-contact-title {
+    text-align: right;
     width: 100%;
+}
+
+.p10-contact-right .p10-contact-content {
+    align-items: flex-end;
+    text-align: right;
+}
+
+  .p10-footer-line{
+    width:100%;
+    height:2px;
+    background:rgba(31,128,147,0.30);
+    position:absolute;
+    bottom:42px;
+  }
+
+  .p10-footer{
+    position:absolute;
+    width:100%;
+    bottom:14px;
+    text-align:center;
+    font-size:12px;
+    font-family:'Inter';
+    color:#737373;
   }
 </style>
 </head>
+
 <body>
-<div class="page">
-  <!-- Logo -->
-  <div class="logo"><img src="../assets/provencodee.png" alt="The Proven Code"></div>
-  <!-- Page number -->
-  <div class="page-tag">Page 10</div>
-  <!-- Header line -->
-  <div class="header-line"></div>
-  <!-- Title -->
-  <div class="title">Expert Review</div>
-  <div class="underline"></div>
-  <!-- CONTENT -->
-  <div class="content-wrapper">
-    <!-- Clinical Perspective Box -->
-    <div class="clinical-box">
-      <div class="clinical-header">
-        <div class="clinical-icon">
-          <div class="clinical-icon-inner">
-            <div class="clinical-icon-part" style="width: 16px; height: 20px; left: 4px; top: 2px;"></div>
-          </div>
-        </div>
-        <div style="flex: 1;">
-          <div class="clinical-title">Clinical Perspective</div>
-          <div class="clinical-text">
-            "${report.expertReview?.clinicalPerspective || "Gut health reflects diet, routine, medication, and stress. If concerns persist or recur after following the guidance, please seek a review with your clinician or a gut-health specialist."}"
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- Certified By Box -->
-    <div class="certified-box">
-      <div class="ribbon">
-        <div class="ribbon-body"></div>
-        <div class="ribbon-tail"></div>
-      </div>
-      <div class="certified-title">CERTIFIED BY</div>
-      <!-- Proven Code Logo -->
-      <div class="proven-logo">
-        <span class="logo-line1">the</span>
-        <span class="logo-line2">proven</span>
-        <span class="logo-line3">code</span>
-      </div>
-    </div>
-    <!-- Contact Boxes -->
-    <div class="contact-container">
-      <!-- Phone Support -->
-      <div class="contact-box">
-        <div class="contact-icon">
-          <div class="contact-icon-part" style="width: 16px; height: 16px; left: 2px; top: 2px;"></div>
-        </div>
-        <div class="contact-label">Phone Support</div>
-        <div class="contact-value">${report.contactInfo?.phone || "+1 (555) 123-4567"}</div>
-      </div>
-      <!-- Email -->
-      <div class="contact-box">
-        <div class="contact-icon">
-          <div class="contact-icon-part" style="width: 16px; height: 13px; left: 2px; top: 3px;"></div>
-          <div class="contact-icon-part" style="width: 16px; height: 5px; left: 2px; top: 6px;"></div>
-        </div>
-        <div class="contact-label">Email</div>
-        <div class="contact-value">${report.contactInfo?.email || "support@provencode.com"}</div>
-      </div>
-    </div>
-    <!-- Footer Section -->
-    <div class="footer-section">
-      <div class="footer-text">Prepared by <span class="footer-company">The Proven Code</span></div>
-      <div class="footer-note">Microbiome Health Check | For clinical reference use</div>
-      <div class="footer-version">Version 7.0</div>
-    </div>
+
+<div class="p10-page">
+
+<img class="pg10-logo" width="110" src="../assets/provencodee.png">
+ <div class="pg10-tag">Page 10</div>
+
+ <div class="pg10-line"></div>
+
+  <div class="p10-title-wrap">
+    <div class="p10-title">Expert Review</div>
+    <div class="p10-underline"></div>
   </div>
+
+  <!-- Content Box -->
+<div class="p10-box">
+
+  <h4>Expert Review Note:</h4>
+  <p>
+    ${ report?.expertReviewNote || "Please consult your clinician for advanced interpretation and a personalized care plan." }
+  </p>
+
+  <br/>
+
+  <h4>Disclaimer:</h4>
+  <p>
+    This <strong>Biome360 Health Check Report</strong> is a <strong>wellness-oriented microbiome assessment</strong> and is <strong>not intended for diagnosis or disease identification</strong>.
+    All interpretations are based on <strong>microbial metabolite patterns and research-based scientific literature</strong>, and should <strong>not be considered a substitute for medical advice</strong>.
+  </p>
+
+  <p style="margin-top: 12px;">
+    <strong>Always consult a qualified healthcare provider</strong> before making any changes to medication, supplements, or treatment plans.
+  </p>
+
+  <p style="margin-top: 12px;">
+    <strong>In case of any concerning symptoms or medical emergencies, seek medical attention immediately.</strong>
+  </p>
+
 </div>
+
+  <!-- Contact Section -->
+<div class="p10-contact-section">
+    <div class="p10-contact-left">
+        <div class="p10-icon-container">
+                <img class="p10-icon" src="../assets/location.png" alt="icon outline"/>
+        </div>
+        <div class="p10-contact-content">
+            <div class="p10-contact-title">Visit Us:</div>
+            <div class="p10-contact-text">3rd Floor, Plot 94
+Near Radisson Blu
+Dwarka Sector 13,
+New Delhi 110078
+Delhi (IN)</div>
+        </div>
+    </div>
+    <div class="p10-contact-right">
+        <div class="p10-contact-content">
+            <div class="p10-contact-title p10-right-align">Know More:</div>
+            <div>
+                <a href="https://www.theprovencode.com" class="p10-contact-link">www.theprovencode.com</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+  <!-- Footer -->
+  <div class="p10-footer-line"></div>
+  <div class="p10-footer">Made by The Proven Code | Biome360 Health Check | Wellness Tool</div>
+
+</div>
+
 </body>
-</html>`;
+</html>
+`;
 
   return inlineLocalImages(page10HTML);
 };
@@ -2936,7 +2913,7 @@ const buildFullHTML = (report) => {
     height: 297mm;
     page-break-after: always;
     position: relative;
-    background: linear-gradient(180deg, #d4eef3 0%, #e8f6f8 50%, #f0f9fa 100%);
+    background: #FEFFFF;
   }
   
   .pdf-page-wrapper:last-child {
@@ -2951,7 +2928,7 @@ const buildFullHTML = (report) => {
     
     .pdf-page-wrapper {
       break-after: page;
-      background: linear-gradient(180deg, #d4eef3 0%, #e8f6f8 50%, #f0f9fa 100%) !important;
+      background: #FEFFFF;
     }
   }
 </style>
@@ -3078,7 +3055,7 @@ export const generatePDF = async (report, outputPath = null) => {
   } catch (err) {
     console.error("PDF GENERATION ERROR:", err.message);
     throw err; // Just throw the error, no fallback
-    
+
   } finally {
     if (browser) {
       try {

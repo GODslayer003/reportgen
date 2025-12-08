@@ -4,7 +4,8 @@ import { useNavigate } from "react-router-dom";
 import Layout from "../components/Layout";
 import { useDispatch, useSelector } from "react-redux";
 import { createReport, downloadPDF, clearError } from "../features/report/reportSlice";
-
+import { HiOutlineDocumentText } from "react-icons/hi";
+import PrintableReport from "../components/PrintableReport";
 export default function Preview() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -27,6 +28,140 @@ export default function Preview() {
       </Layout>
     );
   }
+const handlePrintPreview = () => {
+  const printContent = `
+    <html>
+      <head>
+        <title>Biome360 Report</title>
+        <style>
+          body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            color: black;
+          }
+          h1 { color: #2D8275; text-align: center; }
+          h2 { color: #333; border-bottom: 2px solid #ccc; padding-bottom: 5px; }
+          table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+          }
+          th, td {
+            border: 1px solid #333;
+            padding: 8px;
+            text-align: left;
+          }
+          th {
+            background-color: #f0f0f0;
+          }
+          .summary {
+            background-color: #f9f9f9;
+            border: 1px solid #ccc;
+            padding: 15px;
+            margin-top: 20px;
+          }
+          @media print {
+            @page { margin: 1cm; }
+            body { margin: 0; }
+          }
+        </style>
+      </head>
+      <body>
+        <h1>Biome360 Health Check Report</h1>
+        <p style="text-align: center; color: #666;">Comprehensive Microbiome Assessment</p>
+        <p style="text-align: center; font-size: 12px;">Report Date: ${new Date().toLocaleDateString()}</p>
+        
+        <h2>Patient Information</h2>
+        <table>
+          <tr>
+            <td><strong>Patient Name:</strong></td>
+            <td>${patientInfo?.patientName || 'N/A'}</td>
+          </tr>
+          <tr>
+            <td><strong>Age:</strong></td>
+            <td>${patientInfo?.age || 'N/A'}</td>
+          </tr>
+          <tr>
+            <td><strong>Sex:</strong></td>
+            <td>${patientInfo?.sex || 'N/A'}</td>
+          </tr>
+          <tr>
+            <td><strong>Collection Date:</strong></td>
+            <td>${patientInfo?.collectionDate ? new Date(patientInfo.collectionDate).toLocaleDateString() : 'N/A'}</td>
+          </tr>
+          <tr>
+            <td><strong>Clinician:</strong></td>
+            <td>${patientInfo?.clinicianName || 'Not specified'}</td>
+          </tr>
+        </table>
+        
+        <h2>Laboratory Results</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Test</th>
+              <th>Result</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Specimen Validity</td>
+              <td>${labInputs?.specimenValidity === 1 ? 'Valid' : 'Invalid'}</td>
+              <td>${labInputs?.specimenValidity === 1 ? '✓ Pass' : '✗ Fail'}</td>
+            </tr>
+            <tr>
+              <td>Bacterial Signal</td>
+              <td>${labInputs?.bacterialSignal === 1 ? 'Detected' : 'Not Detected'}</td>
+              <td>${labInputs?.bacterialSignal === 1 ? '⚠ Alert' : '✓ Normal'}</td>
+            </tr>
+            <tr>
+              <td>Yeast Signal</td>
+              <td>${labInputs?.yeastSignal === 1 ? 'Detected' : 'Not Detected'}</td>
+              <td>${labInputs?.yeastSignal === 1 ? '⚠ Alert' : '✓ Normal'}</td>
+            </tr>
+          </tbody>
+        </table>
+        
+        <h2>Questionnaire Assessment</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Question</th>
+              <th>Description</th>
+              <th>Score</th>
+              <th>Interpretation</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${questionnaires ? Object.entries(questionnaires).map(([qKey, val]) => `
+              <tr>
+                <td><strong>${qKey}</strong></td>
+                <td>${questionLabels[qKey]}</td>
+                <td>${val}</td>
+                <td>${scoreLabels[val]}</td>
+              </tr>
+            `).join('') : ''}
+          </tbody>
+        </table>
+      </body>
+    </html>
+  `;
+
+  // Open print window
+  const printWindow = window.open('', '_blank');
+  if (printWindow) {
+    printWindow.document.open();
+    printWindow.document.write(printContent);
+    printWindow.document.close();
+    
+    // Wait for content to load, then trigger print
+    printWindow.onload = () => {
+      printWindow.focus();
+      printWindow.print();
+    };
+  }
+};
 
   const handleDownloadPDF = async (reportId) => {
     try {
@@ -138,9 +273,7 @@ export default function Preview() {
         {/* Header & Actions */}
         <div className="border border-[#2D8275] bg-white rounded-xl p-4 sm:p-6 md:p-8 mb-6 sm:mb-8 md:mb-10 relative">
           <div className="absolute right-4 top-4 sm:right-6 sm:top-6 text-[#2D8275]">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8 sm:w-10 sm:h-10">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-6a2.25 2.25 0 0 0-2.25-2.25h-6M15 19.5h-6A2.25 2.25 0 0 1 6.75 17.25V7.5m0 0L12 2.25l5.25 5.25M8.25 12h7.5" />
-            </svg>
+            <HiOutlineDocumentText className="w-8 h-8 sm:w-10 sm:h-10" />
           </div>
           <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 mb-2">Report Preview</h2>
           <p className="text-gray-500 text-xs sm:text-sm mb-4 sm:mb-6 md:mb-8">
@@ -167,16 +300,15 @@ export default function Preview() {
                 </>
               )}
             </button>
-
-            <button
-              onClick={() => window.print()}
-              className="px-4 sm:px-6 py-2.5 sm:py-3 border border-[#2D8275] text-[#2D8275] rounded-lg font-medium flex items-center justify-center gap-2 hover:bg-[#2D8275] hover:text-white transition-colors text-sm sm:text-base"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 sm:w-5 sm:h-5">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6 9V2h12v7M6 18h12v4H6v-4ZM4 9h16v6H4V9Z" />
-              </svg>
-              Print Preview
-            </button>
+          <button
+            onClick={handlePrintPreview}
+            className="px-4 sm:px-6 py-2.5 sm:py-3 border border-[#2D8275] text-[#2D8275] rounded-lg font-medium flex items-center justify-center gap-2 hover:bg-[#2D8275] hover:text-white transition-colors text-sm sm:text-base"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 sm:w-5 sm:h-5">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 9V2h12v7M6 18h12v4H6v-4ZM4 9h16v6H4V9Z" />
+            </svg>
+            Print Preview
+          </button>
           </div>
         </div>
 

@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import { validationResult } from 'express-validator';
 import User from '../models/User.js';
 export const register = async (req, res) => {
-      console.log('Incoming request body:', req.body); 
+  console.log('Incoming request body:', req.body);
 
   try {
     const errors = validationResult(req);
@@ -14,7 +14,7 @@ export const register = async (req, res) => {
     }
 
     const { name, email, password, organization, role } = req.body;
-console.log('Request body:', req.body);
+    console.log('Request body:', req.body);
 
     const existingUser = await User.findOne({ email });
     if (existingUser) {

@@ -4,7 +4,6 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
-
 <style>
   body {
     margin: 0;
@@ -12,22 +11,19 @@
     font-family: 'Poppins', sans-serif;
     background: linear-gradient(180deg, #d4eef3 0%, #e8f6f8 50%, #e5fcff 100%);
   }
-
   .page {
     width: 595px;
-    height: 842px;
+    height: 1122px;
     margin: 0 auto;
     position: relative;
     background: linear-gradient(180deg, #d4eef3 0%, #e8f6f8 50%, #e5fcff 100%);
     padding-top: 80px;
   }
-
   .logo {
     position: absolute;
     top: 20px;
     left: 20px;
   }
-
   .page-tag {
     position: absolute;
     top: 22px;
@@ -38,21 +34,18 @@
     font-size: 14px;
     color: #7e8c9a;
   }
-
   .header-line {
     width: 100%;
     height: 1px;
     background: rgba(31,128,147,0.2);
     margin: 20px auto 25px;
   }
-
   .title {
     font-size: 36px;
     font-weight: 600;
     color: #1f8093;
     padding-left: 16px;
   }
-
   .underline {
     width: 80px;
     height: 4px;
@@ -61,12 +54,10 @@
     margin-top: 8px;
     margin-left: 16px;
   }
-
   .observation-wrapper {
     margin-top: 30px;
     padding: 0 16px;
   }
-
   .obs-card {
     background: white;
     border-radius: 14px;
@@ -76,20 +67,17 @@
     box-shadow: 0 3px 10px rgba(31,128,147,0.08);
     border-left: 4px solid #1f8093;
   }
-
   .obs-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 12px;
   }
-
   .obs-left {
     display: flex;
     align-items: center;
     gap: 14px;
   }
-
   .icon-circle {
     width: 44px;
     height: 44px;
@@ -99,7 +87,6 @@
     justify-content: center;
     align-items: center;
   }
-
   .icon-circle svg {
     width: 24px;
     height: 24px;
@@ -107,13 +94,11 @@
     stroke-width: 2;
     fill: none;
   }
-
   .obs-title {
     font-size: 16px;
     font-weight: 600;
     color: #000;
   }
-
   .status-badge {
     padding: 6px 16px;
     border-radius: 9999px;
@@ -122,7 +107,12 @@
     font-size: 12px;
     font-weight: 500;
   }
-
+  .obs-description {
+    font-size: 12px;
+    color: #555;
+    line-height: 1.6;
+    margin-bottom: 10px;
+  }
   .progress-bar {
     width: 100%;
     height: 6px;
@@ -130,13 +120,11 @@
     border-radius: 9999px;
     overflow: hidden;
   }
-
   .progress-fill {
     height: 100%;
     background: #1f8093;
     border-radius: 9999px;
   }
-
   .clinical-ref {
     background: rgba(31,128,147,0.05);
     border-radius: 14px;
@@ -145,25 +133,21 @@
     margin-top: 16px;
     border-left: 4px solid #1f8093;
   }
-
   .clinical-header {
     display: flex;
     align-items: center;
     gap: 12px;
     margin-bottom: 12px;
   }
-
   .clinical-title {
     font-size: 15px;
     font-weight: 600;
   }
-
   .clinical-text {
     font-size: 12px;
     color: #555;
     line-height: 1.7;
   }
-
   .footer-line {
     width: 100%;
     height: 1px;
@@ -171,7 +155,6 @@
     position: absolute;
     bottom: 50px;
   }
-
   .footer {
     text-align: center;
     font-size: 11px;
@@ -182,25 +165,18 @@
   }
 </style>
 </head>
-
 <body>
 <div class="page">
-
   <!-- Logo -->
   <div class="logo">
     <img src="../assets/provencodee.png" alt="The Proven Code">
   </div>
-
   <!-- Page number -->
   <div class="page-tag">Page 5</div>
-
   <div class="header-line"></div>
-
   <div class="title">What We Observed</div>
   <div class="underline"></div>
-
   <div class="observation-wrapper">
-
     <!-- Observation 1: Specimen Validity -->
     <div class="obs-card">
       <div class="obs-header">
@@ -214,19 +190,16 @@
           <div class="obs-title">Specimen Validity</div>
         </div>
         <div class="status-badge">
-          {{calculatedData.specimenStatus}}
+          ${report.calculatedData?.specimenStatus || "Invalid"}
         </div>
       </div>
-
       <div class="obs-description">
-        {{calculatedData.specimenDescription}}
+        ${report.calculatedData?.specimenDescription || "Specimen analysis indicates potential issues with sample collection or handling."}
       </div>
-
       <div class="progress-bar">
-        <div class="progress-fill" style="width: {{calculatedData.specimenPercent}}%;"></div>
+        <div class="progress-fill" style="width: ${report.calculatedData?.specimenPercent || 30}%;"></div>
       </div>
     </div>
-
     <!-- Observation 2: Bacterial Signal -->
     <div class="obs-card">
       <div class="obs-header">
@@ -243,19 +216,16 @@
           <div class="obs-title">Bacterial Signal</div>
         </div>
         <div class="status-badge">
-          {{calculatedData.bacterialStatus}}
+          ${report.calculatedData?.bacterialStatus || "Detected"}
         </div>
       </div>
-
       <div class="obs-description">
-        {{calculatedData.bacterialDescription}}
+        ${report.calculatedData?.bacterialDescription || "Bacterial signal indicates presence of bacterial activity in the sample."}
       </div>
-
       <div class="progress-bar">
-        <div class="progress-fill" style="width: {{calculatedData.bPercent}}%;"></div>
+        <div class="progress-fill" style="width: ${report.calculatedData?.bPercent || 60}%;"></div>
       </div>
     </div>
-
     <!-- Observation 3: Yeast Signal -->
     <div class="obs-card">
       <div class="obs-header">
@@ -270,19 +240,16 @@
           <div class="obs-title">Yeast Signal</div>
         </div>
         <div class="status-badge">
-          {{calculatedData.yeastStatus}}
+          ${report.calculatedData?.yeastStatus || "Not Detected"}
         </div>
       </div>
-
       <div class="obs-description">
-        {{calculatedData.yeastDescription}}
+        ${report.calculatedData?.yeastDescription || "Yeast signal analysis shows no significant yeast presence."}
       </div>
-
       <div class="progress-bar">
-        <div class="progress-fill" style="width: {{calculatedData.yPercent}}%;"></div>
+        <div class="progress-fill" style="width: ${report.calculatedData?.yPercent || 20}%;"></div>
       </div>
     </div>
-
     <!-- Clinical Reference -->
     <div class="clinical-ref">
       <div class="clinical-header">
@@ -299,13 +266,9 @@
         Consult your healthcare provider for clinical interpretation.
       </div>
     </div>
-
   </div>
-
   <div class="footer-line"></div>
-
   <div class="footer">Microbiome Health Check Report — Version 7.0</div>
-
 </div>
 </body>
 </html>

@@ -17,10 +17,10 @@ export const createReport = async (req, res) => {
 
     await report.save();
 
-    res.status(201).json({ 
-      message: 'Report generated successfully', 
-      report, 
-      success: true 
+    res.status(201).json({
+      message: 'Report generated successfully',
+      report,
+      success: true
     });
   } catch (error) {
     console.error('Error in report creation:', error);
@@ -28,8 +28,7 @@ export const createReport = async (req, res) => {
   }
 };
 
-// GET PDF
-// GET PDF
+// GET PDF REPORT
 export const getReportPDF = async (req, res) => {
   try {
     const savedReport = await Report.findOne({
@@ -39,7 +38,7 @@ export const getReportPDF = async (req, res) => {
 
     if (!savedReport) return res.status(404).json({ message: 'Report not found' });
 
-    // 🔥 REGENERATE REPORT so keyInsight exists
+    // REGENERATE REPORT so keyInsight exists
     const freshReport = generateCompleteReport(
       savedReport.patient,
       savedReport.labInputs,
