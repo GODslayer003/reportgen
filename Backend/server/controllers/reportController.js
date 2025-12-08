@@ -58,10 +58,11 @@ export const getReportPDF = async (req, res) => {
     const pdfBuffer = await generatePDF(freshReport);
 
     res.setHeader("Content-Type", "application/pdf");
-    res.setHeader("Content-Disposition", `attachment; filename="${freshReport.testId}.pdf"`);
-    res.setHeader("Content-Length", pdfBuffer.length);
+res.setHeader("Content-Disposition", `inline; filename="${freshReport.testId}.pdf"`);
+res.setHeader("Content-Length", pdfBuffer.length);
 
-    res.send(pdfBuffer);
+return res.end(pdfBuffer);
+
 
   } catch (error) {
     console.error('Error in PDF generation route:', error);

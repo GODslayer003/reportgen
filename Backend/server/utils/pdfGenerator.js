@@ -2311,14 +2311,14 @@ ${["Balanced", "Mild Imbalance", "Moderate Dysbiosis", "Significant Dysbiosis"]
 };
 const getPage9HTML = (report) => {
   let lifestyleData = [];
-  
+
   // Handle both string and array cases
   if (report && report.calculatedData && report.calculatedData.lifestyle) {
     const lifestyle = report.calculatedData.lifestyle;
     if (typeof lifestyle === 'string') {
       try {
         lifestyleData = JSON.parse(lifestyle);
-      } catch(e) {
+      } catch (e) {
         console.error('Error parsing lifestyle data:', e);
         lifestyleData = [];
       }
@@ -2326,7 +2326,7 @@ const getPage9HTML = (report) => {
       lifestyleData = lifestyle;
     }
   }
-  
+
   let page9HTML = `
 <!DOCTYPE html>
 <html>
@@ -2499,20 +2499,20 @@ body{
 <!-- DYNAMIC BLOCKS -->
 <div class="pg9-wrap">
 
-${lifestyleData.map((item, i)=>`
+${lifestyleData.map((item, i) => `
 
   <div class="pg9-box">
     <div class="pg9-row">
 
       <!-- ICON IMAGE -->
       <img 
-        src="../assets/photo${i+1}.png"
+        src="../assets/photo${i + 1}.png"
         class="pg9-icon-img"
-        alt="icon${i+1}"
+        alt="icon${i + 1}"
       />
 
       <div>
-        <div class="pg9-num">${i+1}- ${item.title}</div>
+        <div class="pg9-num">${i + 1}- ${item.title}</div>
         <div class="pg9-txt">${item.text}</div>
       </div>
 
@@ -2738,6 +2738,10 @@ const getPage10HTML = (report) => {
     text-align: right;
 }
 
+  .p10-right-align {
+    text-align: right;
+  }
+
   .p10-footer-line{
     width:100%;
     height:2px;
@@ -2777,7 +2781,7 @@ const getPage10HTML = (report) => {
 
   <h4>Expert Review Note:</h4>
   <p>
-    ${ report?.expertReviewNote || "Please consult your clinician for advanced interpretation and a personalized care plan." }
+    ${ report?.summaryObservation || "Please consult your clinician for advanced interpretation and a personalized care plan." }
   </p>
 
   <br/>
@@ -2798,7 +2802,7 @@ const getPage10HTML = (report) => {
 
 </div>
 
-  <!-- Contact Section -->
+ <!-- Contact Section -->
 <div class="p10-contact-section">
     <div class="p10-contact-left">
         <div class="p10-icon-container">
@@ -2992,78 +2996,52 @@ const buildFullHTML = (report) => {
 --------------------------------------------------------- */
 
 export const generatePDF = async (report, outputPath = null) => {
-  console.log("=== PDF GENERATION START ===");
-  console.log("Generating for:", report.testId || report._id);
-
-  let browser = null;
+  const browser = await puppeteer.launch({
+    headless: "new",
+    args: ["--no-sandbox", "--disable-setuid-sandbox"]
+  });
 
   try {
-    // Build HTML with both pages
-    const html = buildFullHTML(report);
-
-    // Launch browser
-    browser = await puppeteer.launch({
-      headless: "new",
-      args: [
-        "--no-sandbox",
-        "--disable-setuid-sandbox",
-        "--disable-dev-shm-usage",
-      ],
-      timeout: 10000,
-    });
-
     const page = await browser.newPage();
 
-    // Set A4 viewport
-    await page.setViewport({
-      width: 794,   // A4 width at 96 DPI
-      height: 1123, // A4 height at 96 DPI
+    // Ensure report data is properly formatted
+    const formattedReport = {
+      ...report.toObject ? report.toObject() : report,
+      // Ensure all required fields exist
+      patient: report.patient || { name: 'Unknown' },
+      testId: report.testId || 'Unknown',
+      calculatedData: report.calculatedData || {}
+    };
+
+    const htmlContent = buildFullHTML(formattedReport);
+
+    await page.setContent(htmlContent, {
+      waitUntil: "domcontentloaded",
+      timeout: 60000
     });
 
-    // Set content
-    await page.setContent(html, {
-      waitUntil: "load",
-      timeout: 15000,
-    });
 
-    // Short wait for rendering
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise(r => setTimeout(r, 500));
 
-    // Generate PDF
-    const pdf = await page.pdf({
+    const pdfBuffer = await page.pdf({
       format: "A4",
       printBackground: true,
-      margin: {
-        top: "0mm",
-        right: "0mm",
-        bottom: "0mm",
-        left: "0mm",
-      },
-      preferCSSPageSize: true,
+      margin: { top: "0mm", bottom: "0mm" },
     });
 
-    console.log("=== PDF GENERATION COMPLETE ===");
-
-    // Save if needed
+    // If outputPath provided, save to file (for debugging)
     if (outputPath) {
-      fs.writeFileSync(outputPath, pdf);
-      console.log(`PDF saved to: ${outputPath}`);
+      const fs = await import('fs');
+      fs.writeFileSync(outputPath, pdfBuffer);
     }
 
-    return pdf;
+    return pdfBuffer;
 
   } catch (err) {
-    console.error("PDF GENERATION ERROR:", err.message);
-    throw err; // Just throw the error, no fallback
-
+    console.error("PDF generation failed:", err);
+    throw new Error(`PDF generation failed: ${err.message}`);
   } finally {
-    if (browser) {
-      try {
-        await browser.close();
-      } catch (e) {
-        // Ignore close errors
-      }
-    }
+    await browser.close();
   }
 };
 
