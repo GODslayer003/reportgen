@@ -688,6 +688,7 @@ body {
   border-radius: 9999px;
   font-size: 13px;
   color: #7e8c9a;
+  font-family: "Poppins", sans-serif;
 }
 
 .p3-header-line {
@@ -1901,6 +1902,7 @@ const getPage7HTML = (report) => {
     padding:6px 22px; border-radius:9999px;
     font-size:13px; color:#7E8C9A;
   }
+
   .p7-header-line { width:150%; height:2px; background:rgba(31,128,147,0.30); margin-top:50px; }
 
   .p7-title-wrap { width:100%; margin-top:45px; padding-left:20px; }
@@ -2071,6 +2073,7 @@ const getPage8HTML = (report) => {
     padding:6px 22px; border-radius:9999px;
     font-size:13px; color:#7E8C9A;
   }
+
   .p7-header-line { width:150%; height:2px; background:rgba(31,128,147,0.30); margin-top:50px; }
 
   .p7-title-wrap { width:100%; margin-top:45px; padding-left:20px; }
@@ -3035,32 +3038,40 @@ export const generatePDF = async (report, outputPath = null) => {
     const { default: chromium } = await import('@sparticuz/chromium');
     const { default: puppeteerCore } = await import('puppeteer-core');
     const execPath = await chromium.executablePath();
-    console.log('[pdfGenerator] sparticuz chromium execPath:', execPath, 'exists:', fs.existsSync(execPath));
     browser = await puppeteerCore.launch({
       headless: true,
-      args: chromium.args.concat(['--no-sandbox','--disable-setuid-sandbox']),
+      args: chromium.args,
       executablePath: execPath,
       defaultViewport: chromium.defaultViewport,
       ignoreHTTPSErrors: true
     });
   } catch (e) {
     browser = await puppeteer.launch({
-  headless: true,
-  executablePath: puppeteer.executablePath(),
-  args: [
-    "--no-sandbox",
-    "--disable-setuid-sandbox",
-    "--disable-dev-shm-usage",
-    "--no-zygote",
-    "--single-process",
-  ],
-});
+      headless: true,
+      args: [
+        "--no-sandbox",
+        "--disable-setuid-sandbox",
+        "--disable-gpu",
+        "--disable-dev-shm-usage",
+        "--no-zygote"
+      ],
+      executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || (await puppeteer.executablePath())
+    });
   }
 
   try {
     const page = await browser.newPage();
     page.setDefaultNavigationTimeout(120000);
     page.setDefaultTimeout(120000);
+
+    await page.setRequestInterception(true);
+    page.on('request', (req) => {
+      const url = req.url();
+      if (url.startsWith('http://') || url.startsWith('https://')) {
+        return req.abort();
+      }
+      req.continue();
+    });
 
     const formattedReport = {
       ...report.toObject ? report.toObject() : report,
