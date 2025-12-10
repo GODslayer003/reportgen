@@ -2992,85 +2992,109 @@ const buildFullHTML = (report) => {
 --------------------------------------------------------- */
 
 export const generatePDF = async (report, outputPath = null) => {
-    // If an external HTML-to-PDF API key is configured, prefer that path to avoid Chromium entirely
-  if (process.env.HTML2PDF_API_KEY) {
-    console.log('[pdfGenerator] HTML2PDF_API_KEY present — attempting external API path (html2pdf.app).');
+  // If an external HTML-to-PDF API key is configured, prefer that path to avoid Chromium entirely
+if (process.env.HTML2PDF_API_KEY) {
+  console.log('[pdfGenerator] HTML2PDF_API_KEY present — attempting external API path (html2pdf.app).');
+  try {
+    const formattedReport = {
+      ...report.toObject ? report.toObject() : report,
+      patient: report.patient || { name: 'Unknown' },
+      testId: report.testId || 'Unknown',
+      calculatedData: report.calculatedData || {}
+    };
+
+    const htmlContent = buildFullHTML(formattedReport);
+
+    // POST to html2pdf.app
+    let resp;
     try {
-      const formattedReport = {
-        ...report.toObject ? report.toObject() : report,
-        patient: report.patient || { name: 'Unknown' },
-        testId: report.testId || 'Unknown',
-        calculatedData: report.calculatedData || {}
-      };
-
-      const htmlContent = buildFullHTML(formattedReport);
-
-      // POST to html2pdf.app
-      let resp;
-      try {
-        resp = await axios.post(
-          `https://api.html2pdf.app/v1/generate`,
-          { html: htmlContent },
-          {
-            params: { apiKey: process.env.HTML2PDF_API_KEY },
-            responseType: 'arraybuffer',
-            timeout: 120000
-          }
-        );
-      } catch (err) {
-        // If the provider returned a response body, try to parse it for diagnostics
-        const status = err?.response?.status;
-        const data = err?.response?.data;
-        let parsed = data;
-        try {
-          // attempt to decode arraybuffer or buffer to string/json
-          if (data && data instanceof ArrayBuffer) {
-            parsed = Buffer.from(data).toString('utf8');
-          } else if (data && Buffer.isBuffer(data)) {
-            parsed = data.toString('utf8');
-          }
-          if (typeof parsed === 'string' && parsed.trim().startsWith('{')) {
-            parsed = JSON.parse(parsed);
-          }
-        } catch (parseErr) {
-          // leave parsed as string if JSON.parse fails
+      resp = await axios.post(
+        `https://api.html2pdf.app/v1/generate`,
+        { html: htmlContent },
+        {
+          params: { apiKey: process.env.HTML2PDF_API_KEY },
+          responseType: 'arraybuffer',
+          timeout: 120000
         }
-
-        console.error('[External PDF] html2pdf.app request failed. status=', status, 'providerData=', parsed || err.message);
-        // Throw a rich error so the controller returns the provider error in response
-        const errMsg = `html2pdf.app request failed: status=${status} message=${err.message} providerData=${typeof parsed === 'string' ? parsed : JSON.stringify(parsed)}`;
-        throw new Error(errMsg);
+      );
+    } catch (err) {
+      const status = err?.response?.status;
+      const data = err?.response?.data;
+      let parsed = data;
+      try {
+        if (data && data instanceof ArrayBuffer) {
+          parsed = Buffer.from(data).toString('utf8');
+        } else if (data && Buffer.isBuffer(data)) {
+          parsed = data.toString('utf8');
+        }
+        if (typeof parsed === 'string' && parsed.trim().startsWith('{')) {
+          parsed = JSON.parse(parsed);
+        }
+      } catch (parseErr) {
+        // keep parsed as string
       }
 
-      console.log('[pdfGenerator] html2pdf.app responded status=', resp.status);
-
-      const pdfBuffer = Buffer.from(resp.data);
-
-      if (outputPath) {
-        fs.writeFileSync(outputPath, pdfBuffer);
-      }
-      return pdfBuffer;
-    } catch (e) {
-      // Surface a detailed error so controller logs/returns it
-      console.error('[pdfGenerator] External HTML2PDF path error:', e?.message || e);
-      // Re-throw to avoid silently falling back in production — this helps debugging.
-      throw e;
+      console.error('[External PDF] html2pdf.app request failed. status=', status, 'providerData=', parsed || err.message);
+      const errMsg = `html2pdf.app request failed: status=${status} message=${err.message} providerData=${typeof parsed === 'string' ? parsed : JSON.stringify(parsed)}`;
+      throw new Error(errMsg);
     }
+
+    console.log('[pdfGenerator] html2pdf.app responded status=', resp.status);
+
+    const pdfBuffer = Buffer.from(resp.data);
+
+    if (outputPath) {
+      fs.writeFileSync(outputPath, pdfBuffer);
+    }
+    return pdfBuffer;
+  } catch (e) {
+    console.error('[pdfGenerator] External HTML2PDF path error:', e?.message || e);
+    // Rethrow so controller logs and returns the provider error body (makes debugging easier)
+    throw e;
   }
+}
 
   // Fallback: Use Chromium/Puppeteer path
   let browser;
   try {
-    const { default: chromium } = await import('@sparticuz/chromium');
-    const { default: puppeteerCore } = await import('puppeteer-core');
-    const execPath = await chromium.executablePath();
-    browser = await puppeteerCore.launch({
-      headless: true,
-      args: chromium.args,
-      executablePath: execPath,
-      defaultViewport: chromium.defaultViewport,
-      ignoreHTTPSErrors: true
-    });
+    // Launch browser - prefer @sparticuz/chromium + puppeteer-core, fallback to dynamic puppeteer import
+    try {
+      const { default: chromium } = await import('@sparticuz/chromium');
+      const { default: puppeteerCore } = await import('puppeteer-core');
+      const execPath = await chromium.executablePath();
+      browser = await puppeteerCore.launch({
+        headless: true,
+        args: chromium.args,
+        executablePath: execPath,
+        defaultViewport: chromium.defaultViewport,
+        ignoreHTTPSErrors: true
+      });
+    } catch (e) {
+      // Try to dynamically import the full `puppeteer` package only if needed.
+      try {
+        const { default: puppeteer } = await import('puppeteer');
+        browser = await puppeteer.launch({
+          headless: true,
+          executablePath: puppeteer.executablePath(),
+          args: [
+            "--no-sandbox",
+            "--disable-setuid-sandbox",
+            "--disable-dev-shm-usage",
+            "--no-zygote",
+            "--single-process",
+          ],
+        });
+      } catch (err) {
+        console.error('[pdfGenerator] No suitable Chromium build found and dynamic import of "puppeteer" failed.');
+        console.error('[pdfGenerator] sparticuz error:', e);
+        console.error('[pdfGenerator] puppeteer import error:', err);
+        throw new Error(
+          'Chromium not available. Either set HTML2PDF_API_KEY to use an external PDF service or install a Chromium provider. ' +
+          'Install either "@sparticuz/chromium" + "puppeteer-core" (preferred) or "puppeteer". ' +
+          `Detailed: sparticuz_error=${e?.message || e}, puppeteer_error=${err?.message || err}`
+        );
+      }
+    }
   } catch (e) {
     browser = await puppeteer.launch({
       headless: true,
@@ -3126,5 +3150,3 @@ export const generatePDF = async (report, outputPath = null) => {
     await browser.close();
   }
 };
-
-export default generatePDF;
