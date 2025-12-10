@@ -3057,44 +3057,16 @@ if (process.env.HTML2PDF_API_KEY) {
   // Fallback: Use Chromium/Puppeteer path
   let browser;
   try {
-    // Launch browser - prefer @sparticuz/chromium + puppeteer-core, fallback to dynamic puppeteer import
-    try {
-      const { default: chromium } = await import('@sparticuz/chromium');
-      const { default: puppeteerCore } = await import('puppeteer-core');
-      const execPath = await chromium.executablePath();
-      browser = await puppeteerCore.launch({
-        headless: true,
-        args: chromium.args,
-        executablePath: execPath,
-        defaultViewport: chromium.defaultViewport,
-        ignoreHTTPSErrors: true
-      });
-    } catch (e) {
-      // Try to dynamically import the full `puppeteer` package only if needed.
-      try {
-        const { default: puppeteer } = await import('puppeteer');
-        browser = await puppeteer.launch({
-          headless: true,
-          executablePath: puppeteer.executablePath(),
-          args: [
-            "--no-sandbox",
-            "--disable-setuid-sandbox",
-            "--disable-dev-shm-usage",
-            "--no-zygote",
-            "--single-process",
-          ],
-        });
-      } catch (err) {
-        console.error('[pdfGenerator] No suitable Chromium build found and dynamic import of "puppeteer" failed.');
-        console.error('[pdfGenerator] sparticuz error:', e);
-        console.error('[pdfGenerator] puppeteer import error:', err);
-        throw new Error(
-          'Chromium not available. Either set HTML2PDF_API_KEY to use an external PDF service or install a Chromium provider. ' +
-          'Install either "@sparticuz/chromium" + "puppeteer-core" (preferred) or "puppeteer". ' +
-          `Detailed: sparticuz_error=${e?.message || e}, puppeteer_error=${err?.message || err}`
-        );
-      }
-    }
+    const { default: chromium } = await import('@sparticuz/chromium');
+    const { default: puppeteerCore } = await import('puppeteer-core');
+    const execPath = await chromium.executablePath();
+    browser = await puppeteerCore.launch({
+      headless: true,
+      args: chromium.args,
+      executablePath: execPath,
+      defaultViewport: chromium.defaultViewport,
+      ignoreHTTPSErrors: true
+    });
   } catch (e) {
     browser = await puppeteer.launch({
       headless: true,
@@ -3150,3 +3122,5 @@ if (process.env.HTML2PDF_API_KEY) {
     await browser.close();
   }
 };
+
+export default generatePDF;

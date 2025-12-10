@@ -25,7 +25,24 @@ API.interceptors.response.use(
     return response;
   },
   (error) => {
-    console.error("API Error:", error.response?.data || error.message);
+    try {
+      const resp = error.response;
+      if (resp) {
+        const status = resp.status;
+        const ct = resp.headers && (resp.headers["content-type"] || resp.headers["Content-Type"]);
+        if (resp.data instanceof Blob) {
+          console.error(`API Error: status=${status} content-type=${ct} data=Blob(size=${resp.data.size}, type=${resp.data.type})`);
+        } else if (resp.data instanceof ArrayBuffer) {
+          console.error(`API Error: status=${status} content-type=${ct} data=ArrayBuffer(len=${resp.data.byteLength})`);
+        } else {
+          console.error("API Error:", resp.status, resp.data);
+        }
+      } else {
+        console.error("API Error:", error.message);
+      }
+    } catch (e) {
+      console.error("API Error (logging failed):", error);
+    }
     return Promise.reject(error);
   }
 );
@@ -57,32 +74,27 @@ export const downloadPDF = createAsyncThunk(
         timeout: 120000
       });
 
-      // Check if response is actually a PDF
-      const contentType = res.headers["content-type"];
+      const contentType = (res.headers && (res.headers["content-type"] || res.headers["Content-Type"])) || "";
       console.log("Response content type:", contentType);
-      
-      if (contentType && contentType.includes("application/json")) {
-        // This is an error response, not a PDF
-        const text = await res.data.text();
+
+      if (contentType.includes("application/json") || contentType.includes("text/")) {
+        const text = await (res.data && typeof res.data.text === "function" ? res.data.text() : Promise.resolve(""));
         let errorMessage = "Failed to generate PDF";
-        
         try {
           const jsonError = JSON.parse(text);
           errorMessage = jsonError.message || jsonError.error || errorMessage;
         } catch {
           errorMessage = text || errorMessage;
         }
-        
-        console.error("Server returned JSON error:", errorMessage);
+        console.error("Server returned JSON/text error:", errorMessage);
         return thunkAPI.rejectWithValue(errorMessage);
       }
-      
+
       if (!contentType || !contentType.includes("application/pdf")) {
         console.error("Unexpected content type:", contentType);
         return thunkAPI.rejectWithValue("Server returned unexpected response format");
       }
       
-      // Create and trigger download
       const blob = new Blob([res.data], { type: "application/pdf" });
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
@@ -101,16 +113,35 @@ export const downloadPDF = createAsyncThunk(
       
       let errorMessage = "Failed to download PDF";
       
-      if (err.response?.data) {
-        const blob = err.response.data;
-        if (blob instanceof Blob && blob.type.includes("application/json")) {
-          try {
-            const text = await blob.text();
-            const jsonError = JSON.parse(text);
-            errorMessage = jsonError.message || jsonError.error || errorMessage;
-          } catch {
-            errorMessage = "Server error occurred";
+      const respData = err?.response?.data;
+      if (respData) {
+        try {
+          if (respData instanceof Blob) {
+            const text = await respData.text();
+            try {
+              const json = JSON.parse(text);
+              errorMessage = json.message || json.error || text || errorMessage;
+            } catch {
+              errorMessage = text || errorMessage;
+            }
+          } else if (respData instanceof ArrayBuffer) {
+            const txt = new TextDecoder().decode(new Uint8Array(respData));
+            try {
+              const json = JSON.parse(txt);
+              errorMessage = json.message || json.error || txt || errorMessage;
+            } catch {
+              errorMessage = txt || errorMessage;
+            }
+          } else if (typeof respData === "string") {
+            try {
+              const json = JSON.parse(respData);
+              errorMessage = json.message || json.error || respData || errorMessage;
+            } catch {
+              errorMessage = respData || errorMessage;
+            }
           }
+        } catch (parseErr) {
+          console.error("Error parsing error response body:", parseErr);
         }
       } else if (err.message) {
         errorMessage = err.message;
