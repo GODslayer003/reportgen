@@ -2848,9 +2848,8 @@ Delhi (IN)</div>
 const buildFullHTML = (report) => {
   console.log("[pdfGenerator] Building 10-page HTML...");
 
-  // Get all ten pages
   const page1HTML = getPage1HTML(report);
-  const page2HTML = getPage2HTML();
+  const page2HTML = getPage2HTML(report);
   const page3HTML = getPage3HTML(report);
   const page4HTML = getPage4HTML(report);
   const page5HTML = getPage5HTML(report);
@@ -2860,136 +2859,86 @@ const buildFullHTML = (report) => {
   const page9HTML = getPage9HTML(report);
   const page10HTML = getPage10HTML(report);
 
-  // Create final HTML with page breaks
   return `
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
-/* -------- A4 PAGE WRAPPER (Correct + Final) -------- */
-.pdf-page-wrapper {
-    width: 794px;         /* A4 width @96 DPI */
-    height: 1123px;       /* A4 height @96 DPI */
-    overflow: hidden;
-    position: relative;
-    page-break-after: always;
-    box-sizing: border-box;
-}
 
-/* Prevent internal pages from being overridden */
-.pdf-page-wrapper html,
-.pdf-page-wrapper body {
-    width: 100% !important;
-    height: 100% !important;
-    margin: 0 !important;
-    padding: 0 !important;
-}
-
-/* Allow each page’s own CSS to take full control */
-.pdf-page-wrapper .page {
-    width: 100% !important;
-    min-height: 100% !important;
-    height: auto !important;
-    position: relative !important;
-    overflow: visible !important;
-}
-
-  /* A4 PAGE SETTINGS */
+  /* ---------------------------
+      GLOBAL PAGE SETTINGS
+  ----------------------------*/
   @page {
     size: A4;
     margin: 0;
   }
-  
-  body {
+
+  html, body {
+    width: 210mm;
+    height: 297mm;
     margin: 0;
     padding: 0;
-    width: 210mm;
-    height: 297mm;
-    position: relative;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
+
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    background: #ffffff;
   }
-  
-  /* EACH PAGE WRAPPER */
+
+  /* ---------------------------
+      PDF PAGE WRAPPER
+  ----------------------------*/
   .pdf-page-wrapper {
     width: 210mm;
-    height: 297mm;
+    min-height: 297mm;
+    overflow: hidden;
     page-break-after: always;
     position: relative;
     background: #FEFFFF;
+    display: block;
   }
-  
+
   .pdf-page-wrapper:last-child {
     page-break-after: auto;
   }
-  
-  /* FOR PRINT */
-  @media print {
-    body {
-      background: transparent !important;
-    }
-    
-    .pdf-page-wrapper {
-      break-after: page;
-      background: #FEFFFF;
-    }
+
+  /* ---------------------------
+      ALLOW PAGE BLOCKS INSIDE
+  ----------------------------*/
+  .pdf-page-wrapper > div {
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+    position: relative;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
   }
+
+  /* remove any rogue min-widths */
+  * {
+    max-width: 100% !important;
+  }
+
 </style>
 </head>
+
 <body>
-  <!-- PAGE 1 -->
-  <div class="pdf-page-wrapper">
-    ${page1HTML}
-  </div>
-  
-  <!-- PAGE 2 -->
-  <div class="pdf-page-wrapper">
-    ${page2HTML}
-  </div>
-  
-  <!-- PAGE 3 -->
-  <div class="pdf-page-wrapper">
-    ${page3HTML}
-  </div>
-  
-  <!-- PAGE 4 -->
-  <div class="pdf-page-wrapper">
-    ${page4HTML}
-  </div>
-  
-  <!-- PAGE 5 -->
-  <div class="pdf-page-wrapper">
-    ${page5HTML}
-  </div>
-  
-  <!-- PAGE 6 -->
-  <div class="pdf-page-wrapper">
-    ${page6HTML}
-  </div>
-  
-  <!-- PAGE 7 -->
-  <div class="pdf-page-wrapper">
-    ${page7HTML}
-  </div>
-  
-  <!-- PAGE 8 -->
-  <div class="pdf-page-wrapper">
-    ${page8HTML}
-  </div>
-  
-  <!-- PAGE 9 -->
-  <div class="pdf-page-wrapper">
-    ${page9HTML}
-  </div>
-  
-  <!-- PAGE 10 -->
-  <div class="pdf-page-wrapper">
-    ${page10HTML}
-  </div>
+
+  <div class="pdf-page-wrapper">${page1HTML}</div>
+  <div class="pdf-page-wrapper">${page2HTML}</div>
+  <div class="pdf-page-wrapper">${page3HTML}</div>
+  <div class="pdf-page-wrapper">${page4HTML}</div>
+  <div class="pdf-page-wrapper">${page5HTML}</div>
+  <div class="pdf-page-wrapper">${page6HTML}</div>
+  <div class="pdf-page-wrapper">${page7HTML}</div>
+  <div class="pdf-page-wrapper">${page8HTML}</div>
+  <div class="pdf-page-wrapper">${page9HTML}</div>
+  <div class="pdf-page-wrapper">${page10HTML}</div>
+
 </body>
-</html>`;
+</html>
+`;
 };
 
 /* ---------------------------------------------------------
