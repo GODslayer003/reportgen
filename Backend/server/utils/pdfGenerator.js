@@ -1,6 +1,7 @@
 // server/utils/pdfGenerator.js
 import fs from "fs";
 import path from "path";
+import puppeteer from "puppeteer";
 import axios from "axios";
 import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
@@ -2531,6 +2532,7 @@ ${lifestyleData.map((item, i) => `
 
   return inlineLocalImages(page9HTML);
 };
+
 const getPage10HTML = (report) => {
   // Your Page 10 HTML with Expert Review
   let page10HTML = `
@@ -2993,22 +2995,19 @@ const buildFullHTML = (report) => {
 
 export const generatePDF = async (report, outputPath = null) => {
   // If an external HTML-to-PDF API key is configured, prefer that path to avoid Chromium entirely
-if (process.env.HTML2PDF_API_KEY) {
-  console.log('[pdfGenerator] HTML2PDF_API_KEY present — attempting external API path (html2pdf.app).');
-  try {
-    const formattedReport = {
-      ...report.toObject ? report.toObject() : report,
-      patient: report.patient || { name: 'Unknown' },
-      testId: report.testId || 'Unknown',
-      calculatedData: report.calculatedData || {}
-    };
-
-    const htmlContent = buildFullHTML(formattedReport);
-
-    // POST to html2pdf.app
-    let resp;
+  if (process.env.HTML2PDF_API_KEY) {
     try {
-      resp = await axios.post(
+      const formattedReport = {
+        ...report.toObject ? report.toObject() : report,
+        patient: report.patient || { name: 'Unknown' },
+        testId: report.testId || 'Unknown',
+        calculatedData: report.calculatedData || {}
+      };
+
+      const htmlContent = buildFullHTML(formattedReport);
+
+      // Example using html2pdf.app
+      const resp = await axios.post(
         `https://api.html2pdf.app/v1/generate`,
         { html: htmlContent },
         {
@@ -3017,42 +3016,18 @@ if (process.env.HTML2PDF_API_KEY) {
           timeout: 120000
         }
       );
-    } catch (err) {
-      const status = err?.response?.status;
-      const data = err?.response?.data;
-      let parsed = data;
-      try {
-        if (data && data instanceof ArrayBuffer) {
-          parsed = Buffer.from(data).toString('utf8');
-        } else if (data && Buffer.isBuffer(data)) {
-          parsed = data.toString('utf8');
-        }
-        if (typeof parsed === 'string' && parsed.trim().startsWith('{')) {
-          parsed = JSON.parse(parsed);
-        }
-      } catch (parseErr) {
-        // keep parsed as string
+
+      const pdfBuffer = Buffer.from(resp.data);
+
+      if (outputPath) {
+        fs.writeFileSync(outputPath, pdfBuffer);
       }
-
-      console.error('[External PDF] html2pdf.app request failed. status=', status, 'providerData=', parsed || err.message);
-      const errMsg = `html2pdf.app request failed: status=${status} message=${err.message} providerData=${typeof parsed === 'string' ? parsed : JSON.stringify(parsed)}`;
-      throw new Error(errMsg);
+      return pdfBuffer;
+    } catch (e) {
+      console.error('[External PDF] HTML2PDF failed:', e?.response?.data || e.message);
+      // Fall through to Chromium path if external service fails
     }
-
-    console.log('[pdfGenerator] html2pdf.app responded status=', resp.status);
-
-    const pdfBuffer = Buffer.from(resp.data);
-
-    if (outputPath) {
-      fs.writeFileSync(outputPath, pdfBuffer);
-    }
-    return pdfBuffer;
-  } catch (e) {
-    console.error('[pdfGenerator] External HTML2PDF path error:', e?.message || e);
-    // Rethrow so controller logs and returns the provider error body (makes debugging easier)
-    throw e;
   }
-}
 
   // Fallback: Use Chromium/Puppeteer path
   let browser;
@@ -3060,25 +3035,26 @@ if (process.env.HTML2PDF_API_KEY) {
     const { default: chromium } = await import('@sparticuz/chromium');
     const { default: puppeteerCore } = await import('puppeteer-core');
     const execPath = await chromium.executablePath();
+    console.log('[pdfGenerator] sparticuz chromium execPath:', execPath, 'exists:', fs.existsSync(execPath));
     browser = await puppeteerCore.launch({
       headless: true,
-      args: chromium.args,
+      args: chromium.args.concat(['--no-sandbox','--disable-setuid-sandbox']),
       executablePath: execPath,
       defaultViewport: chromium.defaultViewport,
       ignoreHTTPSErrors: true
     });
   } catch (e) {
     browser = await puppeteer.launch({
-      headless: true,
-      executablePath: puppeteer.executablePath(),
-      args: [
-        "--no-sandbox",
-        "--disable-setuid-sandbox",
-        "--disable-dev-shm-usage",
-        "--no-zygote",
-        "--single-process",
-      ],
-    });
+  headless: true,
+  executablePath: puppeteer.executablePath(),
+  args: [
+    "--no-sandbox",
+    "--disable-setuid-sandbox",
+    "--disable-dev-shm-usage",
+    "--no-zygote",
+    "--single-process",
+  ],
+});
   }
 
   try {
