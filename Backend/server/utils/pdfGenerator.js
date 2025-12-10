@@ -2996,13 +2996,49 @@ const buildFullHTML = (report) => {
 --------------------------------------------------------- */
 
 export const generatePDF = async (report, outputPath = null) => {
-  const browser = await puppeteer.launch({
-    headless: "new",
-    args: ["--no-sandbox", "--disable-setuid-sandbox"]
-  });
+  // Prefer serverless-compatible Chromium when available using dynamic imports
+  let browser;
+  try {
+    const { default: chromium } = await import('@sparticuz/chromium');
+    const { default: puppeteerCore } = await import('puppeteer-core');
+    const execPath = await chromium.executablePath();
+    browser = await puppeteerCore.launch({
+      headless: true,
+      args: chromium.args,
+      executablePath: execPath,
+      defaultViewport: chromium.defaultViewport,
+      ignoreHTTPSErrors: true
+    });
+  } catch (e) {
+    // Fallback to full Puppeteer (Render with postinstall-installed Chrome)
+    browser = await puppeteer.launch({
+      headless: true,
+      args: [
+        "--no-sandbox",
+        "--disable-setuid-sandbox",
+        "--disable-gpu",
+        "--disable-dev-shm-usage",
+        "--no-zygote"
+      ],
+      executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || (await puppeteer.executablePath())
+    });
+  }
 
   try {
     const page = await browser.newPage();
+    // Increase timeouts for slow serverless environments
+    page.setDefaultNavigationTimeout(120000);
+    page.setDefaultTimeout(120000);
+
+    // Block external network requests (e.g., Google Fonts) to avoid networkidle hang
+    await page.setRequestInterception(true);
+    page.on('request', (req) => {
+      const url = req.url();
+      if (url.startsWith('http://') || url.startsWith('https://')) {
+        return req.abort();
+      }
+      req.continue();
+    });
 
     // Ensure report data is properly formatted
     const formattedReport = {
@@ -3017,7 +3053,7 @@ export const generatePDF = async (report, outputPath = null) => {
 
     await page.setContent(htmlContent, {
       waitUntil: "domcontentloaded",
-      timeout: 60000
+      timeout: 120000
     });
 
 
