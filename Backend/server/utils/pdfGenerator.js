@@ -1,7 +1,6 @@
 // server/utils/pdfGenerator.js
 import fs from "fs";
 import path from "path";
-import puppeteer from "puppeteer";
 import axios from "axios";
 import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
@@ -2532,7 +2531,6 @@ ${lifestyleData.map((item, i) => `
 
   return inlineLocalImages(page9HTML);
 };
-
 const getPage10HTML = (report) => {
   // Your Page 10 HTML with Expert Review
   let page10HTML = `
@@ -3066,26 +3064,25 @@ export const generatePDF = async (report, outputPath = null) => {
     const { default: chromium } = await import('@sparticuz/chromium');
     const { default: puppeteerCore } = await import('puppeteer-core');
     const execPath = await chromium.executablePath();
-    console.log('[pdfGenerator] sparticuz chromium execPath:', execPath, 'exists:', fs.existsSync(execPath));
     browser = await puppeteerCore.launch({
       headless: true,
-      args: chromium.args.concat(['--no-sandbox','--disable-setuid-sandbox']),
+      args: chromium.args,
       executablePath: execPath,
       defaultViewport: chromium.defaultViewport,
       ignoreHTTPSErrors: true
     });
   } catch (e) {
     browser = await puppeteer.launch({
-  headless: true,
-  executablePath: puppeteer.executablePath(),
-  args: [
-    "--no-sandbox",
-    "--disable-setuid-sandbox",
-    "--disable-dev-shm-usage",
-    "--no-zygote",
-    "--single-process",
-  ],
-});
+      headless: true,
+      executablePath: puppeteer.executablePath(),
+      args: [
+        "--no-sandbox",
+        "--disable-setuid-sandbox",
+        "--disable-dev-shm-usage",
+        "--no-zygote",
+        "--single-process",
+      ],
+    });
   }
 
   try {
