@@ -7,8 +7,6 @@
     "dev": "nodemon server.js"
   },
   "dependencies": {
-    "@sparticuz/chromium": "^119.0.1",
-    "axios": "^1.13.2",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
@@ -17,7 +15,10 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^7.5.0",
     "pdfkit": "^0.14.0",
-    "puppeteer-core": "^21.5.1"
+    "puppeteer": "^24.32.1",
+    "puppeteer-core": "^21.5.1",
+    "@sparticuz/chromium": "^119.0.1",
+    "axios": "^1.6.7"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"
