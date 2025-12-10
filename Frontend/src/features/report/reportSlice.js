@@ -2,10 +2,11 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
+const BASE_URL = import.meta.env.VITE_APP_BASE_URL || "https://reportgen-oxuf.onrender.com/api";
 // Axios setup
 const API = axios.create({
-  baseURL: "https://mhc-report-generator.onrender.com/api",
-  timeout: 30000,
+  baseURL: BASE_URL,
+  timeout: 120000,
 });
 
 // Attach token automatically
@@ -53,7 +54,7 @@ export const downloadPDF = createAsyncThunk(
       
       const res = await API.get(`/reports/${reportId}/pdf`, { 
         responseType: "blob",
-        timeout: 45000
+        timeout: 120000
       });
 
       // Check if response is actually a PDF

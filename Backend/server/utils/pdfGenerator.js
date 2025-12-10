@@ -2,6 +2,7 @@
 import fs from "fs";
 import path from "path";
 import puppeteer from "puppeteer";
+import axios from "axios";
 import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -687,7 +688,6 @@ body {
   border-radius: 9999px;
   font-size: 13px;
   color: #7e8c9a;
-  font-family: "Poppins", sans-serif;
 }
 
 .p3-header-line {
@@ -1901,7 +1901,6 @@ const getPage7HTML = (report) => {
     padding:6px 22px; border-radius:9999px;
     font-size:13px; color:#7E8C9A;
   }
-
   .p7-header-line { width:150%; height:2px; background:rgba(31,128,147,0.30); margin-top:50px; }
 
   .p7-title-wrap { width:100%; margin-top:45px; padding-left:20px; }
@@ -2072,7 +2071,6 @@ const getPage8HTML = (report) => {
     padding:6px 22px; border-radius:9999px;
     font-size:13px; color:#7E8C9A;
   }
-
   .p7-header-line { width:150%; height:2px; background:rgba(31,128,147,0.30); margin-top:50px; }
 
   .p7-title-wrap { width:100%; margin-top:45px; padding-left:20px; }
@@ -2996,54 +2994,107 @@ const buildFullHTML = (report) => {
 --------------------------------------------------------- */
 
 export const generatePDF = async (report, outputPath = null) => {
-  // Prefer serverless-compatible Chromium when available using dynamic imports
+    // If an external HTML-to-PDF API key is configured, prefer that path to avoid Chromium entirely
+  if (process.env.HTML2PDF_API_KEY) {
+    console.log('[pdfGenerator] HTML2PDF_API_KEY present — attempting external API path (html2pdf.app).');
+    try {
+      const formattedReport = {
+        ...report.toObject ? report.toObject() : report,
+        patient: report.patient || { name: 'Unknown' },
+        testId: report.testId || 'Unknown',
+        calculatedData: report.calculatedData || {}
+      };
+
+      const htmlContent = buildFullHTML(formattedReport);
+
+      // POST to html2pdf.app
+      let resp;
+      try {
+        resp = await axios.post(
+          `https://api.html2pdf.app/v1/generate`,
+          { html: htmlContent },
+          {
+            params: { apiKey: process.env.HTML2PDF_API_KEY },
+            responseType: 'arraybuffer',
+            timeout: 120000
+          }
+        );
+      } catch (err) {
+        // If the provider returned a response body, try to parse it for diagnostics
+        const status = err?.response?.status;
+        const data = err?.response?.data;
+        let parsed = data;
+        try {
+          // attempt to decode arraybuffer or buffer to string/json
+          if (data && data instanceof ArrayBuffer) {
+            parsed = Buffer.from(data).toString('utf8');
+          } else if (data && Buffer.isBuffer(data)) {
+            parsed = data.toString('utf8');
+          }
+          if (typeof parsed === 'string' && parsed.trim().startsWith('{')) {
+            parsed = JSON.parse(parsed);
+          }
+        } catch (parseErr) {
+          // leave parsed as string if JSON.parse fails
+        }
+
+        console.error('[External PDF] html2pdf.app request failed. status=', status, 'providerData=', parsed || err.message);
+        // Throw a rich error so the controller returns the provider error in response
+        const errMsg = `html2pdf.app request failed: status=${status} message=${err.message} providerData=${typeof parsed === 'string' ? parsed : JSON.stringify(parsed)}`;
+        throw new Error(errMsg);
+      }
+
+      console.log('[pdfGenerator] html2pdf.app responded status=', resp.status);
+
+      const pdfBuffer = Buffer.from(resp.data);
+
+      if (outputPath) {
+        fs.writeFileSync(outputPath, pdfBuffer);
+      }
+      return pdfBuffer;
+    } catch (e) {
+      // Surface a detailed error so controller logs/returns it
+      console.error('[pdfGenerator] External HTML2PDF path error:', e?.message || e);
+      // Re-throw to avoid silently falling back in production — this helps debugging.
+      throw e;
+    }
+  }
+
+  // Fallback: Use Chromium/Puppeteer path
   let browser;
   try {
     const { default: chromium } = await import('@sparticuz/chromium');
     const { default: puppeteerCore } = await import('puppeteer-core');
     const execPath = await chromium.executablePath();
+    console.log('[pdfGenerator] sparticuz chromium execPath:', execPath, 'exists:', fs.existsSync(execPath));
     browser = await puppeteerCore.launch({
       headless: true,
-      args: chromium.args,
+      args: chromium.args.concat(['--no-sandbox','--disable-setuid-sandbox']),
       executablePath: execPath,
       defaultViewport: chromium.defaultViewport,
       ignoreHTTPSErrors: true
     });
   } catch (e) {
-    // Fallback to full Puppeteer (Render with postinstall-installed Chrome)
     browser = await puppeteer.launch({
-      headless: true,
-      args: [
-        "--no-sandbox",
-        "--disable-setuid-sandbox",
-        "--disable-gpu",
-        "--disable-dev-shm-usage",
-        "--no-zygote"
-      ],
-      executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || (await puppeteer.executablePath())
-    });
+  headless: true,
+  executablePath: puppeteer.executablePath(),
+  args: [
+    "--no-sandbox",
+    "--disable-setuid-sandbox",
+    "--disable-dev-shm-usage",
+    "--no-zygote",
+    "--single-process",
+  ],
+});
   }
 
   try {
     const page = await browser.newPage();
-    // Increase timeouts for slow serverless environments
     page.setDefaultNavigationTimeout(120000);
     page.setDefaultTimeout(120000);
 
-    // Block external network requests (e.g., Google Fonts) to avoid networkidle hang
-    await page.setRequestInterception(true);
-    page.on('request', (req) => {
-      const url = req.url();
-      if (url.startsWith('http://') || url.startsWith('https://')) {
-        return req.abort();
-      }
-      req.continue();
-    });
-
-    // Ensure report data is properly formatted
     const formattedReport = {
       ...report.toObject ? report.toObject() : report,
-      // Ensure all required fields exist
       patient: report.patient || { name: 'Unknown' },
       testId: report.testId || 'Unknown',
       calculatedData: report.calculatedData || {}
@@ -3056,7 +3107,6 @@ export const generatePDF = async (report, outputPath = null) => {
       timeout: 120000
     });
 
-
     await new Promise(r => setTimeout(r, 500));
 
     const pdfBuffer = await page.pdf({
@@ -3065,7 +3115,6 @@ export const generatePDF = async (report, outputPath = null) => {
       margin: { top: "0mm", bottom: "0mm" },
     });
 
-    // If outputPath provided, save to file (for debugging)
     if (outputPath) {
       const fs = await import('fs');
       fs.writeFileSync(outputPath, pdfBuffer);
