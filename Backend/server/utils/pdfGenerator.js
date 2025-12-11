@@ -261,7 +261,7 @@ body {
   <!-- Background Illustrations -->
   <img src="../assets/dropper.png" class="p1-dropper" />
   <img src="../assets/gradient.png" class="p1-drop-shadow">
-  <img src="../assets/dna.png" class="p1-dna" />
+  <img src="../assets/DNA.png" class="p1-dna" />
   <img src="../assets/microscope.png" class="p1-microscope" />
 
   <!-- TITLE SECTION -->
