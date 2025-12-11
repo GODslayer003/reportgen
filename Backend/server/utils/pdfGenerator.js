@@ -2998,41 +2998,36 @@ const buildFullHTML = (report) => {
 
 export const generatePDF = async (report, outputPath = null) => {
   const browser = await puppeteer.launch({
-    headless: "new",
-    args: ["--no-sandbox", "--disable-setuid-sandbox"]
+    args: chromium.args,
+    defaultViewport: chromium.defaultViewport,
+    executablePath: await chromium.executablePath(), // REQUIRED ON RAILWAY
+    headless: chromium.headless,
   });
 
   try {
     const page = await browser.newPage();
 
-    // Ensure report data is properly formatted
     const formattedReport = {
       ...report.toObject ? report.toObject() : report,
-      // Ensure all required fields exist
-      patient: report.patient || { name: 'Unknown' },
-      testId: report.testId || 'Unknown',
+      patient: report.patient || { name: "Unknown" },
+      testId: report.testId || "Unknown",
       calculatedData: report.calculatedData || {}
     };
 
     const htmlContent = buildFullHTML(formattedReport);
 
     await page.setContent(htmlContent, {
-      waitUntil: "domcontentloaded",
+      waitUntil: "networkidle0",
       timeout: 60000
     });
-
-
-    await new Promise(r => setTimeout(r, 500));
 
     const pdfBuffer = await page.pdf({
       format: "A4",
       printBackground: true,
-      margin: { top: "0mm", bottom: "0mm" },
+      margin: { top: "0mm", bottom: "0mm" }
     });
 
-    // If outputPath provided, save to file (for debugging)
     if (outputPath) {
-      const fs = await import('fs');
       fs.writeFileSync(outputPath, pdfBuffer);
     }
 
@@ -3040,7 +3035,7 @@ export const generatePDF = async (report, outputPath = null) => {
 
   } catch (err) {
     console.error("PDF generation failed:", err);
-    throw new Error(`PDF generation failed: ${err.message}`);
+    throw err;
   } finally {
     await browser.close();
   }
