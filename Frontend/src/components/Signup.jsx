@@ -21,7 +21,7 @@ const Signup = () => {
   e.preventDefault();
 
   try {
-    const res = await axios.post("http://localhost:5000/api/auth/register", form);
+    const res = await axios.post("http://reportgen-production-757a.up.railway.app/api/auth/register", form);
 
     // Save token + user
     localStorage.setItem("token", res.data.token);
