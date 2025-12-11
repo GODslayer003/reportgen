@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://reportgen-production-757a.up.railway.app/api/auth"; // UPDATE YOUR BACKEND PORT
+const API_URL = "https://reportgen-production-757a.up.railway.app/api/auth"; // UPDATE YOUR BACKEND PORT
 
 // REGISTER
 const register = async (data) => {
