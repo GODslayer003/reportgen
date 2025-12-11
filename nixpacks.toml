@@ -8,7 +8,7 @@ aptPkgs = [
   "libxrandr2",
   "libgbm1",
   "libxss1",
-  "libasound2",
+  "libasound2t64",   # ← IMPORTANT FIX
   "libatk1.0-0",
   "libatk-bridge2.0-0",
   "libpangocairo-1.0-0",
