@@ -17,7 +17,7 @@ const Login = () => {
   e.preventDefault();
 
   try {
-    const res = await axios.post("http://reportgen-production-757a.up.railway.app/api/auth/login", form);
+    const res = await axios.post("https://reportgen-production-757a.up.railway.app/api/auth/login", form);
 
     // Save token + user
     localStorage.setItem("token", res.data.token);
