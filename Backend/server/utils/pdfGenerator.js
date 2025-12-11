@@ -2,7 +2,6 @@
 import fs from "fs";
 import path from "path";
 import puppeteer from "puppeteer";
-import axios from "axios";
 import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -2848,8 +2847,9 @@ Delhi (IN)</div>
 const buildFullHTML = (report) => {
   console.log("[pdfGenerator] Building 10-page HTML...");
 
+  // Get all ten pages
   const page1HTML = getPage1HTML(report);
-  const page2HTML = getPage2HTML(report);
+  const page2HTML = getPage2HTML();
   const page3HTML = getPage3HTML(report);
   const page4HTML = getPage4HTML(report);
   const page5HTML = getPage5HTML(report);
@@ -2859,86 +2859,136 @@ const buildFullHTML = (report) => {
   const page9HTML = getPage9HTML(report);
   const page10HTML = getPage10HTML(report);
 
+  // Create final HTML with page breaks
   return `
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
+/* -------- A4 PAGE WRAPPER (Correct + Final) -------- */
+.pdf-page-wrapper {
+    width: 794px;         /* A4 width @96 DPI */
+    height: 1123px;       /* A4 height @96 DPI */
+    overflow: hidden;
+    position: relative;
+    page-break-after: always;
+    box-sizing: border-box;
+}
 
-  /* ---------------------------
-      GLOBAL PAGE SETTINGS
-  ----------------------------*/
+/* Prevent internal pages from being overridden */
+.pdf-page-wrapper html,
+.pdf-page-wrapper body {
+    width: 100% !important;
+    height: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* Allow each page’s own CSS to take full control */
+.pdf-page-wrapper .page {
+    width: 100% !important;
+    min-height: 100% !important;
+    height: auto !important;
+    position: relative !important;
+    overflow: visible !important;
+}
+
+  /* A4 PAGE SETTINGS */
   @page {
     size: A4;
     margin: 0;
   }
-
-  html, body {
-    width: 210mm;
-    height: 297mm;
+  
+  body {
     margin: 0;
     padding: 0;
-
-    -webkit-print-color-adjust: exact !important;
-    print-color-adjust: exact !important;
-    background: #ffffff;
+    width: 210mm;
+    height: 297mm;
+    position: relative;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
   }
-
-  /* ---------------------------
-      PDF PAGE WRAPPER
-  ----------------------------*/
+  
+  /* EACH PAGE WRAPPER */
   .pdf-page-wrapper {
     width: 210mm;
-    min-height: 297mm;
-    overflow: hidden;
+    height: 297mm;
     page-break-after: always;
     position: relative;
     background: #FEFFFF;
-    display: block;
   }
-
+  
   .pdf-page-wrapper:last-child {
     page-break-after: auto;
   }
-
-  /* ---------------------------
-      ALLOW PAGE BLOCKS INSIDE
-  ----------------------------*/
-  .pdf-page-wrapper > div {
-    width: 100%;
-    height: auto;
-    max-width: 100%;
-    position: relative;
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  
+  /* FOR PRINT */
+  @media print {
+    body {
+      background: transparent !important;
+    }
+    
+    .pdf-page-wrapper {
+      break-after: page;
+      background: #FEFFFF;
+    }
   }
-
-  /* remove any rogue min-widths */
-  * {
-    max-width: 100% !important;
-  }
-
 </style>
 </head>
-
 <body>
-
-  <div class="pdf-page-wrapper">${page1HTML}</div>
-  <div class="pdf-page-wrapper">${page2HTML}</div>
-  <div class="pdf-page-wrapper">${page3HTML}</div>
-  <div class="pdf-page-wrapper">${page4HTML}</div>
-  <div class="pdf-page-wrapper">${page5HTML}</div>
-  <div class="pdf-page-wrapper">${page6HTML}</div>
-  <div class="pdf-page-wrapper">${page7HTML}</div>
-  <div class="pdf-page-wrapper">${page8HTML}</div>
-  <div class="pdf-page-wrapper">${page9HTML}</div>
-  <div class="pdf-page-wrapper">${page10HTML}</div>
-
+  <!-- PAGE 1 -->
+  <div class="pdf-page-wrapper">
+    ${page1HTML}
+  </div>
+  
+  <!-- PAGE 2 -->
+  <div class="pdf-page-wrapper">
+    ${page2HTML}
+  </div>
+  
+  <!-- PAGE 3 -->
+  <div class="pdf-page-wrapper">
+    ${page3HTML}
+  </div>
+  
+  <!-- PAGE 4 -->
+  <div class="pdf-page-wrapper">
+    ${page4HTML}
+  </div>
+  
+  <!-- PAGE 5 -->
+  <div class="pdf-page-wrapper">
+    ${page5HTML}
+  </div>
+  
+  <!-- PAGE 6 -->
+  <div class="pdf-page-wrapper">
+    ${page6HTML}
+  </div>
+  
+  <!-- PAGE 7 -->
+  <div class="pdf-page-wrapper">
+    ${page7HTML}
+  </div>
+  
+  <!-- PAGE 8 -->
+  <div class="pdf-page-wrapper">
+    ${page8HTML}
+  </div>
+  
+  <!-- PAGE 9 -->
+  <div class="pdf-page-wrapper">
+    ${page9HTML}
+  </div>
+  
+  <!-- PAGE 10 -->
+  <div class="pdf-page-wrapper">
+    ${page10HTML}
+  </div>
 </body>
-</html>
-`;
+</html>`;
 };
 
 /* ---------------------------------------------------------
@@ -2946,84 +2996,18 @@ const buildFullHTML = (report) => {
 --------------------------------------------------------- */
 
 export const generatePDF = async (report, outputPath = null) => {
-  // If an external HTML-to-PDF API key is configured, prefer that path to avoid Chromium entirely
-  if (process.env.HTML2PDF_API_KEY) {
-    try {
-      const formattedReport = {
-        ...report.toObject ? report.toObject() : report,
-        patient: report.patient || { name: 'Unknown' },
-        testId: report.testId || 'Unknown',
-        calculatedData: report.calculatedData || {}
-      };
-
-      const htmlContent = buildFullHTML(formattedReport);
-
-      // Example using html2pdf.app
-      const resp = await axios.post(
-        `https://api.html2pdf.app/v1/generate`,
-        { html: htmlContent },
-        {
-          params: { apiKey: process.env.HTML2PDF_API_KEY },
-          responseType: 'arraybuffer',
-          timeout: 120000
-        }
-      );
-
-      const pdfBuffer = Buffer.from(resp.data);
-
-      if (outputPath) {
-        fs.writeFileSync(outputPath, pdfBuffer);
-      }
-      return pdfBuffer;
-    } catch (e) {
-      console.error('[External PDF] HTML2PDF failed:', e?.response?.data || e.message);
-      // Fall through to Chromium path if external service fails
-    }
-  }
-
-  // Fallback: Use Chromium/Puppeteer path
-  let browser;
-  try {
-    const { default: chromium } = await import('@sparticuz/chromium');
-    const { default: puppeteerCore } = await import('puppeteer-core');
-    const execPath = await chromium.executablePath();
-    browser = await puppeteerCore.launch({
-      headless: true,
-      args: chromium.args,
-      executablePath: execPath,
-      defaultViewport: chromium.defaultViewport,
-      ignoreHTTPSErrors: true
-    });
-  } catch (e) {
-    browser = await puppeteer.launch({
-      headless: true,
-      args: [
-        "--no-sandbox",
-        "--disable-setuid-sandbox",
-        "--disable-gpu",
-        "--disable-dev-shm-usage",
-        "--no-zygote"
-      ],
-      executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || (await puppeteer.executablePath())
-    });
-  }
+  const browser = await puppeteer.launch({
+    headless: "new",
+    args: ["--no-sandbox", "--disable-setuid-sandbox"]
+  });
 
   try {
     const page = await browser.newPage();
-    page.setDefaultNavigationTimeout(120000);
-    page.setDefaultTimeout(120000);
 
-    await page.setRequestInterception(true);
-    page.on('request', (req) => {
-      const url = req.url();
-      if (url.startsWith('http://') || url.startsWith('https://')) {
-        return req.abort();
-      }
-      req.continue();
-    });
-
+    // Ensure report data is properly formatted
     const formattedReport = {
       ...report.toObject ? report.toObject() : report,
+      // Ensure all required fields exist
       patient: report.patient || { name: 'Unknown' },
       testId: report.testId || 'Unknown',
       calculatedData: report.calculatedData || {}
@@ -3033,8 +3017,9 @@ export const generatePDF = async (report, outputPath = null) => {
 
     await page.setContent(htmlContent, {
       waitUntil: "domcontentloaded",
-      timeout: 120000
+      timeout: 60000
     });
+
 
     await new Promise(r => setTimeout(r, 500));
 
@@ -3044,6 +3029,7 @@ export const generatePDF = async (report, outputPath = null) => {
       margin: { top: "0mm", bottom: "0mm" },
     });
 
+    // If outputPath provided, save to file (for debugging)
     if (outputPath) {
       const fs = await import('fs');
       fs.writeFileSync(outputPath, pdfBuffer);
