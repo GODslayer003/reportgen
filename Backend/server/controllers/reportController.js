@@ -12,7 +12,7 @@ export const createReport = async (req, res) => {
 
     const report = new Report({
       ...reportData,
-      createdBy: req.user._id
+      createdBy: req.user.id
     });
 
     await report.save();
@@ -31,16 +31,12 @@ export const createReport = async (req, res) => {
 // GET PDF REPORT
 export const getReportPDF = async (req, res) => {
   try {
-    console.log('[getReportPDF] userId=', req.user?._id?.toString(), 'reportId=', req.params.id);
     const savedReport = await Report.findOne({
       _id: req.params.id,
       createdBy: req.user._id
     });
 
-    if (!savedReport) {
-      console.error('[getReportPDF] Report not found for user', req.user?._id?.toString(), 'reportId', req.params.id);
-      return res.status(404).json({ message: 'Report not found' });
-    }
+    if (!savedReport) return res.status(404).json({ message: 'Report not found' });
 
     // REGENERATE REPORT so keyInsight exists
     const freshReport = generateCompleteReport(
@@ -59,7 +55,6 @@ export const getReportPDF = async (req, res) => {
     // DEBUG
     console.log("PAGE 9 — KEY INSIGHT:", freshReport.calculatedData.keyInsight);
 
-    console.log('[getReportPDF] Generating PDF for testId:', freshReport.testId);
     const pdfBuffer = await generatePDF(freshReport);
 
     res.setHeader("Content-Type", "application/pdf");
@@ -70,7 +65,7 @@ return res.end(pdfBuffer);
 
 
   } catch (error) {
-    console.error('Error in PDF generation route:', error?.stack || error);
+    console.error('Error in PDF generation route:', error);
     res.status(500).json({ message: 'Error generating PDF', error: error.message });
   }
 };
@@ -110,7 +105,7 @@ export const getSingleReport = async (req, res) => {
 // DELETE REPORT
 export const deleteReport = async (req, res) => {
   try {
-    const report = await Report.findOneAndDelete({ _id: req.params.id, createdBy: req.user._id });
+    const report = await Report.findOneAndDelete({ _id: req.params.id, createdBy: req.user.id });
     if (!report) return res.status(404).json({ message: 'Report not found' });
     res.json({ message: 'Report deleted successfully' });
   } catch (error) {
@@ -124,7 +119,7 @@ export const searchReports = async (req, res) => {
     const { query } = req.params;
 
     const reports = await Report.find({
-      createdBy: req.user._id,
+      createdBy: req.user.id,
       $or: [
         { testId: { $regex: query, $options: 'i' } },
         { 'patient.name': { $regex: query, $options: 'i' } }
@@ -141,7 +136,7 @@ export const searchReports = async (req, res) => {
 export const debugAllReports = async (req, res) => {
   try {
     const allReports = await Report.find().sort({ createdAt: -1 }).limit(10);
-    const userReports = await Report.find({ createdBy: req.user._id });
+    const userReports = await Report.find({ createdBy: req.user.id });
 
     const reportSummary = allReports.map(r => ({
       _id: r._id,
@@ -152,7 +147,7 @@ export const debugAllReports = async (req, res) => {
     }));
 
     res.json({
-      currentUserId: req.user._id,
+      currentUserId: req.user.id,
       totalReportsInDB: allReports.length,
       userReportCount: userReports.length,
       allReports: reportSummary,
