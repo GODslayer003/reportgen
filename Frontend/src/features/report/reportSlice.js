@@ -2,7 +2,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-const BASE_URL = import.meta.env.VITE_APP_BASE_URL || "https://reportgen-oxuf.onrender.com/api";
+const BASE_URL = "https://reportgen-production-757a.up.railway.app/api";
 // Axios setup
 const API = axios.create({
   baseURL: BASE_URL,
