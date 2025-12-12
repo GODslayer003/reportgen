@@ -29,66 +29,100 @@ export default function Preview() {
     );
   }
 const handlePrintPreview = () => {
-  // Calculate final scores from questionnaires using the same logic as your document
-  const calculateScore = (value) => Math.min(5, Math.round((value || 0) / 2));
-  
-  const getStatusAndClass = (score) => {
-    if (score === 5) return { status: "High", class: "high" };
-    if (score === 4) return { status: "Elevated", class: "elevated" };
-    if (score === 3) return { status: "Borderline", class: "borderline" };
-    return { status: "Normal", class: "normal" };
+  // Helper function to clamp values
+  const clamp = (value, min = 0, max = 10) => {
+    const numValue = Number(value);
+    if (isNaN(numValue)) return min;
+    return Math.max(min, Math.min(max, numValue));
   };
 
+  // Extract values
+  const B = Number(labInputs.bacterialSignal) || 0;
+  const Y = Number(labInputs.yeastSignal) || 0;
+  const Q1 = Number(questionnaires.Q1) || 0;
+  const Q2 = Number(questionnaires.Q2) || 0;
+  const Q3 = Number(questionnaires.Q3) || 0;
+  const Q4 = Number(questionnaires.Q4) || 0;
+  const Q5 = Number(questionnaires.Q5) || 0;
+  const Q6 = Number(questionnaires.Q6) || 0;
+
+  // Calculate FS scores using the exact formula from your calculation engine
+  const scores = {
+    FS1: clamp(Q1 * 2 + B * 2),
+    FS2: clamp(Q1 * 1.5 + Q2 * 1 + B * 2),
+    FS3: clamp(B * 8 + Q6 * 1 + Q4 * 1),
+    FS4: clamp(Y * 8 + Q6 * 1 + Q2 * 0.5),
+    FS5: clamp(Q3 * 2 + (B + Y) * 1),
+    FS6: clamp(Q2 * 2 + Q5 * 1),
+    FS7: clamp(Q5 * 2),
+    FS8: clamp(Q6 * 2 + (B + Y) * 1),
+    FS9: clamp(Q4 * 2),
+    FS10: clamp(4 + Q1 * 0.5 + Q5 * 0.5 - Q6 * 0.2)
+  };
+
+  // Convert FS scores to 1-5 scale and get status
+  const getScoreAndStatus = (fsValue) => {
+    const score = Math.min(5, Math.round(fsValue / 2));
+    let status, cssClass;
+    
+    if (score === 5) {
+      status = "High";
+      cssClass = "high";
+    } else if (score === 4) {
+      status = "Elevated";
+      cssClass = "elevated";
+    } else if (score === 3) {
+      status = "Borderline";
+      cssClass = "borderline";
+    } else {
+      status = "Normal";
+      cssClass = "normal";
+    }
+    
+    return { score, status, cssClass };
+  };
+
+  // Map FS scores to parameters
   const finalScores = {
     digestiveRhythm: { 
       label: "Digestive Rhythm", 
-      score: calculateScore(questionnaires.Q1),
-      ...getStatusAndClass(calculateScore(questionnaires.Q1))
+      ...getScoreAndStatus(scores.FS1)
     },
     fermentationLoad: { 
       label: "Fermentation Load", 
-      score: calculateScore(questionnaires.Q2),
-      ...getStatusAndClass(calculateScore(questionnaires.Q2))
+      ...getScoreAndStatus(scores.FS2)
     },
     bacterialBalance: { 
       label: "Bacterial Balance", 
-      score: calculateScore(labInputs.bacterialSignal * 10),
-      ...getStatusAndClass(calculateScore(labInputs.bacterialSignal * 10))
+      ...getScoreAndStatus(scores.FS3)
     },
     yeastBalance: { 
       label: "Yeast Balance", 
-      score: calculateScore(labInputs.yeastSignal * 10),
-      ...getStatusAndClass(calculateScore(labInputs.yeastSignal * 10))
+      ...getScoreAndStatus(scores.FS4)
     },
     immuneTone: { 
       label: "Immune Tone", 
-      score: calculateScore(questionnaires.Q3),
-      ...getStatusAndClass(calculateScore(questionnaires.Q3))
+      ...getScoreAndStatus(scores.FS5)
     },
     gutBrainStress: { 
       label: "Gut-Brain Stress", 
-      score: calculateScore(questionnaires.Q2),
-      ...getStatusAndClass(calculateScore(questionnaires.Q2))
+      ...getScoreAndStatus(scores.FS6)
     },
     circadianSleep: { 
       label: "Circadian Sleep", 
-      score: calculateScore(questionnaires.Q5),
-      ...getStatusAndClass(calculateScore(questionnaires.Q5))
+      ...getScoreAndStatus(scores.FS7)
     },
     dietQuality: { 
       label: "Diet Quality", 
-      score: calculateScore(questionnaires.Q6),
-      ...getStatusAndClass(calculateScore(questionnaires.Q6))
+      ...getScoreAndStatus(scores.FS8)
     },
     medicationImpact: { 
       label: "Medication Impact", 
-      score: calculateScore(questionnaires.Q4),
-      ...getStatusAndClass(calculateScore(questionnaires.Q4))
+      ...getScoreAndStatus(scores.FS9)
     },
     hydrationRecovery: { 
       label: "Hydration & Recovery", 
-      score: 2,
-      ...getStatusAndClass(2)
+      ...getScoreAndStatus(scores.FS10)
     }
   };
 
@@ -372,7 +406,7 @@ const handlePrintPreview = () => {
               <tr>
                 <td>${item.label}</td>
                 <td>
-                  <span class="badge ${item.class}">
+                  <span class="badge ${item.cssClass}">
                     ${item.status}
                   </span>
                 </td>
@@ -399,7 +433,6 @@ const handlePrintPreview = () => {
     };
   }
 };
-
   const handleDownloadPDF = async (reportId) => {
     try {
       console.log("Starting PDF download for report:", reportId);
