@@ -1763,7 +1763,7 @@ const getPage6HTML = (report) => {
 
     <!-- TITLE -->
     <div class="p5-title-wrap">
-      <div class="p5-title">Analytical Observations</div>
+      <div class="p5-title">Functional Assessment</div>
       <div class="p5-underline"></div>
     </div>
 
