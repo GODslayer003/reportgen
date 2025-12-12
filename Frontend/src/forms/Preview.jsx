@@ -29,57 +29,66 @@ export default function Preview() {
     );
   }
 const handlePrintPreview = () => {
-  // Calculate final scores from questionnaires
+  // Calculate final scores from questionnaires using the same logic as your document
+  const calculateScore = (value) => Math.min(5, Math.round((value || 0) / 2));
+  
+  const getStatusAndClass = (score) => {
+    if (score === 5) return { status: "High", class: "high" };
+    if (score === 4) return { status: "Elevated", class: "elevated" };
+    if (score === 3) return { status: "Borderline", class: "borderline" };
+    return { status: "Normal", class: "normal" };
+  };
+
   const finalScores = {
     digestiveRhythm: { 
       label: "Digestive Rhythm", 
-      status: questionnaires.Q1 <= 1 ? "Normal" : questionnaires.Q1 <= 3 ? "Borderline" : "High", 
-      score: questionnaires.Q1 
+      score: calculateScore(questionnaires.Q1),
+      ...getStatusAndClass(calculateScore(questionnaires.Q1))
     },
     fermentationLoad: { 
       label: "Fermentation Load", 
-      status: questionnaires.Q2 <= 1 ? "Normal" : questionnaires.Q2 <= 3 ? "Borderline" : "Elevated", 
-      score: questionnaires.Q2 
+      score: calculateScore(questionnaires.Q2),
+      ...getStatusAndClass(calculateScore(questionnaires.Q2))
     },
     bacterialBalance: { 
       label: "Bacterial Balance", 
-      status: labInputs.bacterialSignal === 1 ? "High" : "Normal", 
-      score: labInputs.bacterialSignal === 1 ? 5 : 1 
+      score: calculateScore(labInputs.bacterialSignal * 10),
+      ...getStatusAndClass(calculateScore(labInputs.bacterialSignal * 10))
     },
     yeastBalance: { 
       label: "Yeast Balance", 
-      status: labInputs.yeastSignal === 1 ? "High" : "Normal", 
-      score: labInputs.yeastSignal === 1 ? 5 : 1 
+      score: calculateScore(labInputs.yeastSignal * 10),
+      ...getStatusAndClass(calculateScore(labInputs.yeastSignal * 10))
     },
     immuneTone: { 
       label: "Immune Tone", 
-      status: questionnaires.Q3 <= 1 ? "Normal" : questionnaires.Q3 <= 3 ? "Borderline" : "High", 
-      score: questionnaires.Q3 
+      score: calculateScore(questionnaires.Q3),
+      ...getStatusAndClass(calculateScore(questionnaires.Q3))
     },
     gutBrainStress: { 
       label: "Gut-Brain Stress", 
-      status: questionnaires.Q2 <= 1 ? "Normal" : questionnaires.Q2 <= 3 ? "Borderline" : "High", 
-      score: questionnaires.Q2 
+      score: calculateScore(questionnaires.Q2),
+      ...getStatusAndClass(calculateScore(questionnaires.Q2))
     },
     circadianSleep: { 
       label: "Circadian Sleep", 
-      status: questionnaires.Q5 <= 1 ? "Normal" : questionnaires.Q5 <= 3 ? "Borderline" : "High", 
-      score: questionnaires.Q5 
+      score: calculateScore(questionnaires.Q5),
+      ...getStatusAndClass(calculateScore(questionnaires.Q5))
     },
     dietQuality: { 
       label: "Diet Quality", 
-      status: questionnaires.Q6 <= 1 ? "Normal" : questionnaires.Q6 <= 3 ? "Borderline" : "High", 
-      score: questionnaires.Q6 
+      score: calculateScore(questionnaires.Q6),
+      ...getStatusAndClass(calculateScore(questionnaires.Q6))
     },
     medicationImpact: { 
       label: "Medication Impact", 
-      status: questionnaires.Q4 <= 1 ? "Normal" : questionnaires.Q4 <= 3 ? "Elevated" : "High", 
-      score: questionnaires.Q4 
+      score: calculateScore(questionnaires.Q4),
+      ...getStatusAndClass(calculateScore(questionnaires.Q4))
     },
     hydrationRecovery: { 
       label: "Hydration & Recovery", 
-      status: "Normal", 
-      score: 2 
+      score: 2,
+      ...getStatusAndClass(2)
     }
   };
 
@@ -195,6 +204,7 @@ const handlePrintPreview = () => {
   }
   .report-table thead th:last-child {
     border-top-right-radius: 8px;
+    text-align: right;
   }
   .report-table tbody tr {
     background: white;
@@ -206,6 +216,11 @@ const handlePrintPreview = () => {
     padding: 10px 12px;
     border-bottom: 1px solid #e9ecef;
   }
+  .report-table td:last-child {
+    text-align: right;
+    font-weight: 600;
+    color: #2D8275;
+  }
   .report-table tbody tr:last-child td {
     border-bottom: none;
   }
@@ -216,19 +231,56 @@ const handlePrintPreview = () => {
     border-bottom-right-radius: 8px;
   }
   
-  /* BADGES */
+  /* BADGES - Using exact colors from your document */
   .badge {
-    padding: 4px 10px;
+    padding: 5px 12px;
     border-radius: 20px;
     font-size: 10px;
     font-weight: 600;
     display: inline-block;
     white-space: nowrap;
   }
-  .normal { background: #d8f5df; color: #197a3a; }
-  .high { background: #ffd6d6; color: #d93025; }
-  .borderline { background: #fff2cc; color: #b07d00; }
-  .elevated { background: #ffe6cc; color: #c56900; }
+  .normal { background: #E8F8EF; color: #12C254; }
+  .high { background: #FFE5E3; color: #E44B47; }
+  .borderline { background: #FFF7D9; color: #E2B420; }
+  .elevated { background: #FFE9D9; color: #F77A21; }
+  
+  /* Legend / scoring system */
+  .p6-legend {
+    margin: 10px 0 12px;
+    padding: 10px 14px;
+    background: #fff; 
+    border-radius: 6px;
+    border: 1px solid rgba(0,0,0,0.06);
+    display: flex; 
+    align-items: center; 
+    gap: 10px; 
+    box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+  }
+  .p6-legend .legend-label { 
+    font-weight: 600; 
+    color: #1F4E79; 
+    font-size: 11px; 
+    margin-right: 8px; 
+  }
+  .p6-legend .legend-item { 
+    display: flex; 
+    align-items: center; 
+    gap: 6px; 
+    font-size: 10px; 
+    color: #444; 
+    margin-right: 8px; 
+  }
+  .p6-dot { 
+    width: 10px; 
+    height: 10px; 
+    border-radius: 50%; 
+    display: inline-block; 
+  }
+  .dot-green { background: #12C254; }
+  .dot-yellow { background: #E2B420; }
+  .dot-orange { background: #F77A21; }
+  .dot-red { background: #E44B47; }
   
   /* FORCE SINGLE PAGE */
   @media print {
@@ -296,13 +348,23 @@ const handlePrintPreview = () => {
         </div>
         
         <!-- QUESTIONNAIRE ASSESSMENT -->
-        <h2>Questionnaire Assessment</h2>
+        <h2>Functional Assessment</h2>
+        
+        <!-- Scoring Legend -->
+        <div class="p6-legend">
+          <div class="legend-label">Scoring System:</div>
+          <div class="legend-item"><span class="p6-dot dot-green"></span>1-2 Normal</div>
+          <div class="legend-item"><span class="p6-dot dot-yellow"></span>3 Borderline</div>
+          <div class="legend-item"><span class="p6-dot dot-orange"></span>4 Elevated</div>
+          <div class="legend-item"><span class="p6-dot dot-red"></span>5 High</div>
+        </div>
+        
         <table class="report-table">
           <thead>
             <tr>
               <th>Parameter</th>
               <th>Status</th>
-              <th>Score</th>
+              <th style="text-align: right;">Score</th>
             </tr>
           </thead>
           <tbody>
@@ -310,12 +372,7 @@ const handlePrintPreview = () => {
               <tr>
                 <td>${item.label}</td>
                 <td>
-                  <span class="badge ${
-                    item.status === "Normal" ? "normal" : 
-                    item.status === "High" ? "high" : 
-                    item.status === "Borderline" ? "borderline" : 
-                    item.status === "Elevated" ? "elevated" : ""
-                  }">
+                  <span class="badge ${item.class}">
                     ${item.status}
                   </span>
                 </td>
