@@ -33,79 +33,175 @@ const handlePrintPreview = () => {
    <html>
   <head>
     <title>Biome360 Report</title>
-
     <style>
-
   /* GLOBAL */
   body {
     font-family: Arial, sans-serif;
     margin: 20px;
     color: #333;
+    font-size: 12px;
   }
-
+  h1 {
+    font-size: 22px;
+    margin-bottom: 8px;
+  }
   h2 {
-    font-size: 20px;
-    margin-top: 30px;
-    margin-bottom: 12px;
+    font-size: 16px;
+    margin-top: 20px;
+    margin-bottom: 10px;
   }
-
+  p {
+    margin: 5px 0;
+  }
+  
+  /* PATIENT INFO */
+  .p6-info-card {
+    background: #f8f9fa;
+    padding: 12px;
+    border-radius: 6px;
+    margin-bottom: 15px;
+  }
+  .p6-info-row {
+    padding: 4px 0;
+    font-size: 12px;
+  }
+  
+  /* LAB RESULTS */
+  .p6-table-card {
+    border: 1px solid #e9ecef;
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 15px;
+  }
+  .p6-table-header {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    background: #2c5282;
+    color: white;
+    font-weight: 600;
+    padding: 10px 12px;
+    font-size: 12px;
+  }
+  .p6-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    padding: 10px 12px;
+    border-bottom: 1px solid #e9ecef;
+    font-size: 12px;
+  }
+  .p6-row:last-child {
+    border-bottom: none;
+  }
+  .p6-row:nth-child(even) {
+    background: #f8f9fa;
+  }
+  
   /* TABLE */
   .report-table {
     width: 100%;
-    border-collapse: collapse;
-    font-size: 14px;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 12px;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
   }
-
   .report-table thead th {
-    background: #1F4E79;
+    background: #2c5282;
     color: white;
     font-weight: 600;
-    padding: 12px;
+    padding: 12px 14px;
     text-align: left;
     border: none;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
   }
-
+  .report-table thead th:first-child {
+    border-top-left-radius: 8px;
+  }
+  .report-table thead th:last-child {
+    border-top-right-radius: 8px;
+  }
+  .report-table tbody tr {
+    background: white;
+  }
+  .report-table tbody tr:nth-child(even) {
+    background: #f8f9fa;
+  }
+  .report-table tbody tr:hover {
+    background: #f1f3f5;
+  }
   .report-table td {
-    padding: 14px 12px;
-    border-bottom: 1px solid #e6e6e6;
+    padding: 12px 14px;
+    border-bottom: 1px solid #e9ecef;
   }
-
+  .report-table tbody tr:last-child td {
+    border-bottom: none;
+  }
+  .report-table tbody tr:last-child td:first-child {
+    border-bottom-left-radius: 8px;
+  }
+  .report-table tbody tr:last-child td:last-child {
+    border-bottom-right-radius: 8px;
+  }
+  
   /* BADGES */
   .badge {
-    padding: 6px 14px;
+    padding: 5px 12px;
     border-radius: 20px;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 600;
+    display: inline-block;
   }
-
   .normal { background: #d8f5df; color: #197a3a; }
   .high { background: #ffd6d6; color: #d93025; }
   .borderline { background: #fff2cc; color: #b07d00; }
   .elevated { background: #ffe6cc; color: #c56900; }
-
+  
   /* FORCE SINGLE PAGE */
   @media print {
-    body { margin: 0; }
+    body { 
+      margin: 0.5cm;
+      font-size: 11px;
+    }
+    h1 {
+      font-size: 20px;
+      margin-bottom: 6px;
+    }
+    h2 {
+      font-size: 14px;
+      margin-top: 15px;
+      margin-bottom: 8px;
+    }
+    .p6-info-card {
+      padding: 10px;
+      margin-bottom: 12px;
+    }
+    .p6-table-card {
+      margin-bottom: 12px;
+    }
+    .report-table {
+      font-size: 11px;
+    }
+    .report-table td {
+      padding: 10px 12px;
+    }
     @page {
       size: A4 portrait;
-      margin: 0.6cm;
+      margin: 0.5cm;
     }
   }
-
 </style>
   </head>
-
   <body>
-
     <h1>Biome360 Health Check Report</h1>
-    <p style="text-align: center; font-size: 12px; color:#444;">
+    <p style="text-align: center; font-size: 11px; color:#444;">
       Report Date: ${new Date().toLocaleDateString()}
     </p>
-
+    
     <!-- PATIENT INFORMATION -->
     <h2>Patient Information</h2>
-    <div class="section-line"></div>
-
     <div class="p6-info-card">
       <div class="p6-info-row"><strong>Patient Name:</strong> ${patientInfo?.patientName || "N/A"}</div>
       <div class="p6-info-row"><strong>Age:</strong> ${patientInfo?.age || "N/A"}</div>
@@ -113,79 +209,75 @@ const handlePrintPreview = () => {
       <div class="p6-info-row"><strong>Collection Date:</strong> ${patientInfo?.collectionDate ? new Date(patientInfo.collectionDate).toLocaleDateString() : "N/A"}</div>
       <div class="p6-info-row"><strong>Clinician:</strong> ${patientInfo?.clinicianName || "Not specified"}</div>
     </div>
-
+    
     <!-- LAB RESULTS -->
     <h2>Laboratory Results</h2>
-    <div class="section-line"></div>
-
     <div class="p6-table-card">
       <div class="p6-table-header">
         <div>Test</div>
         <div>Result</div>
         <div>Status</div>
       </div>
-
       <div class="p6-row">
         <div>Specimen Validity</div>
         <div>${labInputs?.specimenValidity === 1 ? "Valid" : "Invalid"}</div>
-        <div class="badge ${labInputs?.specimenValidity === 1 ? 'normal' : 'high'}">
-          ${labInputs?.specimenValidity === 1 ? "Pass" : "Fail"}
+        <div>
+          <span class="badge ${labInputs?.specimenValidity === 1 ? 'normal' : 'high'}">
+            ${labInputs?.specimenValidity === 1 ? "Pass" : "Fail"}
+          </span>
         </div>
       </div>
-
       <div class="p6-row">
         <div>Bacterial Signal</div>
         <div>${labInputs?.bacterialSignal === 1 ? "Detected" : "Not Detected"}</div>
-        <div class="badge ${labInputs?.bacterialSignal === 1 ? "high" : "normal"}">
-          ${labInputs?.bacterialSignal === 1 ? "Alert" : "Normal"}
+        <div>
+          <span class="badge ${labInputs?.bacterialSignal === 1 ? "high" : "normal"}">
+            ${labInputs?.bacterialSignal === 1 ? "Alert" : "Normal"}
+          </span>
         </div>
       </div>
-
       <div class="p6-row">
         <div>Yeast Signal</div>
         <div>${labInputs?.yeastSignal === 1 ? "Detected" : "Not Detected"}</div>
-        <div class="badge ${labInputs?.yeastSignal === 1 ? "high" : "normal"}">
-          ${labInputs?.yeastSignal === 1 ? "Alert" : "Normal"}
+        <div>
+          <span class="badge ${labInputs?.yeastSignal === 1 ? "high" : "normal"}">
+            ${labInputs?.yeastSignal === 1 ? "Alert" : "Normal"}
+          </span>
         </div>
       </div>
     </div>
-
+    
+    <!-- QUESTIONNAIRE ASSESSMENT -->
     <h2>Questionnaire Assessment</h2>
-
-<table class="report-table">
-  <thead>
-    <tr>
-      <th>Parameter</th>
-      <th>Status</th>
-      <th>Score</th>
-    </tr>
-  </thead>
-
-  <tbody>
-    ${Object.entries(finalScores).map(([key, item]) => `
-      <tr>
-        <td>${item.label}</td>
-
-        <td>
-          <span class="badge 
-            ${item.status === "Normal" ? "normal" : ""}
-            ${item.status === "High" ? "high" : ""}
-            ${item.status === "Borderline" ? "borderline" : ""}
-            ${item.status === "Elevated" ? "elevated" : ""}
-          ">
-            ${item.status}
-          </span>
-        </td>
-
-        <td>${item.score}/5</td>
-      </tr>
-    `).join("")}
-  </tbody>
-</table>
-
+    <table class="report-table">
+      <thead>
+        <tr>
+          <th>Parameter</th>
+          <th>Status</th>
+          <th>Score</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${Object.entries(finalScores).map(([key, item]) => `
+          <tr>
+            <td>${item.label}</td>
+            <td>
+              <span class="badge 
+                ${item.status === "Normal" ? "normal" : ""}
+                ${item.status === "High" ? "high" : ""}
+                ${item.status === "Borderline" ? "borderline" : ""}
+                ${item.status === "Elevated" ? "elevated" : ""}
+              ">
+                ${item.status}
+              </span>
+            </td>
+            <td>${item.score}/5</td>
+          </tr>
+        `).join("")}
+      </tbody>
+    </table>
   </body>
 </html>
-
   `;
 
   // Open print window
