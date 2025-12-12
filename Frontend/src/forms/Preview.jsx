@@ -29,41 +29,112 @@ export default function Preview() {
     );
   }
 const handlePrintPreview = () => {
+  // Calculate final scores from questionnaires
+  const finalScores = {
+    digestiveRhythm: { 
+      label: "Digestive Rhythm", 
+      status: questionnaires.Q1 <= 1 ? "Normal" : questionnaires.Q1 <= 3 ? "Borderline" : "High", 
+      score: questionnaires.Q1 
+    },
+    fermentationLoad: { 
+      label: "Fermentation Load", 
+      status: questionnaires.Q2 <= 1 ? "Normal" : questionnaires.Q2 <= 3 ? "Borderline" : "Elevated", 
+      score: questionnaires.Q2 
+    },
+    bacterialBalance: { 
+      label: "Bacterial Balance", 
+      status: labInputs.bacterialSignal === 1 ? "High" : "Normal", 
+      score: labInputs.bacterialSignal === 1 ? 5 : 1 
+    },
+    yeastBalance: { 
+      label: "Yeast Balance", 
+      status: labInputs.yeastSignal === 1 ? "High" : "Normal", 
+      score: labInputs.yeastSignal === 1 ? 5 : 1 
+    },
+    immuneTone: { 
+      label: "Immune Tone", 
+      status: questionnaires.Q3 <= 1 ? "Normal" : questionnaires.Q3 <= 3 ? "Borderline" : "High", 
+      score: questionnaires.Q3 
+    },
+    gutBrainStress: { 
+      label: "Gut-Brain Stress", 
+      status: questionnaires.Q2 <= 1 ? "Normal" : questionnaires.Q2 <= 3 ? "Borderline" : "High", 
+      score: questionnaires.Q2 
+    },
+    circadianSleep: { 
+      label: "Circadian Sleep", 
+      status: questionnaires.Q5 <= 1 ? "Normal" : questionnaires.Q5 <= 3 ? "Borderline" : "High", 
+      score: questionnaires.Q5 
+    },
+    dietQuality: { 
+      label: "Diet Quality", 
+      status: questionnaires.Q6 <= 1 ? "Normal" : questionnaires.Q6 <= 3 ? "Borderline" : "High", 
+      score: questionnaires.Q6 
+    },
+    medicationImpact: { 
+      label: "Medication Impact", 
+      status: questionnaires.Q4 <= 1 ? "Normal" : questionnaires.Q4 <= 3 ? "Elevated" : "High", 
+      score: questionnaires.Q4 
+    },
+    hydrationRecovery: { 
+      label: "Hydration & Recovery", 
+      status: "Normal", 
+      score: 2 
+    }
+  };
+
   const printContent = `
-   <html>
-  <head>
-    <title>Biome360 Report</title>
-    <style>
+    <html>
+      <head>
+        <title>Biome360 Report</title>
+        <style>
   /* GLOBAL */
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
   body {
     font-family: Arial, sans-serif;
-    margin: 20px;
+    margin: 0.4cm;
     color: #333;
-    font-size: 12px;
+    font-size: 11px;
+    line-height: 1.4;
   }
   h1 {
-    font-size: 22px;
-    margin-bottom: 8px;
+    font-size: 20px;
+    margin-bottom: 4px;
+    color: #2D8275;
+    text-align: center;
   }
   h2 {
-    font-size: 16px;
-    margin-top: 20px;
-    margin-bottom: 10px;
+    font-size: 14px;
+    margin-top: 12px;
+    margin-bottom: 8px;
+    color: #333;
+    border-bottom: 2px solid #2D8275;
+    padding-bottom: 4px;
   }
   p {
-    margin: 5px 0;
+    margin: 3px 0;
   }
   
   /* PATIENT INFO */
   .p6-info-card {
     background: #f8f9fa;
-    padding: 12px;
+    padding: 10px;
     border-radius: 6px;
-    margin-bottom: 15px;
+    margin-bottom: 12px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
   }
   .p6-info-row {
-    padding: 4px 0;
-    font-size: 12px;
+    font-size: 11px;
+  }
+  .p6-info-row strong {
+    color: #555;
+    font-weight: 600;
   }
   
   /* LAB RESULTS */
@@ -71,7 +142,7 @@ const handlePrintPreview = () => {
     border: 1px solid #e9ecef;
     border-radius: 6px;
     overflow: hidden;
-    margin-bottom: 15px;
+    margin-bottom: 12px;
   }
   .p6-table-header {
     display: grid;
@@ -79,15 +150,16 @@ const handlePrintPreview = () => {
     background: #2c5282;
     color: white;
     font-weight: 600;
-    padding: 10px 12px;
-    font-size: 12px;
+    padding: 8px 10px;
+    font-size: 11px;
   }
   .p6-row {
     display: grid;
     grid-template-columns: 2fr 1fr 1fr;
-    padding: 10px 12px;
+    padding: 8px 10px;
     border-bottom: 1px solid #e9ecef;
-    font-size: 12px;
+    font-size: 11px;
+    align-items: center;
   }
   .p6-row:last-child {
     border-bottom: none;
@@ -101,19 +173,20 @@ const handlePrintPreview = () => {
     width: 100%;
     border-collapse: separate;
     border-spacing: 0;
-    font-size: 12px;
+    font-size: 11px;
     border-radius: 8px;
     overflow: hidden;
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    margin-bottom: 12px;
   }
   .report-table thead th {
     background: #2c5282;
     color: white;
     font-weight: 600;
-    padding: 12px 14px;
+    padding: 10px 12px;
     text-align: left;
     border: none;
-    font-size: 12px;
+    font-size: 11px;
     text-transform: uppercase;
     letter-spacing: 0.3px;
   }
@@ -129,11 +202,8 @@ const handlePrintPreview = () => {
   .report-table tbody tr:nth-child(even) {
     background: #f8f9fa;
   }
-  .report-table tbody tr:hover {
-    background: #f1f3f5;
-  }
   .report-table td {
-    padding: 12px 14px;
+    padding: 10px 12px;
     border-bottom: 1px solid #e9ecef;
   }
   .report-table tbody tr:last-child td {
@@ -148,11 +218,12 @@ const handlePrintPreview = () => {
   
   /* BADGES */
   .badge {
-    padding: 5px 12px;
+    padding: 4px 10px;
     border-radius: 20px;
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 600;
     display: inline-block;
+    white-space: nowrap;
   }
   .normal { background: #d8f5df; color: #197a3a; }
   .high { background: #ffd6d6; color: #d93025; }
@@ -162,122 +233,99 @@ const handlePrintPreview = () => {
   /* FORCE SINGLE PAGE */
   @media print {
     body { 
-      margin: 0.5cm;
-      font-size: 11px;
-    }
-    h1 {
-      font-size: 20px;
-      margin-bottom: 6px;
-    }
-    h2 {
-      font-size: 14px;
-      margin-top: 15px;
-      margin-bottom: 8px;
-    }
-    .p6-info-card {
-      padding: 10px;
-      margin-bottom: 12px;
-    }
-    .p6-table-card {
-      margin-bottom: 12px;
-    }
-    .report-table {
-      font-size: 11px;
-    }
-    .report-table td {
-      padding: 10px 12px;
+      margin: 0.4cm;
     }
     @page {
       size: A4 portrait;
-      margin: 0.5cm;
+      margin: 0.4cm;
     }
   }
 </style>
-  </head>
-  <body>
-    <h1>Biome360 Health Check Report</h1>
-    <p style="text-align: center; font-size: 11px; color:#444;">
-      Report Date: ${new Date().toLocaleDateString()}
-    </p>
-    
-    <!-- PATIENT INFORMATION -->
-    <h2>Patient Information</h2>
-    <div class="p6-info-card">
-      <div class="p6-info-row"><strong>Patient Name:</strong> ${patientInfo?.patientName || "N/A"}</div>
-      <div class="p6-info-row"><strong>Age:</strong> ${patientInfo?.age || "N/A"}</div>
-      <div class="p6-info-row"><strong>Sex:</strong> ${patientInfo?.sex || "N/A"}</div>
-      <div class="p6-info-row"><strong>Collection Date:</strong> ${patientInfo?.collectionDate ? new Date(patientInfo.collectionDate).toLocaleDateString() : "N/A"}</div>
-      <div class="p6-info-row"><strong>Clinician:</strong> ${patientInfo?.clinicianName || "Not specified"}</div>
-    </div>
-    
-    <!-- LAB RESULTS -->
-    <h2>Laboratory Results</h2>
-    <div class="p6-table-card">
-      <div class="p6-table-header">
-        <div>Test</div>
-        <div>Result</div>
-        <div>Status</div>
-      </div>
-      <div class="p6-row">
-        <div>Specimen Validity</div>
-        <div>${labInputs?.specimenValidity === 1 ? "Valid" : "Invalid"}</div>
-        <div>
-          <span class="badge ${labInputs?.specimenValidity === 1 ? 'normal' : 'high'}">
-            ${labInputs?.specimenValidity === 1 ? "Pass" : "Fail"}
-          </span>
+      </head>
+      <body>
+        <h1>Biome360 Health Check Report</h1>
+        <p style="text-align: center; font-size: 10px; color:#666; margin-bottom: 12px;">
+          Report Date: ${new Date().toLocaleDateString()}
+        </p>
+        
+        <!-- PATIENT INFORMATION -->
+        <h2>Patient Information</h2>
+        <div class="p6-info-card">
+          <div class="p6-info-row"><strong>Patient Name:</strong> ${patientInfo?.patientName || "N/A"}</div>
+          <div class="p6-info-row"><strong>Age:</strong> ${patientInfo?.age || "N/A"}</div>
+          <div class="p6-info-row"><strong>Sex:</strong> ${patientInfo?.sex || "N/A"}</div>
+          <div class="p6-info-row"><strong>Collection Date:</strong> ${patientInfo?.collectionDate ? new Date(patientInfo.collectionDate).toLocaleDateString() : "N/A"}</div>
+          <div class="p6-info-row" style="grid-column: 1 / -1;"><strong>Clinician:</strong> ${patientInfo?.clinicianName || "Not specified"}</div>
         </div>
-      </div>
-      <div class="p6-row">
-        <div>Bacterial Signal</div>
-        <div>${labInputs?.bacterialSignal === 1 ? "Detected" : "Not Detected"}</div>
-        <div>
-          <span class="badge ${labInputs?.bacterialSignal === 1 ? "high" : "normal"}">
-            ${labInputs?.bacterialSignal === 1 ? "Alert" : "Normal"}
-          </span>
-        </div>
-      </div>
-      <div class="p6-row">
-        <div>Yeast Signal</div>
-        <div>${labInputs?.yeastSignal === 1 ? "Detected" : "Not Detected"}</div>
-        <div>
-          <span class="badge ${labInputs?.yeastSignal === 1 ? "high" : "normal"}">
-            ${labInputs?.yeastSignal === 1 ? "Alert" : "Normal"}
-          </span>
-        </div>
-      </div>
-    </div>
-    
-    <!-- QUESTIONNAIRE ASSESSMENT -->
-    <h2>Questionnaire Assessment</h2>
-    <table class="report-table">
-      <thead>
-        <tr>
-          <th>Parameter</th>
-          <th>Status</th>
-          <th>Score</th>
-        </tr>
-      </thead>
-      <tbody>
-        ${Object.entries(finalScores).map(([key, item]) => `
-          <tr>
-            <td>${item.label}</td>
-            <td>
-              <span class="badge 
-                ${item.status === "Normal" ? "normal" : ""}
-                ${item.status === "High" ? "high" : ""}
-                ${item.status === "Borderline" ? "borderline" : ""}
-                ${item.status === "Elevated" ? "elevated" : ""}
-              ">
-                ${item.status}
+        
+        <!-- LAB RESULTS -->
+        <h2>Laboratory Results</h2>
+        <div class="p6-table-card">
+          <div class="p6-table-header">
+            <div>Test</div>
+            <div>Result</div>
+            <div>Status</div>
+          </div>
+          <div class="p6-row">
+            <div>Specimen Validity</div>
+            <div>${labInputs?.specimenValidity === 1 ? "Valid" : "Invalid"}</div>
+            <div>
+              <span class="badge ${labInputs?.specimenValidity === 1 ? 'normal' : 'high'}">
+                ${labInputs?.specimenValidity === 1 ? "Pass" : "Fail"}
               </span>
-            </td>
-            <td>${item.score}/5</td>
-          </tr>
-        `).join("")}
-      </tbody>
-    </table>
-  </body>
-</html>
+            </div>
+          </div>
+          <div class="p6-row">
+            <div>Bacterial Signal</div>
+            <div>${labInputs?.bacterialSignal === 1 ? "Detected" : "Not Detected"}</div>
+            <div>
+              <span class="badge ${labInputs?.bacterialSignal === 1 ? "high" : "normal"}">
+                ${labInputs?.bacterialSignal === 1 ? "Alert" : "Normal"}
+              </span>
+            </div>
+          </div>
+          <div class="p6-row">
+            <div>Yeast Signal</div>
+            <div>${labInputs?.yeastSignal === 1 ? "Detected" : "Not Detected"}</div>
+            <div>
+              <span class="badge ${labInputs?.yeastSignal === 1 ? "high" : "normal"}">
+                ${labInputs?.yeastSignal === 1 ? "Alert" : "Normal"}
+              </span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- QUESTIONNAIRE ASSESSMENT -->
+        <h2>Questionnaire Assessment</h2>
+        <table class="report-table">
+          <thead>
+            <tr>
+              <th>Parameter</th>
+              <th>Status</th>
+              <th>Score</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${Object.entries(finalScores).map(([key, item]) => `
+              <tr>
+                <td>${item.label}</td>
+                <td>
+                  <span class="badge ${
+                    item.status === "Normal" ? "normal" : 
+                    item.status === "High" ? "high" : 
+                    item.status === "Borderline" ? "borderline" : 
+                    item.status === "Elevated" ? "elevated" : ""
+                  }">
+                    ${item.status}
+                  </span>
+                </td>
+                <td>${item.score}/5</td>
+              </tr>
+            `).join("")}
+          </tbody>
+        </table>
+      </body>
+    </html>
   `;
 
   // Open print window
