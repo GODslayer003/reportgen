@@ -30,7 +30,7 @@ export default function Preview() {
   }
 const handlePrintPreview = () => {
   const printContent = `
-    <html>
+   <html>
   <head>
     <title>Biome360 Report</title>
 
@@ -41,62 +41,81 @@ const handlePrintPreview = () => {
         color: black;
       }
 
-      h1 { color: #2D8275; text-align: center; }
+      h1 { color: #2D8275; text-align: center; margin-bottom: 4px; }
       h2 {
         color: #333;
         margin-top: 30px;
         font-size: 20px;
-        border-bottom: 2px solid #e0e0e0;
-        padding-bottom: 6px;
+        margin-bottom: 8px;
       }
 
-      /* -------------------- TABLE STYLE -------------------- */
-      table {
+      /* Divider line */
+      .section-line {
+        height: 1px;
+        background: #dcdcdc;
+        margin-bottom: 15px;
+      }
+
+      /* --- P6 TABLE SYSTEM (YOUR EXACT STYLING) --- */
+      .p6-table-card {
         width: 100%;
-        border-collapse: separate;
-        border-spacing: 0 8px;   /* row spacing like screenshot */
-        margin-top: 15px;
+        max-width: 900px;
+        margin: 10px auto 0;
+        background: #fff;
+        overflow: hidden;
+        border: 1px solid rgba(0,0,0,0.12);
+        box-shadow: 0px 2px 6px rgba(0,0,0,0.05);
       }
 
-      th {
-        background-color: #1f487c;
+      .p6-table-header {
+        display: grid;
+        grid-template-columns: 1.4fr 1fr 0.6fr;
+        background: #1F4E79;
         color: white;
-        padding: 12px;
-        font-size: 14px;
-        text-align: left;
-      }
-
-      td {
-        background: #ffffff;
-        padding: 12px;
-        font-size: 14px;
-        border-top: 1px solid #e6e6e6;
-        border-bottom: 1px solid #e6e6e6;
-      }
-
-      tr td:first-child {
-        border-left: 1px solid #e6e6e6;
-        border-radius: 6px 0 0 6px;
-      }
-
-      tr td:last-child {
-        border-right: 1px solid #e6e6e6;
-        border-radius: 0 6px 6px 0;
-      }
-
-      /* BADGE COLORS (matches screenshot) */
-      .badge {
-        padding: 6px 14px;
-        border-radius: 25px;
-        font-size: 12px;
+        font-size: 13px;
         font-weight: 600;
-        display: inline-block;
+        padding: 12px 16px;
+        align-items: center;
       }
 
-      .normal { background-color: #d8f5df; color: #197a3a; }
-      .borderline { background-color: #fff2cc; color: #b07d00; }
-      .high { background-color: #ffd6d6; color: #d93025; }
-      .elevated { background-color: #ffe6cc; color: #c56900; }
+      .p6-row {
+        display: grid;
+        grid-template-columns: 1.4fr 1fr 0.6fr;
+        padding: 14px 16px;
+        border-bottom: 1px solid #eee;
+        font-size: 13px;
+        align-items: center;
+      }
+
+      .p6-row:last-child {
+        border-bottom: none;
+      }
+
+      /* Badge Colors */
+      .badge { font-weight: 600; font-size: 12px; }
+      .normal { color: #1c8f43; }
+      .high { color: #d93025; }
+      .borderline { color: #b07d00; }
+      .elevated { color: #c56900; }
+
+      /* Patient Info uses 2-column grid instead */
+      .p6-info-card {
+        width: 100%;
+        max-width: 900px;
+        margin: 10px auto 0;
+        background: #fff;
+        border: 1px solid rgba(0,0,0,0.12);
+        box-shadow: 0px 2px 6px rgba(0,0,0,0.05);
+      }
+
+      .p6-info-row {
+        display: grid;
+        grid-template-columns: 1fr 2fr;
+        padding: 14px 16px;
+        border-bottom: 1px solid #eee;
+        font-size: 14px;
+      }
+      .p6-info-row:last-child { border-bottom: none; }
 
       @media print {
         @page { margin: 1cm; }
@@ -106,104 +125,83 @@ const handlePrintPreview = () => {
   </head>
 
   <body>
+
     <h1>Biome360 Health Check Report</h1>
-    <p style="text-align: center; color: #666;">Comprehensive Microbiome Assessment</p>
-    <p style="text-align: center; font-size: 12px;">Report Date: ${new Date().toLocaleDateString()}</p>
+    <p style="text-align: center; font-size: 12px; color:#444;">
+      Report Date: ${new Date().toLocaleDateString()}
+    </p>
 
-    <!-- ---------------- PATIENT INFORMATION ---------------- -->
+    <!-- PATIENT INFORMATION -->
     <h2>Patient Information</h2>
-    <table>
-      <tr>
-        <td><strong>Patient Name:</strong></td>
-        <td>${patientInfo?.patientName || 'N/A'}</td>
-      </tr>
-      <tr>
-        <td><strong>Age:</strong></td>
-        <td>${patientInfo?.age || 'N/A'}</td>
-      </tr>
-      <tr>
-        <td><strong>Sex:</strong></td>
-        <td>${patientInfo?.sex || 'N/A'}</td>
-      </tr>
-      <tr>
-        <td><strong>Collection Date:</strong></td>
-        <td>${patientInfo?.collectionDate ? new Date(patientInfo.collectionDate).toLocaleDateString() : 'N/A'}</td>
-      </tr>
-      <tr>
-        <td><strong>Clinician:</strong></td>
-        <td>${patientInfo?.clinicianName || 'Not specified'}</td>
-      </tr>
-    </table>
+    <div class="section-line"></div>
 
-    <!-- ---------------- LAB RESULTS ---------------- -->
+    <div class="p6-info-card">
+      <div class="p6-info-row"><strong>Patient Name:</strong> ${patientInfo?.patientName || "N/A"}</div>
+      <div class="p6-info-row"><strong>Age:</strong> ${patientInfo?.age || "N/A"}</div>
+      <div class="p6-info-row"><strong>Sex:</strong> ${patientInfo?.sex || "N/A"}</div>
+      <div class="p6-info-row"><strong>Collection Date:</strong> ${patientInfo?.collectionDate ? new Date(patientInfo.collectionDate).toLocaleDateString() : "N/A"}</div>
+      <div class="p6-info-row"><strong>Clinician:</strong> ${patientInfo?.clinicianName || "Not specified"}</div>
+    </div>
+
+    <!-- LAB RESULTS -->
     <h2>Laboratory Results</h2>
-    <table>
-      <thead>
-        <tr>
-          <th>Test</th>
-          <th>Result</th>
-          <th>Status</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>Specimen Validity</td>
-          <td>${labInputs?.specimenValidity === 1 ? 'Valid' : 'Invalid'}</td>
-          <td>
-            <span class="badge ${labInputs?.specimenValidity === 1 ? 'normal' : 'high'}">
-              ${labInputs?.specimenValidity === 1 ? 'Pass' : 'Fail'}
-            </span>
-          </td>
-        </tr>
+    <div class="section-line"></div>
 
-        <tr>
-          <td>Bacterial Signal</td>
-          <td>${labInputs?.bacterialSignal === 1 ? 'Detected' : 'Not Detected'}</td>
-          <td>
-            <span class="badge ${labInputs?.bacterialSignal === 1 ? 'high' : 'normal'}">
-              ${labInputs?.bacterialSignal === 1 ? 'Alert' : 'Normal'}
-            </span>
-          </td>
-        </tr>
+    <div class="p6-table-card">
+      <div class="p6-table-header">
+        <div>Test</div>
+        <div>Result</div>
+        <div>Status</div>
+      </div>
 
-        <tr>
-          <td>Yeast Signal</td>
-          <td>${labInputs?.yeastSignal === 1 ? 'Detected' : 'Not Detected'}</td>
-          <td>
-            <span class="badge ${labInputs?.yeastSignal === 1 ? 'high' : 'normal'}">
-              ${labInputs?.yeastSignal === 1 ? 'Alert' : 'Normal'}
-            </span>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+      <div class="p6-row">
+        <div>Specimen Validity</div>
+        <div>${labInputs?.specimenValidity === 1 ? "Valid" : "Invalid"}</div>
+        <div class="badge ${labInputs?.specimenValidity === 1 ? 'normal' : 'high'}">
+          ${labInputs?.specimenValidity === 1 ? "Pass" : "Fail"}
+        </div>
+      </div>
 
-    <!-- ---------------- QUESTIONNAIRE ---------------- -->
+      <div class="p6-row">
+        <div>Bacterial Signal</div>
+        <div>${labInputs?.bacterialSignal === 1 ? "Detected" : "Not Detected"}</div>
+        <div class="badge ${labInputs?.bacterialSignal === 1 ? "high" : "normal"}">
+          ${labInputs?.bacterialSignal === 1 ? "Alert" : "Normal"}
+        </div>
+      </div>
+
+      <div class="p6-row">
+        <div>Yeast Signal</div>
+        <div>${labInputs?.yeastSignal === 1 ? "Detected" : "Not Detected"}</div>
+        <div class="badge ${labInputs?.yeastSignal === 1 ? "high" : "normal"}">
+          ${labInputs?.yeastSignal === 1 ? "Alert" : "Normal"}
+        </div>
+      </div>
+    </div>
+
+    <!-- QUESTIONNAIRE -->
     <h2>Questionnaire Assessment</h2>
-    <table>
-      <thead>
-        <tr>
-          <th>Question</th>
-          <th>Description</th>
-          <th>Score</th>
-          <th>Interpretation</th>
-        </tr>
-      </thead>
+    <div class="section-line"></div>
 
-      <tbody>
-        ${questionnaires ? Object.entries(questionnaires).map(([qKey, val]) => `
-          <tr>
-            <td><strong>${qKey}</strong></td>
-            <td>${questionLabels[qKey]}</td>
-            <td>${val}</td>
-            <td>${scoreLabels[val]}</td>
-          </tr>
-        `).join('') : ''}
-      </tbody>
-    </table>
+    <div class="p6-table-card">
+      <div class="p6-table-header">
+        <div>Question</div>
+        <div>Description</div>
+        <div>Score</div>
+      </div>
+
+      ${questionnaires ? Object.entries(questionnaires).map(([qKey, val]) => `
+        <div class="p6-row">
+          <div><strong>${qKey}</strong></div>
+          <div>${questionLabels[qKey]}</div>
+          <div>${val}</div>
+        </div>
+      `).join('') : ''}
+    </div>
 
   </body>
 </html>
+
   `;
 
   // Open print window
