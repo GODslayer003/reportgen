@@ -1536,7 +1536,7 @@ const getPage5HTML = (report) => {
 
   <!-- TITLE -->
   <div class="p4-title-wrap">
-    <div class="p4-title">Summary Page</div>
+    <div class="p4-title">Analytical Observations</div>
     <div class="p4-underline"></div>
   </div>
 
