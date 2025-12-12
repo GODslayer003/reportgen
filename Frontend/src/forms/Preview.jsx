@@ -31,121 +31,179 @@ export default function Preview() {
 const handlePrintPreview = () => {
   const printContent = `
     <html>
-      <head>
-        <title>Biome360 Report</title>
-        <style>
-          body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            color: black;
-          }
-          h1 { color: #2D8275; text-align: center; }
-          h2 { color: #333; border-bottom: 2px solid #ccc; padding-bottom: 5px; }
-          table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 15px 0;
-          }
-          th, td {
-            border: 1px solid #333;
-            padding: 8px;
-            text-align: left;
-          }
-          th {
-            background-color: #f0f0f0;
-          }
-          .summary {
-            background-color: #f9f9f9;
-            border: 1px solid #ccc;
-            padding: 15px;
-            margin-top: 20px;
-          }
-          @media print {
-            @page { margin: 1cm; }
-            body { margin: 0; }
-          }
-        </style>
-      </head>
-      <body>
-        <h1>Biome360 Health Check Report</h1>
-        <p style="text-align: center; color: #666;">Comprehensive Microbiome Assessment</p>
-        <p style="text-align: center; font-size: 12px;">Report Date: ${new Date().toLocaleDateString()}</p>
-        
-        <h2>Patient Information</h2>
-        <table>
+  <head>
+    <title>Biome360 Report</title>
+
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+        color: black;
+      }
+
+      h1 { color: #2D8275; text-align: center; }
+      h2 {
+        color: #333;
+        margin-top: 30px;
+        font-size: 20px;
+        border-bottom: 2px solid #e0e0e0;
+        padding-bottom: 6px;
+      }
+
+      /* -------------------- TABLE STYLE -------------------- */
+      table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0 8px;   /* row spacing like screenshot */
+        margin-top: 15px;
+      }
+
+      th {
+        background-color: #1f487c;
+        color: white;
+        padding: 12px;
+        font-size: 14px;
+        text-align: left;
+      }
+
+      td {
+        background: #ffffff;
+        padding: 12px;
+        font-size: 14px;
+        border-top: 1px solid #e6e6e6;
+        border-bottom: 1px solid #e6e6e6;
+      }
+
+      tr td:first-child {
+        border-left: 1px solid #e6e6e6;
+        border-radius: 6px 0 0 6px;
+      }
+
+      tr td:last-child {
+        border-right: 1px solid #e6e6e6;
+        border-radius: 0 6px 6px 0;
+      }
+
+      /* BADGE COLORS (matches screenshot) */
+      .badge {
+        padding: 6px 14px;
+        border-radius: 25px;
+        font-size: 12px;
+        font-weight: 600;
+        display: inline-block;
+      }
+
+      .normal { background-color: #d8f5df; color: #197a3a; }
+      .borderline { background-color: #fff2cc; color: #b07d00; }
+      .high { background-color: #ffd6d6; color: #d93025; }
+      .elevated { background-color: #ffe6cc; color: #c56900; }
+
+      @media print {
+        @page { margin: 1cm; }
+        body { margin: 0; }
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1>Biome360 Health Check Report</h1>
+    <p style="text-align: center; color: #666;">Comprehensive Microbiome Assessment</p>
+    <p style="text-align: center; font-size: 12px;">Report Date: ${new Date().toLocaleDateString()}</p>
+
+    <!-- ---------------- PATIENT INFORMATION ---------------- -->
+    <h2>Patient Information</h2>
+    <table>
+      <tr>
+        <td><strong>Patient Name:</strong></td>
+        <td>${patientInfo?.patientName || 'N/A'}</td>
+      </tr>
+      <tr>
+        <td><strong>Age:</strong></td>
+        <td>${patientInfo?.age || 'N/A'}</td>
+      </tr>
+      <tr>
+        <td><strong>Sex:</strong></td>
+        <td>${patientInfo?.sex || 'N/A'}</td>
+      </tr>
+      <tr>
+        <td><strong>Collection Date:</strong></td>
+        <td>${patientInfo?.collectionDate ? new Date(patientInfo.collectionDate).toLocaleDateString() : 'N/A'}</td>
+      </tr>
+      <tr>
+        <td><strong>Clinician:</strong></td>
+        <td>${patientInfo?.clinicianName || 'Not specified'}</td>
+      </tr>
+    </table>
+
+    <!-- ---------------- LAB RESULTS ---------------- -->
+    <h2>Laboratory Results</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Test</th>
+          <th>Result</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Specimen Validity</td>
+          <td>${labInputs?.specimenValidity === 1 ? 'Valid' : 'Invalid'}</td>
+          <td>
+            <span class="badge ${labInputs?.specimenValidity === 1 ? 'normal' : 'high'}">
+              ${labInputs?.specimenValidity === 1 ? 'Pass' : 'Fail'}
+            </span>
+          </td>
+        </tr>
+
+        <tr>
+          <td>Bacterial Signal</td>
+          <td>${labInputs?.bacterialSignal === 1 ? 'Detected' : 'Not Detected'}</td>
+          <td>
+            <span class="badge ${labInputs?.bacterialSignal === 1 ? 'high' : 'normal'}">
+              ${labInputs?.bacterialSignal === 1 ? 'Alert' : 'Normal'}
+            </span>
+          </td>
+        </tr>
+
+        <tr>
+          <td>Yeast Signal</td>
+          <td>${labInputs?.yeastSignal === 1 ? 'Detected' : 'Not Detected'}</td>
+          <td>
+            <span class="badge ${labInputs?.yeastSignal === 1 ? 'high' : 'normal'}">
+              ${labInputs?.yeastSignal === 1 ? 'Alert' : 'Normal'}
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- ---------------- QUESTIONNAIRE ---------------- -->
+    <h2>Questionnaire Assessment</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Question</th>
+          <th>Description</th>
+          <th>Score</th>
+          <th>Interpretation</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        ${questionnaires ? Object.entries(questionnaires).map(([qKey, val]) => `
           <tr>
-            <td><strong>Patient Name:</strong></td>
-            <td>${patientInfo?.patientName || 'N/A'}</td>
+            <td><strong>${qKey}</strong></td>
+            <td>${questionLabels[qKey]}</td>
+            <td>${val}</td>
+            <td>${scoreLabels[val]}</td>
           </tr>
-          <tr>
-            <td><strong>Age:</strong></td>
-            <td>${patientInfo?.age || 'N/A'}</td>
-          </tr>
-          <tr>
-            <td><strong>Sex:</strong></td>
-            <td>${patientInfo?.sex || 'N/A'}</td>
-          </tr>
-          <tr>
-            <td><strong>Collection Date:</strong></td>
-            <td>${patientInfo?.collectionDate ? new Date(patientInfo.collectionDate).toLocaleDateString() : 'N/A'}</td>
-          </tr>
-          <tr>
-            <td><strong>Clinician:</strong></td>
-            <td>${patientInfo?.clinicianName || 'Not specified'}</td>
-          </tr>
-        </table>
-        
-        <h2>Laboratory Results</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>Test</th>
-              <th>Result</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Specimen Validity</td>
-              <td>${labInputs?.specimenValidity === 1 ? 'Valid' : 'Invalid'}</td>
-              <td>${labInputs?.specimenValidity === 1 ? '✓ Pass' : '✗ Fail'}</td>
-            </tr>
-            <tr>
-              <td>Bacterial Signal</td>
-              <td>${labInputs?.bacterialSignal === 1 ? 'Detected' : 'Not Detected'}</td>
-              <td>${labInputs?.bacterialSignal === 1 ? '⚠ Alert' : '✓ Normal'}</td>
-            </tr>
-            <tr>
-              <td>Yeast Signal</td>
-              <td>${labInputs?.yeastSignal === 1 ? 'Detected' : 'Not Detected'}</td>
-              <td>${labInputs?.yeastSignal === 1 ? '⚠ Alert' : '✓ Normal'}</td>
-            </tr>
-          </tbody>
-        </table>
-        
-        <h2>Questionnaire Assessment</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>Question</th>
-              <th>Description</th>
-              <th>Score</th>
-              <th>Interpretation</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${questionnaires ? Object.entries(questionnaires).map(([qKey, val]) => `
-              <tr>
-                <td><strong>${qKey}</strong></td>
-                <td>${questionLabels[qKey]}</td>
-                <td>${val}</td>
-                <td>${scoreLabels[val]}</td>
-              </tr>
-            `).join('') : ''}
-          </tbody>
-        </table>
-      </body>
-    </html>
+        `).join('') : ''}
+      </tbody>
+    </table>
+
+  </body>
+</html>
   `;
 
   // Open print window
