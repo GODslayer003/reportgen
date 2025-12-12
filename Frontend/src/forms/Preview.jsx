@@ -35,93 +35,64 @@ const handlePrintPreview = () => {
     <title>Biome360 Report</title>
 
     <style>
-      body {
-        font-family: Arial, sans-serif;
-        margin: 20px;
-        color: black;
-      }
 
-      h1 { color: #2D8275; text-align: center; margin-bottom: 4px; }
-      h2 {
-        color: #333;
-        margin-top: 30px;
-        font-size: 20px;
-        margin-bottom: 8px;
-      }
+  /* GLOBAL */
+  body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    color: #333;
+  }
 
-      /* Divider line */
-      .section-line {
-        height: 1px;
-        background: #dcdcdc;
-        margin-bottom: 15px;
-      }
+  h2 {
+    font-size: 20px;
+    margin-top: 30px;
+    margin-bottom: 12px;
+  }
 
-      /* --- P6 TABLE SYSTEM (YOUR EXACT STYLING) --- */
-      .p6-table-card {
-        width: 100%;
-        max-width: 900px;
-        margin: 10px auto 0;
-        background: #fff;
-        overflow: hidden;
-        border: 1px solid rgba(0,0,0,0.12);
-        box-shadow: 0px 2px 6px rgba(0,0,0,0.05);
-      }
+  /* TABLE */
+  .report-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
 
-      .p6-table-header {
-        display: grid;
-        grid-template-columns: 1.4fr 1fr 0.6fr;
-        background: #1F4E79;
-        color: white;
-        font-size: 13px;
-        font-weight: 600;
-        padding: 12px 16px;
-        align-items: center;
-      }
+  .report-table thead th {
+    background: #1F4E79;
+    color: white;
+    font-weight: 600;
+    padding: 12px;
+    text-align: left;
+    border: none;
+  }
 
-      .p6-row {
-        display: grid;
-        grid-template-columns: 1.4fr 1fr 0.6fr;
-        padding: 14px 16px;
-        border-bottom: 1px solid #eee;
-        font-size: 13px;
-        align-items: center;
-      }
+  .report-table td {
+    padding: 14px 12px;
+    border-bottom: 1px solid #e6e6e6;
+  }
 
-      .p6-row:last-child {
-        border-bottom: none;
-      }
+  /* BADGES */
+  .badge {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+  }
 
-      /* Badge Colors */
-      .badge { font-weight: 600; font-size: 12px; }
-      .normal { color: #1c8f43; }
-      .high { color: #d93025; }
-      .borderline { color: #b07d00; }
-      .elevated { color: #c56900; }
+  .normal { background: #d8f5df; color: #197a3a; }
+  .high { background: #ffd6d6; color: #d93025; }
+  .borderline { background: #fff2cc; color: #b07d00; }
+  .elevated { background: #ffe6cc; color: #c56900; }
 
-      /* Patient Info uses 2-column grid instead */
-      .p6-info-card {
-        width: 100%;
-        max-width: 900px;
-        margin: 10px auto 0;
-        background: #fff;
-        border: 1px solid rgba(0,0,0,0.12);
-        box-shadow: 0px 2px 6px rgba(0,0,0,0.05);
-      }
+  /* FORCE SINGLE PAGE */
+  @media print {
+    body { margin: 0; }
+    @page {
+      size: A4 portrait;
+      margin: 0.6cm;
+    }
+  }
 
-      .p6-info-row {
-        display: grid;
-        grid-template-columns: 1fr 2fr;
-        padding: 14px 16px;
-        border-bottom: 1px solid #eee;
-        font-size: 14px;
-      }
-      .p6-info-row:last-child { border-bottom: none; }
-
-      @media print {
-        @page { margin: 1cm; }
-        body { margin: 0; }
-      }
-    </style>
+</style>
   </head>
 
   <body>
@@ -179,25 +150,38 @@ const handlePrintPreview = () => {
       </div>
     </div>
 
-    <!-- QUESTIONNAIRE -->
     <h2>Questionnaire Assessment</h2>
-    <div class="section-line"></div>
 
-    <div class="p6-table-card">
-      <div class="p6-table-header">
-        <div>Question</div>
-        <div>Description</div>
-        <div>Score</div>
-      </div>
+<table class="report-table">
+  <thead>
+    <tr>
+      <th>Parameter</th>
+      <th>Status</th>
+      <th>Score</th>
+    </tr>
+  </thead>
 
-      ${questionnaires ? Object.entries(questionnaires).map(([qKey, val]) => `
-        <div class="p6-row">
-          <div><strong>${qKey}</strong></div>
-          <div>${questionLabels[qKey]}</div>
-          <div>${val}</div>
-        </div>
-      `).join('') : ''}
-    </div>
+  <tbody>
+    ${Object.entries(finalScores).map(([key, item]) => `
+      <tr>
+        <td>${item.label}</td>
+
+        <td>
+          <span class="badge 
+            ${item.status === "Normal" ? "normal" : ""}
+            ${item.status === "High" ? "high" : ""}
+            ${item.status === "Borderline" ? "borderline" : ""}
+            ${item.status === "Elevated" ? "elevated" : ""}
+          ">
+            ${item.status}
+          </span>
+        </td>
+
+        <td>${item.score}/5</td>
+      </tr>
+    `).join("")}
+  </tbody>
+</table>
 
   </body>
 </html>
